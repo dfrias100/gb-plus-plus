@@ -21,13 +21,13 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Memory\Memory.cpp" />
+    <ClCompile Include="src\Sharp\Sharp.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
-    <ClCompile Include="src\Z80\Z80.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Memory\Memory.hpp" />
+    <ClInclude Include="src\Sharp\Sharp.hpp" />
     <ClInclude Include="src\Window\Window.hpp" />
-    <ClInclude Include="src\Z80\Z80.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

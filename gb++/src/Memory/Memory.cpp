@@ -11,7 +11,7 @@ Memory::Memory() {
 
 	InterruptEnableRegister = 0x00;
 
-	CPU = new Z80(this);
+	CPU = new Sharp(this);
 }
 
 Memory::~Memory()

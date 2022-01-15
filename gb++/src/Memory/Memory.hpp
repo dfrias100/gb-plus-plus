@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "../Z80/Z80.hpp"
+#include "../Sharp/Sharp.hpp"
 
 class Memory {
 	uint8_t* HighRAM;    // High RAM located at	0xFF80: 127 bytes
@@ -16,7 +16,7 @@ class Memory {
 
 	uint8_t InterruptEnableRegister; // Interrupt Enable Register located at 0xFFFF: 1 byte
 
-	Z80* CPU; // The Memory class will need to tick the CPU itself
+	Sharp* CPU; // The Memory class will need to tick the CPU itself
 
 public:
 	Memory();

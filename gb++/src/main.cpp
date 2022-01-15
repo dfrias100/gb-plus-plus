@@ -16,7 +16,9 @@ int main(int argc, char* argv[]) {
 
     sf::Event emuEvent;
 
-    /*while (!exit) {
+    Memory GB;
+
+    while (!exit) {
         while (emuWindow.windowEvent(emuEvent)) {
             if (emuEvent.type == sf::Event::Closed) {
                 exit = true;
@@ -24,16 +26,7 @@ int main(int argc, char* argv[]) {
         }
 
         emuWindow.draw();
-    }*/
-
-    Z80 CPU;
-
-    CPU.AF = 0x0F;
-
-    std::cout << "AF register: " << CPU.AF << std::endl;
-    std::cout << "High of the AF register: " << (int) CPU.A << std::endl;
-    std::cout << "Low of the AF register: " << (int) CPU.F << std::endl;
-
+    }
 
     delete[] frameBuffer;
 

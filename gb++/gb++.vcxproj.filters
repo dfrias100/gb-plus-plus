@@ -24,7 +24,7 @@
     <ClCompile Include="src\Memory\Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Z80\Z80.cpp">
+    <ClCompile Include="src\Sharp\Sharp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClInclude Include="src\Memory\Memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Z80\Z80.hpp">
+    <ClInclude Include="src\Sharp\Sharp.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
