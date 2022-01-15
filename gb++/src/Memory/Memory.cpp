@@ -55,7 +55,7 @@ uint16_t Memory::CPUReadStack(uint16_t address)
 }
 
 
-void Memory::Clock()
-{
+void Memory::Clock() {
+	CPU->Clock();
 }
 
