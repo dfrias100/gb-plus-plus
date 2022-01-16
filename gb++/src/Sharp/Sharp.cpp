@@ -3,8 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-Sharp::Sharp(Memory* _MemoryBus)
-{
+Sharp::Sharp(Memory* _MemoryBus) {
 	MemoryBus = _MemoryBus;
 	PC = 0x100;
 	Suspended = false;
@@ -449,8 +448,72 @@ void Sharp::LD_A_W() {
 	A = (uint8_t) CurrOperand;
 }
 
-void Sharp::CCF()
-{
+void Sharp::CCF() {
+	SetFlag(n, 0);
+	SetFlag(h, 0);
+	SetFlag(c, !GetFlag(c));
+}
+
+void Sharp::LD_B_B() {
+}
+
+void Sharp::LD_B_C() {
+	B = C;
+}
+
+void Sharp::LD_B_D() {
+	B = D;
+}
+
+void Sharp::LD_B_E() {
+	B = E;
+}
+
+void Sharp::LD_B_H() {
+	B = H;
+}
+
+void Sharp::LD_B_L() {
+	B = L;
+}
+
+void Sharp::LD_B_ADDR_HL() {
+	B = MemoryBus->CPURead(HL);
+}
+
+void Sharp::LD_B_A() {
+	B = A;
+}
+
+void Sharp::LD_C_B() {
+	C = B;
+}
+
+void Sharp::LD_C_C() {
+}
+
+void Sharp::LD_C_D() {
+	C = D;
+}
+
+void Sharp::LD_C_E() {
+	C = E;
+}
+
+void Sharp::LD_C_H() {
+	C = H;
+}
+
+void Sharp::LD_C_L() {
+	C = L;
+}
+
+void Sharp::LD_C_ADDR_HL() {
+	C = MemoryBus->CPURead(HL);
+}
+
+void Sharp::LD_C_A() {
+	C = A;
 }
 
 Sharp::~Sharp() {

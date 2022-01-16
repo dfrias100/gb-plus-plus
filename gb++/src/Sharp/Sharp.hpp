@@ -152,6 +152,24 @@ class Sharp {
 	void LD_A_W();
 	void CCF();
 
+	// Fifth through Eigth Row of Table (0x40 - 0x7F)
+	void LD_B_B();
+	void LD_B_C();
+	void LD_B_D();
+	void LD_B_E();
+	void LD_B_H();
+	void LD_B_L();
+	void LD_B_ADDR_HL();
+	void LD_B_A();
+	void LD_C_B();
+	void LD_C_C();
+	void LD_C_D();
+	void LD_C_E();
+	void LD_C_H();
+	void LD_C_L();
+	void LD_C_ADDR_HL();
+	void LD_C_A();
+
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
 		uint8_t Cycles; // Number of cycles the instructions take
@@ -160,7 +178,7 @@ class Sharp {
 
 	// Holder variable for the current instruction
 	SharpInstr DecodedInstr;
-	const struct SharpInstr SHARPINSTRS[64] = {
+	const struct SharpInstr SHARPINSTRS[80] = {
 		{0,  4, &Sharp::NOP          }, {2, 12, &Sharp::LD_BC_DW   }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_BC}, 
 		{0,  4, &Sharp::INC_B        }, {0,  4, &Sharp::DEC_B      }, {1,  8, &Sharp::LD_B_W         }, {0, 4, &Sharp::RLCA  }, 
 		{2, 20, &Sharp::LD_ADDR_DW_SP}, {0,  8, &Sharp::ADD_HL_BC  }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0, 8, &Sharp::DEC_BC},
@@ -179,8 +197,13 @@ class Sharp {
 		{1,  8, &Sharp::JR_NC_SW     }, {2, 12, &Sharp::LD_SP_DW   }, {0,  8, &Sharp::LD_ADDR_HL_PD_A}, {0, 8, &Sharp::INC_SP},
 		{0, 12, &Sharp::INC_ADDR_HL  }, {0, 12, &Sharp::DEC_ADDR_HL}, {1, 12, &Sharp::LD_ADDR_HL_W   }, {0, 4, &Sharp::SCF   },
 		{1,  8, &Sharp::JR_C_SW      }, {0,  8, &Sharp::ADD_HL_SP  }, {0,  8, &Sharp::LD_A_ADDR_HL_PD}, {0, 8, &Sharp::DEC_SP},
-		{0,  4, &Sharp::INC_A        }, {0,  4, &Sharp::DEC_A      }, {1,  8, &Sharp::LD_A_W         }, {0, 4, &Sharp::CCF   }
-	};
+		{0,  4, &Sharp::INC_A        }, {0,  4, &Sharp::DEC_A      }, {1,  8, &Sharp::LD_A_W         }, {0, 4, &Sharp::CCF   },
+
+		{0,  4, &Sharp::LD_B_B       }, {0,  4, &Sharp::LD_B_C     }, {0,  4, &Sharp::LD_B_D         }, {0, 4, &Sharp::LD_B_E},
+		{0,  4, &Sharp::LD_B_H       }, {0,  4, &Sharp::LD_B_L     }, {0,  8, &Sharp::LD_B_ADDR_HL   }, {0, 4, &Sharp::LD_B_A},
+		{0,  4, &Sharp::LD_C_B       }, {0,  4, &Sharp::LD_C_C     }, {0,  4, &Sharp::LD_C_D         }, {0, 4, &Sharp::LD_C_E},
+		{0,  4, &Sharp::LD_C_H       }, {0,  4, &Sharp::LD_C_L     }, {0,  8, &Sharp::LD_C_ADDR_HL   }, {0, 4, &Sharp::LD_C_A}
+	};																		  
 
 public:
 	bool Suspended;
