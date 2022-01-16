@@ -12,8 +12,7 @@ Sharp::Sharp(Memory* _MemoryBus) {
 void Sharp::SetFlag(SharpFlags flag, bool set) {
 	if (set) {
 		F |= flag;
-	}
-	else {
+	} else {
 		F &= ~flag;
 	}
 }
@@ -34,8 +33,7 @@ void Sharp::DecrementRegister(uint8_t& reg) {
 
 	if (B == 0) {
 		SetFlag(z, 1);
-	}
-	else {
+	} else {
 		SetFlag(z, 0);
 	}
 
@@ -45,8 +43,7 @@ void Sharp::DecrementRegister(uint8_t& reg) {
 void Sharp::IncrementRegister(uint8_t& reg) {
 	if (reg & 0xF) {
 		SetFlag(h, 1);
-	}
-	else {
+	} else {
 		SetFlag(h, 0);
 	}
 
@@ -54,8 +51,61 @@ void Sharp::IncrementRegister(uint8_t& reg) {
 
 	if (reg == 0) {
 		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
 	}
-	else {
+
+	SetFlag(n, 0);
+}
+
+void Sharp::UnsignedAdd(uint8_t& dest, uint8_t src) {
+	if (src > (0xFF - dest)) {
+		SetFlag(c, 1);
+	} else {
+		SetFlag(c, 0);
+	}
+
+	temp = (dest & 0xF) + (src & 0xF);
+
+	if ((temp & 0x10) == 0x10) {
+		SetFlag(h, 1);
+	} else {
+		SetFlag(h, 0);
+	}
+
+	dest += src;
+
+	if (dest == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(n, 0);
+}
+
+void Sharp::UnsignedAddCarry(uint8_t& dest, uint8_t src) {
+	temp = GetFlag(c);
+
+	if (src > (0xFF - dest) || (src + dest) == 0xFF) {
+		SetFlag(c, 1);
+	} else {
+		SetFlag(c, 0);
+	}
+
+	temp2 = (dest & 0xF) + (src & 0xF);
+
+	if ((temp2 & 0x10) == 0x10) {
+		SetFlag(h, 1);
+	} else {
+		SetFlag(h, 0);
+	}
+
+	dest += src + temp;
+
+	if (dest == 0) {
+		SetFlag(z, 1);
+	} else {
 		SetFlag(z, 0);
 	}
 

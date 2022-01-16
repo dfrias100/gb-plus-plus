@@ -21,6 +21,7 @@ class Sharp {
 	uint8_t  CurrArgSize;
 	uint8_t  Opcode;
 	uint8_t  temp;
+	uint8_t  temp2;
 	uint8_t	 InterruptMasterEnable;
 
 	// 16-bit registers grouped together using anonymous unions and structs
@@ -70,6 +71,8 @@ class Sharp {
 	// Helper functions to reduce repeated code
 	void DecrementRegister(uint8_t& reg);
 	void IncrementRegister(uint8_t& reg);
+	void UnsignedAdd(uint8_t& dest, uint8_t src);
+	void UnsignedAddCarry(uint8_t& dest, uint8_t src);
 	void UnsignedAdd16(uint16_t& dest, uint16_t src);
 	void RotateLeftCircular(uint8_t& arg);
 	void RotateRightCircular(uint8_t& arg);
