@@ -640,6 +640,74 @@ void Sharp::LD_L_A() {
 	L = A;
 }
 
+void Sharp::LD_ADDR_HL_B() {
+	MemoryBus->CPUWrite(HL, B);
+}
+
+void Sharp::LD_ADDR_HL_C() {
+	MemoryBus->CPUWrite(HL, C);
+}
+
+void Sharp::LD_ADDR_HL_D() {
+	MemoryBus->CPUWrite(HL, D);
+}
+
+void Sharp::LD_ADDR_HL_E() {
+	MemoryBus->CPUWrite(HL, E);
+}
+
+void Sharp::LD_ADDR_HL_H() {
+	MemoryBus->CPUWrite(HL, H);
+}
+
+void Sharp::LD_ADDR_HL_L() {
+	MemoryBus->CPUWrite(HL, L);
+}
+
+// TODO: Implement this halt
+void Sharp::HALT() {
+	if (InterruptMasterEnable) {
+
+	} else {
+		PC++;
+	}
+}
+
+void Sharp::LD_ADDR_HL_A() {
+	MemoryBus->CPUWrite(HL, A);
+}
+
+void Sharp::LD_A_B() {
+	A = B;
+}
+
+void Sharp::LD_A_C() {
+	A = C;
+}
+
+void Sharp::LD_A_D() {
+	A = D;
+}
+
+void Sharp::LD_A_E() {
+	A = E;
+}
+
+void Sharp::LD_A_H() {
+	A = H;
+}
+
+void Sharp::LD_A_L() {
+	A = L;
+}
+
+void Sharp::LD_A_ADDR_HL() {
+	A = MemoryBus->CPURead(HL);
+}
+
+void Sharp::LD_A_A() {
+}
+
 Sharp::~Sharp() {
 }
 
