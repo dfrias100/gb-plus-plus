@@ -134,6 +134,24 @@ class Sharp {
 	void LD_L_W();
 	void CPL();
 
+	// Fourth Row of Table (0x30 - 0x3F)
+	void JR_NC_SW();
+	void LD_SP_DW();
+	void LD_ADDR_HL_PD_A();
+	void INC_SP();
+	void INC_ADDR_HL();
+	void DEC_ADDR_HL();
+	void LD_ADDR_HL_W();
+	void SCF();
+	void JR_C_SW();
+	void ADD_HL_SP();
+	void LD_A_ADDR_HL_PD();
+	void DEC_SP();
+	void INC_A();
+	void DEC_A();
+	void LD_A_W();
+	void CCF();
+
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
 		uint8_t Cycles; // Number of cycles the instructions take
@@ -142,21 +160,26 @@ class Sharp {
 
 	// Holder variable for the current instruction
 	SharpInstr DecodedInstr;
-	const struct SharpInstr SHARPINSTRS[48] = {
-		{0,  4, &Sharp::NOP          }, {2, 12, &Sharp::LD_BC_DW }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_BC}, 
-		{0,  4, &Sharp::INC_B        }, {0,  4, &Sharp::DEC_B    }, {1,  8, &Sharp::LD_B_W         }, {0, 4, &Sharp::RLCA  }, 
-		{2, 20, &Sharp::LD_ADDR_DW_SP}, {0,  8, &Sharp::ADD_HL_BC}, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0, 8, &Sharp::DEC_BC},
-		{0,  4, &Sharp::INC_C        }, {0,  4, &Sharp::DEC_C    }, {1,  8, &Sharp::LD_C_W         }, {0, 4, &Sharp::RRCA  },
+	const struct SharpInstr SHARPINSTRS[64] = {
+		{0,  4, &Sharp::NOP          }, {2, 12, &Sharp::LD_BC_DW   }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_BC}, 
+		{0,  4, &Sharp::INC_B        }, {0,  4, &Sharp::DEC_B      }, {1,  8, &Sharp::LD_B_W         }, {0, 4, &Sharp::RLCA  }, 
+		{2, 20, &Sharp::LD_ADDR_DW_SP}, {0,  8, &Sharp::ADD_HL_BC  }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0, 8, &Sharp::DEC_BC},
+		{0,  4, &Sharp::INC_C        }, {0,  4, &Sharp::DEC_C      }, {1,  8, &Sharp::LD_C_W         }, {0, 4, &Sharp::RRCA  },
+																   
+		{1,  4, &Sharp::STOP         }, {2, 12, &Sharp::LD_DE_DW   }, {0, 12, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_DE},
+		{0,  4, &Sharp::INC_D        }, {0,  4, &Sharp::DEC_D      }, {1,  8, &Sharp::LD_D_W         }, {0, 4, &Sharp::RLA   },
+		{1, 12, &Sharp::JR_SW        }, {0,  8, &Sharp::ADD_HL_DE  }, {0,  8, &Sharp::LD_A_ADDR_DE   }, {0, 8, &Sharp::DEC_DE},
+		{0,  4, &Sharp::INC_E        }, {0,  4, &Sharp::DEC_E      }, {1,  8, &Sharp::LD_E_W         }, {0, 4, &Sharp::RRA   },
+																   
+		{1,  8, &Sharp::JR_NZ_SW     }, {2, 12, &Sharp::LD_HL_DW   }, {0,  8, &Sharp::LD_ADDR_HL_PI_A}, {0, 8, &Sharp::INC_HL},
+		{0,  4, &Sharp::INC_H        }, {0,  4, &Sharp::DEC_H      }, {1,  8, &Sharp::LD_H_W         }, {0, 4, &Sharp::DAA   },
+		{1,  8, &Sharp::JR_Z_SW      }, {0,  8, &Sharp::ADD_HL_HL  }, {0,  8, &Sharp::LD_A_ADDR_HL_PI}, {0, 8, &Sharp::DEC_HL},
+		{0,  4, &Sharp::INC_L        }, {0,  4, &Sharp::DEC_L      }, {1,  8, &Sharp::LD_L_W         }, {0, 4, &Sharp::CPL   },
 
-		{1,  4, &Sharp::STOP         }, {2, 12, &Sharp::LD_DE_DW }, {0, 12, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_DE},
-		{0,  4, &Sharp::INC_D        }, {0,  4, &Sharp::DEC_D    }, {1,  8, &Sharp::LD_D_W         }, {0, 4, &Sharp::RLA   },
-		{1, 12, &Sharp::JR_SW        }, {0,  8, &Sharp::ADD_HL_DE}, {0,  8, &Sharp::LD_A_ADDR_DE   }, {0, 8, &Sharp::DEC_DE},
-		{0,  4, &Sharp::INC_E        }, {0,  4, &Sharp::DEC_E    }, {1,  8, &Sharp::LD_E_W         }, {0, 4, &Sharp::RRA   },
-
-		{1,  8, &Sharp::JR_NZ_SW     }, {2, 12, &Sharp::LD_HL_DW }, {0,  8, &Sharp::LD_ADDR_HL_PI_A}, {0, 8, &Sharp::INC_HL},
-		{0,  4, &Sharp::INC_H        }, {0,  4, &Sharp::DEC_H    }, {1,  8, &Sharp::LD_H_W         }, {0, 4, &Sharp::DAA   },
-		{1,  8, &Sharp::JR_Z_SW      }, {0,  8, &Sharp::ADD_HL_HL}, {0,  8, &Sharp::LD_A_ADDR_HL_PI}, {0, 8, &Sharp::DEC_HL},
-		{0,  4, &Sharp::INC_L        }, {0,  4, &Sharp::DEC_L    }, {1,  8, &Sharp::LD_L_W         }, {0, 4, &Sharp::CPL   }
+		{1,  8, &Sharp::JR_NC_SW     }, {2, 12, &Sharp::LD_SP_DW   }, {0,  8, &Sharp::LD_ADDR_HL_PD_A}, {0, 8, &Sharp::INC_SP},
+		{0, 12, &Sharp::INC_ADDR_HL  }, {0, 12, &Sharp::DEC_ADDR_HL}, {1, 12, &Sharp::LD_ADDR_HL_W   }, {0, 4, &Sharp::SCF   },
+		{1,  8, &Sharp::JR_C_SW      }, {0,  8, &Sharp::ADD_HL_SP  }, {0,  8, &Sharp::LD_A_ADDR_HL_PD}, {0, 8, &Sharp::DEC_SP},
+		{0,  4, &Sharp::INC_A        }, {0,  4, &Sharp::DEC_A      }, {1,  8, &Sharp::LD_A_W         }, {0, 4, &Sharp::CCF   }
 	};
 
 public:

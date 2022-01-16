@@ -209,7 +209,7 @@ void Sharp::DEC_C() {
 }
 
 void Sharp::LD_C_W() {
-	C = (uint8_t)CurrOperand;
+	C = (uint8_t) CurrOperand;
 }
 
 void Sharp::RRCA() {
@@ -309,7 +309,7 @@ void Sharp::DEC_H() {
 }
 
 void Sharp::LD_H_W() {
-	H = (uint8_t)CurrOperand;
+	H = (uint8_t) CurrOperand;
 }
 
 void Sharp::DAA() {
@@ -342,6 +342,7 @@ void Sharp::DAA() {
 void Sharp::JR_Z_SW() {
 	if (GetFlag(z)) {
 		PC += (int8_t) CurrOperand;
+		CurrCycles += 4;
 	}
 }
 
@@ -366,7 +367,7 @@ void Sharp::DEC_L() {
 }
 
 void Sharp::LD_L_W() {
-	L = CurrOperand;
+	L = (uint8_t) CurrOperand;
 }
 
 void Sharp::CPL() {
@@ -374,6 +375,82 @@ void Sharp::CPL() {
 
 	SetFlag(n, 1);
 	SetFlag(h, 1);
+}
+
+void Sharp::JR_NC_SW() {
+	if (!GetFlag(c)) {
+		PC += (int8_t) CurrOperand;
+		CurrCycles += 4;
+	}
+}
+
+void Sharp::LD_SP_DW() {
+	SP = CurrOperand;
+}
+
+void Sharp::LD_ADDR_HL_PD_A() {
+	MemoryBus->CPUWrite(HL--, A);
+}
+
+void Sharp::INC_SP() {
+	SP++;
+}
+
+void Sharp::INC_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	IncrementRegister(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::DEC_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	DecrementRegister(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::LD_ADDR_HL_W() {
+	MemoryBus->CPUWrite(HL, CurrOperand);
+}
+
+void Sharp::SCF() {
+	SetFlag(n, 0);
+	SetFlag(h, 0);
+	SetFlag(c, 1);
+}
+
+void Sharp::JR_C_SW() {
+	if (GetFlag(c)) {
+		PC += (int8_t) CurrOperand;
+		CurrCycles += 4;
+	}
+}
+
+void Sharp::ADD_HL_SP() {
+	UnsignedAdd16(HL, SP);
+}
+
+void Sharp::LD_A_ADDR_HL_PD() {
+	A = MemoryBus->CPURead(HL--);
+}
+
+void Sharp::DEC_SP() {
+	SP--;
+}
+
+void Sharp::INC_A() {
+	IncrementRegister(A);
+}
+
+void Sharp::DEC_A() {
+	DecrementRegister(A);
+}
+
+void Sharp::LD_A_W() {
+	A = (uint8_t) CurrOperand;
+}
+
+void Sharp::CCF()
+{
 }
 
 Sharp::~Sharp() {
