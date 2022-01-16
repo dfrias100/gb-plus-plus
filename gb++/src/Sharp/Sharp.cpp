@@ -12,15 +12,15 @@ Sharp::Sharp(Memory* _MemoryBus)
 
 void Sharp::SetFlag(SharpFlags flag, bool set) {
 	if (set) {
-		Flags |= flag;
+		F |= flag;
 	}
 	else {
-		Flags &= ~flag;
+		F &= ~flag;
 	}
 }
 
 uint8_t Sharp::GetFlag(SharpFlags flag) {
-	return (Flags & flag) > 0 ? 1 : 0;
+	return (F & flag) > 0 ? 1 : 0;
 }
 
 // Helper Functions
@@ -279,6 +279,101 @@ void Sharp::LD_E_W() {
 
 void Sharp::RRA() {
 	RotateRight(A);
+}
+
+void Sharp::JR_NZ_SW() {
+	if (!GetFlag(z)) {
+		PC += (int8_t) CurrOperand;
+		CurrCycles += 4;
+	}
+}
+
+void Sharp::LD_HL_DW() {
+	HL = CurrOperand;
+}
+
+void Sharp::LD_ADDR_HL_PI_A() {
+	MemoryBus->CPUWrite(HL++, A);
+}
+
+void Sharp::INC_HL() {
+	HL++;
+}
+
+void Sharp::INC_H() {
+	IncrementRegister(H);
+}
+
+void Sharp::DEC_H() {
+	DecrementRegister(H);
+}
+
+void Sharp::LD_H_W() {
+	H = (uint8_t)CurrOperand;
+}
+
+void Sharp::DAA() {
+	temp = 0x0;
+
+	if (GetFlag(h) || (!GetFlag(n) && ((A & 0xF) > 0x9))) {
+		temp |= 0x06;
+	}
+
+	if (GetFlag(c) || (!GetFlag(n) && (A > 0x99))) {
+		temp |= 0x60;
+		// Set the flag to 1 if and only if the previous instruction
+		// Was an addition and either:
+		//	- A carry occurred
+		//  - Register A was bigger than 0x99
+		SetFlag(c, GetFlag(c) | (!GetFlag(n) && (GetFlag(c) || (A > 0x99)) ) );
+	}
+
+	temp += GetFlag(n) ? -temp : temp;
+
+	if (A == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(h, 0);
+}
+
+void Sharp::JR_Z_SW() {
+	if (GetFlag(z)) {
+		PC += (int8_t) CurrOperand;
+	}
+}
+
+void Sharp::ADD_HL_HL() {
+	UnsignedAdd16(HL, HL);
+}
+
+void Sharp::LD_A_ADDR_HL_PI() {
+	A = MemoryBus->CPURead(HL++);
+}
+
+void Sharp::DEC_HL() {
+	HL--;
+}
+
+void Sharp::INC_L() {
+	IncrementRegister(L);
+}
+
+void Sharp::DEC_L() {
+	DecrementRegister(L);
+}
+
+void Sharp::LD_L_W() {
+	L = CurrOperand;
+}
+
+void Sharp::CPL() {
+	A = ~A;
+
+	SetFlag(n, 1);
+	SetFlag(h, 1);
 }
 
 Sharp::~Sharp() {

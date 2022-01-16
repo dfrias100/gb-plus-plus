@@ -2,7 +2,7 @@
 
 Memory::Memory() {
 	HighRAM	   = new uint8_t[127];
-	IO		   = new uint8_t[76];
+	IO         = new uint8_t[76];
 	SpriteOAM  = new uint8_t[160];
 	WorkingRAM = new uint8_t[1024 * 8];
 	SwitchRAM  = new uint8_t[1024 * 8];
