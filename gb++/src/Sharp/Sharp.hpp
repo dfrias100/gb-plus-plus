@@ -187,6 +187,22 @@ class Sharp {
 	void LD_E_ADDR_HL();
 	void LD_E_A();
 
+	void LD_H_B();
+	void LD_H_C();
+	void LD_H_D();
+	void LD_H_E();
+	void LD_H_H();
+	void LD_H_L();
+	void LD_H_ADDR_HL();
+	void LD_H_A();
+	void LD_L_B();
+	void LD_L_C();
+	void LD_L_D();
+	void LD_L_E();
+	void LD_L_H();
+	void LD_L_L();
+	void LD_L_ADDR_HL();
+	void LD_L_A();
 
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
@@ -196,7 +212,7 @@ class Sharp {
 
 	// Holder variable for the current instruction
 	SharpInstr DecodedInstr;
-	const struct SharpInstr SHARPINSTRS[96] = {
+	const struct SharpInstr SHARPINSTRS[112] = {
 		{0,  4, &Sharp::NOP          }, {2, 12, &Sharp::LD_BC_DW   }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_BC}, 
 		{0,  4, &Sharp::INC_B        }, {0,  4, &Sharp::DEC_B      }, {1,  8, &Sharp::LD_B_W         }, {0, 4, &Sharp::RLCA  }, 
 		{2, 20, &Sharp::LD_ADDR_DW_SP}, {0,  8, &Sharp::ADD_HL_BC  }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0, 8, &Sharp::DEC_BC},
@@ -225,7 +241,12 @@ class Sharp {
 		{0,  4, &Sharp::LD_D_B       }, {0,  4, &Sharp::LD_D_C     }, {0,  4, &Sharp::LD_D_D         }, {0, 4, &Sharp::LD_D_E},
 		{0,  4, &Sharp::LD_D_H       }, {0,  4, &Sharp::LD_D_L     }, {0,  8, &Sharp::LD_D_ADDR_HL   }, {0, 4, &Sharp::LD_D_A},
 		{0,  4, &Sharp::LD_E_B       }, {0,  4, &Sharp::LD_E_C     }, {0,  4, &Sharp::LD_E_D         }, {0, 4, &Sharp::LD_E_E},
-		{0,  4, &Sharp::LD_E_H       }, {0,  4, &Sharp::LD_E_L     }, {0,  8, &Sharp::LD_E_ADDR_HL   }, {0, 4, &Sharp::LD_E_A}
+		{0,  4, &Sharp::LD_E_H       }, {0,  4, &Sharp::LD_E_L     }, {0,  8, &Sharp::LD_E_ADDR_HL   }, {0, 4, &Sharp::LD_E_A},
+
+		{0,  4,& Sharp::LD_H_B       }, {0,  4, &Sharp::LD_H_C     }, {0,  4, &Sharp::LD_H_D         }, {0, 4, &Sharp::LD_H_E},
+		{0,  4, &Sharp::LD_H_H       }, {0,  4, &Sharp::LD_H_L     }, {0,  8, &Sharp::LD_H_ADDR_HL   }, {0, 4, &Sharp::LD_H_A},
+		{0,  4, &Sharp::LD_L_B       }, {0,  4, &Sharp::LD_L_C     }, {0,  4, &Sharp::LD_L_D         }, {0, 4, &Sharp::LD_L_E},
+		{0,  4, &Sharp::LD_L_H       }, {0,  4, &Sharp::LD_L_L     }, {0,  8, &Sharp::LD_L_ADDR_HL   }, {0, 4, &Sharp::LD_L_A}
 	};																		  
 
 public:
