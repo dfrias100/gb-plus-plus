@@ -516,6 +516,68 @@ void Sharp::LD_C_A() {
 	C = A;
 }
 
+void Sharp::LD_D_B() {
+	D = B;
+}
+
+void Sharp::LD_D_C() {
+	D = C;
+}
+
+void Sharp::LD_D_D() {
+}
+
+void Sharp::LD_D_E() {
+	D = E;
+}
+
+void Sharp::LD_D_H() {
+	D = H;
+}
+
+void Sharp::LD_D_L() {
+	D = L;
+}
+
+void Sharp::LD_D_ADDR_HL() {
+	D = MemoryBus->CPURead(HL);
+}
+
+void Sharp::LD_D_A() {
+	D = A;
+}
+
+void Sharp::LD_E_B() {
+	E = B;
+}
+
+void Sharp::LD_E_C() {
+	E = C;
+}
+
+void Sharp::LD_E_D() {
+	E = D;
+}
+
+void Sharp::LD_E_E() {
+}
+
+void Sharp::LD_E_H() {
+	E = H;
+}
+
+void Sharp::LD_E_L() {
+	E = L;
+}
+
+void Sharp::LD_E_ADDR_HL() {
+	E = MemoryBus->CPURead(HL);
+}
+
+void Sharp::LD_E_A() {
+	E = A;
+}
+
 Sharp::~Sharp() {
 }
 
