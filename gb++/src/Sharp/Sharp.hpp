@@ -210,7 +210,7 @@ class Sharp {
 	void LD_L_ADDR_HL();
 	void LD_L_A();
 
-	// Eighth Row of Table (0x40 - 0x4F)
+	// Eighth Row of Table (0x70 - 0x7F)
 	void LD_ADDR_HL_B();
 	void LD_ADDR_HL_C();
 	void LD_ADDR_HL_D();
@@ -227,6 +227,25 @@ class Sharp {
 	void LD_A_L();
 	void LD_A_ADDR_HL();
 	void LD_A_A();
+
+	// Ninth Row of Table (0x80 - 0x8F)
+	void ADD_A_B();
+	void ADD_A_C();
+	void ADD_A_D();
+	void ADD_A_E();
+	void ADD_A_H();
+	void ADD_A_L();
+	void ADD_A_ADDR_HL();
+	void ADD_A_A();
+	void ADC_A_B();
+	void ADC_A_C();
+	void ADC_A_D();
+	void ADC_A_E();
+	void ADC_A_H();
+	void ADC_A_L();
+	void ADC_A_ADDR_HL();
+	void ADC_A_A();
+
 
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words

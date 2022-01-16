@@ -758,6 +758,72 @@ void Sharp::LD_A_ADDR_HL() {
 void Sharp::LD_A_A() {
 }
 
+void Sharp::ADD_A_B() {
+	UnsignedAdd(A, B);
+}
+
+void Sharp::ADD_A_C() {
+	UnsignedAdd(A, C);
+}
+
+void Sharp::ADD_A_D() {
+	UnsignedAdd(A, D);
+}
+
+void Sharp::ADD_A_E() {
+	UnsignedAdd(A, E);
+}
+
+void Sharp::ADD_A_H() {
+	UnsignedAdd(A, H);
+}
+
+void Sharp::ADD_A_L() {
+	UnsignedAdd(A, L);
+}
+
+void Sharp::ADD_A_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	UnsignedAdd(A, temp);
+}
+
+void Sharp::ADD_A_A() {
+	UnsignedAdd(A, A);
+}
+
+void Sharp::ADC_A_B() {
+	UnsignedAddCarry(A, B);
+}
+
+void Sharp::ADC_A_C() {
+	UnsignedAddCarry(A, C);
+}
+
+void Sharp::ADC_A_D() {
+	UnsignedAddCarry(A, D);
+}
+
+void Sharp::ADC_A_E() {
+	UnsignedAddCarry(A, E);
+}
+
+void Sharp::ADC_A_H() {
+	UnsignedAddCarry(A, H);
+}
+
+void Sharp::ADC_A_L() {
+	UnsignedAddCarry(A, L);
+}
+
+void Sharp::ADC_A_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	UnsignedAddCarry(A, temp);
+}
+
+void Sharp::ADC_A_A() {
+	UnsignedAddCarry(A, A);
+}
+
 Sharp::~Sharp() {
 }
 
