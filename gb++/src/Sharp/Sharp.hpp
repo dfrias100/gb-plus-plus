@@ -74,10 +74,14 @@ class Sharp {
 	void UnsignedAdd(uint8_t& dest, uint8_t src);
 	void UnsignedAddCarry(uint8_t& dest, uint8_t src);
 	void UnsignedAdd16(uint16_t& dest, uint16_t src);
+	void Subtract(uint8_t& dest, uint8_t src);
+	void SubtractWithCarry(uint8_t& dest, uint8_t src);
 	void RotateLeftCircular(uint8_t& arg);
 	void RotateRightCircular(uint8_t& arg);
 	void RotateLeft(uint8_t& arg);
 	void RotateRight(uint8_t& arg);
+	void And(uint8_t arg);
+	void Xor(uint8_t arg);
  
 	// Needed for the logical CPU to address the memory
 	Memory* MemoryBus;
@@ -245,7 +249,42 @@ class Sharp {
 	void ADC_A_L();
 	void ADC_A_ADDR_HL();
 	void ADC_A_A();
+	
+	// Tenth Row of Table (0x90 - 0x9F)
+	void SUB_B();
+	void SUB_C();
+	void SUB_D();
+	void SUB_E();
+	void SUB_H();
+	void SUB_L();
+	void SUB_ADDR_HL();
+	void SUB_A();
+	void SBC_A_B();
+	void SBC_A_C();
+	void SBC_A_D();
+	void SBC_A_E();
+	void SBC_A_H();
+	void SBC_A_L();
+	void SBC_A_ADDR_HL();
+	void SBC_A_A();
 
+	// Eleventh Row of Table (0xA0 - 0xAF)
+	void AND_B();
+	void AND_C();
+	void AND_D();
+	void AND_E();
+	void AND_H();
+	void AND_L();
+	void AND_ADDR_HL();
+	void AND_A();
+	void XOR_B();
+	void XOR_C();
+	void XOR_D();
+	void XOR_E();
+	void XOR_H();
+	void XOR_L();
+	void XOR_ADDR_HL();
+	void XOR_A();
 
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
@@ -255,21 +294,21 @@ class Sharp {
 
 	// Holder variable for the current instruction
 	SharpInstr DecodedInstr;
-	const struct SharpInstr SHARPINSTRS[144] = {
-		{0,  4, &Sharp::NOP          }, {2, 12, &Sharp::LD_BC_DW   }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_BC}, 
-		{0,  4, &Sharp::INC_B        }, {0,  4, &Sharp::DEC_B      }, {1,  8, &Sharp::LD_B_W         }, {0, 4, &Sharp::RLCA  }, 
-		{2, 20, &Sharp::LD_ADDR_DW_SP}, {0,  8, &Sharp::ADD_HL_BC  }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0, 8, &Sharp::DEC_BC},
-		{0,  4, &Sharp::INC_C        }, {0,  4, &Sharp::DEC_C      }, {1,  8, &Sharp::LD_C_W         }, {0, 4, &Sharp::RRCA  },
+	const struct SharpInstr SHARPINSTRS[176] = {
+		{0,  4, &Sharp::NOP          }, {2, 12, &Sharp::LD_BC_DW   }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_BC		}, 
+		{0,  4, &Sharp::INC_B        }, {0,  4, &Sharp::DEC_B      }, {1,  8, &Sharp::LD_B_W         }, {0, 4, &Sharp::RLCA			}, 
+		{2, 20, &Sharp::LD_ADDR_DW_SP}, {0,  8, &Sharp::ADD_HL_BC  }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0, 8, &Sharp::DEC_BC		},
+		{0,  4, &Sharp::INC_C        }, {0,  4, &Sharp::DEC_C      }, {1,  8, &Sharp::LD_C_W         }, {0, 4, &Sharp::RRCA			},
 																   
-		{1,  4, &Sharp::STOP         }, {2, 12, &Sharp::LD_DE_DW   }, {0, 12, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_DE},
-		{0,  4, &Sharp::INC_D        }, {0,  4, &Sharp::DEC_D      }, {1,  8, &Sharp::LD_D_W         }, {0, 4, &Sharp::RLA   },
-		{1, 12, &Sharp::JR_SW        }, {0,  8, &Sharp::ADD_HL_DE  }, {0,  8, &Sharp::LD_A_ADDR_DE   }, {0, 8, &Sharp::DEC_DE},
-		{0,  4, &Sharp::INC_E        }, {0,  4, &Sharp::DEC_E      }, {1,  8, &Sharp::LD_E_W         }, {0, 4, &Sharp::RRA   },
+		{1,  4, &Sharp::STOP         }, {2, 12, &Sharp::LD_DE_DW   }, {0, 12, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_DE		},
+		{0,  4, &Sharp::INC_D        }, {0,  4, &Sharp::DEC_D      }, {1,  8, &Sharp::LD_D_W         }, {0, 4, &Sharp::RLA			},
+		{1, 12, &Sharp::JR_SW        }, {0,  8, &Sharp::ADD_HL_DE  }, {0,  8, &Sharp::LD_A_ADDR_DE   }, {0, 8, &Sharp::DEC_DE		},
+		{0,  4, &Sharp::INC_E        }, {0,  4, &Sharp::DEC_E      }, {1,  8, &Sharp::LD_E_W         }, {0, 4, &Sharp::RRA			},
 																   
-		{1,  8, &Sharp::JR_NZ_SW     }, {2, 12, &Sharp::LD_HL_DW   }, {0,  8, &Sharp::LD_ADDR_HL_PI_A}, {0, 8, &Sharp::INC_HL},
-		{0,  4, &Sharp::INC_H        }, {0,  4, &Sharp::DEC_H      }, {1,  8, &Sharp::LD_H_W         }, {0, 4, &Sharp::DAA   },
-		{1,  8, &Sharp::JR_Z_SW      }, {0,  8, &Sharp::ADD_HL_HL  }, {0,  8, &Sharp::LD_A_ADDR_HL_PI}, {0, 8, &Sharp::DEC_HL},
-		{0,  4, &Sharp::INC_L        }, {0,  4, &Sharp::DEC_L      }, {1,  8, &Sharp::LD_L_W         }, {0, 4, &Sharp::CPL   },
+		{1,  8, &Sharp::JR_NZ_SW     }, {2, 12, &Sharp::LD_HL_DW   }, {0,  8, &Sharp::LD_ADDR_HL_PI_A}, {0, 8, &Sharp::INC_HL		},
+		{0,  4, &Sharp::INC_H        }, {0,  4, &Sharp::DEC_H      }, {1,  8, &Sharp::LD_H_W         }, {0, 4, &Sharp::DAA			},
+		{1,  8, &Sharp::JR_Z_SW      }, {0,  8, &Sharp::ADD_HL_HL  }, {0,  8, &Sharp::LD_A_ADDR_HL_PI}, {0, 8, &Sharp::DEC_HL		},
+		{0,  4, &Sharp::INC_L        }, {0,  4, &Sharp::DEC_L      }, {1,  8, &Sharp::LD_L_W         }, {0, 4, &Sharp::CPL			},
 
 		{1,  8, &Sharp::JR_NC_SW     }, {2, 12, &Sharp::LD_SP_DW    }, {0,  8, &Sharp::LD_ADDR_HL_PD_A}, {0, 8, &Sharp::INC_SP      },
 		{0, 12, &Sharp::INC_ADDR_HL  }, {0, 12, &Sharp::DEC_ADDR_HL }, {1, 12, &Sharp::LD_ADDR_HL_W   }, {0, 4, &Sharp::SCF         },
@@ -299,7 +338,17 @@ class Sharp {
 		{0,  4, &Sharp::ADD_A_B      }, {0,  4, &Sharp::ADD_A_C     }, {0,  4, &Sharp::ADD_A_D        }, {0, 4, &Sharp::ADD_A_E     },
 		{0,  4, &Sharp::ADD_A_H      }, {0,  4, &Sharp::ADD_A_L     }, {0,  8, &Sharp::ADD_A_ADDR_HL  }, {0, 4, &Sharp::ADD_A_A     },
 		{0,  4, &Sharp::ADC_A_B      }, {0,  4, &Sharp::ADC_A_C     }, {0,  4, &Sharp::ADC_A_D        }, {0, 4, &Sharp::ADC_A_E     },
-		{0,  4, &Sharp::ADC_A_H      }, {0,  4, &Sharp::ADC_A_L     }, {0,  8, &Sharp::ADC_A_ADDR_HL  }, {0, 4, &Sharp::ADC_A_A     }
+		{0,  4, &Sharp::ADC_A_H      }, {0,  4, &Sharp::ADC_A_L     }, {0,  8, &Sharp::ADC_A_ADDR_HL  }, {0, 4, &Sharp::ADC_A_A     },
+
+		{0,  4, &Sharp::SUB_B        }, {0,  4, &Sharp::SUB_C       }, {0,  4, &Sharp::SUB_D          }, {0, 4, &Sharp::SUB_E       },
+		{0,  4, &Sharp::SUB_H        }, {0,  4, &Sharp::SUB_L       }, {0,  8, &Sharp::SUB_ADDR_HL    }, {0, 4, &Sharp::SUB_A       },
+		{0,  4, &Sharp::SBC_A_B      }, {0,  4, &Sharp::SBC_A_C     }, {0,  4, &Sharp::SBC_A_D        }, {0, 4, &Sharp::SBC_A_E     },
+		{0,  4, &Sharp::SBC_A_H      }, {0,  4, &Sharp::SBC_A_L     }, {0,  8, &Sharp::SBC_A_ADDR_HL  }, {0, 4, &Sharp::SBC_A_A     },
+
+		{0,  4, &Sharp::AND_B        }, {0,  4, &Sharp::AND_C       }, {0,  4, &Sharp::AND_D          }, {0, 4, &Sharp::AND_E       },
+		{0,  4, &Sharp::AND_H        }, {0,  4, &Sharp::AND_L       }, {0,  8, &Sharp::AND_ADDR_HL    }, {0, 4, &Sharp::AND_A       },
+		{0,  4, &Sharp::XOR_B        }, {0,  4, &Sharp::XOR_C       }, {0,  4, &Sharp::XOR_D          }, {0, 4, &Sharp::XOR_E       },
+		{0,  4, &Sharp::XOR_H        }, {0,  4, &Sharp::XOR_L       }, {0,  8, &Sharp::XOR_ADDR_HL    }, {0, 4, &Sharp::XOR_A       }
 	};																		  
 
 public:

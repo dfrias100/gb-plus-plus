@@ -132,6 +132,56 @@ void Sharp::UnsignedAdd16(uint16_t& dest, uint16_t src) {
 	SetFlag(n, 0);
 }
 
+void Sharp::Subtract(uint8_t& dest, uint8_t src) {
+	if (src <= dest) {
+		SetFlag(c, 1);
+	} else {
+		SetFlag(c, 0);
+	}
+
+	if ((src & 0xF) <= (dest & 0xF)) {
+		SetFlag(h, 1); 
+	} else {
+		SetFlag(h, 0);
+	}
+
+	dest -= src;
+
+	if (dest == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+	
+	SetFlag(n, 1);
+}
+
+void Sharp::SubtractWithCarry(uint8_t& dest, uint8_t src) {
+	temp = GetFlag(c);
+
+	if (src <= dest || (src - dest) > 0x0) {
+		SetFlag(c, 1);
+	} else {
+		SetFlag(c, 0);
+	}
+
+	if ((src & 0xF) <= (dest & 0xF)) {
+		SetFlag(h, 1);
+	} else {
+		SetFlag(h, 0);
+	}
+
+	dest -= (src + temp);
+
+	if (dest == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(n, 1);
+}
+
 void Sharp::RotateLeftCircular(uint8_t& arg) {
 	SetFlag(c, (arg & 0x80) >> 7);
 
@@ -198,6 +248,34 @@ void Sharp::RotateRight(uint8_t& arg) {
 
 	SetFlag(n, 0);
 	SetFlag(h, 0);
+}
+
+void Sharp::And(uint8_t arg) {
+	A &= arg;
+
+	if (A == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(n, 0);
+	SetFlag(h, 1);
+	SetFlag(c, 0);
+}
+
+void Sharp::Xor(uint8_t arg) {
+	A ^= arg;
+
+	if (A == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(n, 0);
+	SetFlag(h, 0);
+	SetFlag(c, 0);
 }
 
 // Non 0xCB instructions
@@ -822,6 +900,138 @@ void Sharp::ADC_A_ADDR_HL() {
 
 void Sharp::ADC_A_A() {
 	UnsignedAddCarry(A, A);
+}
+
+void Sharp::SUB_B() {
+	Subtract(A, B);
+}
+
+void Sharp::SUB_C() {
+	Subtract(A, C);
+}
+
+void Sharp::SUB_D() {
+	Subtract(A, D);
+}
+
+void Sharp::SUB_E() {
+	Subtract(A, E);
+}
+
+void Sharp::SUB_H() {
+	Subtract(A, H);
+}
+
+void Sharp::SUB_L() {
+	Subtract(A, L);
+}
+
+void Sharp::SUB_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Subtract(A, temp);
+}
+
+void Sharp::SUB_A() {
+	Subtract(A, A);
+}
+
+void Sharp::SBC_A_B() {
+	SubtractWithCarry(A, B);
+}
+
+void Sharp::SBC_A_C() {
+	SubtractWithCarry(A, C);
+}
+
+void Sharp::SBC_A_D() {
+	SubtractWithCarry(A, D);
+}
+
+void Sharp::SBC_A_E() {
+	SubtractWithCarry(A, E);
+}
+
+void Sharp::SBC_A_H() {
+	SubtractWithCarry(A, H);
+}
+
+void Sharp::SBC_A_L() {
+	SubtractWithCarry(A, L);
+}
+
+void Sharp::SBC_A_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	SubtractWithCarry(A, temp);
+}
+
+void Sharp::SBC_A_A() {
+	SubtractWithCarry(A, A);
+}
+
+void Sharp::AND_B() {
+	And(B);
+}
+
+void Sharp::AND_C() {
+	And(C);
+}
+
+void Sharp::AND_D() {
+	And(D);
+}
+
+void Sharp::AND_E() {
+	And(E);
+}
+
+void Sharp::AND_H() {
+	And(H);
+}
+
+void Sharp::AND_L() {
+	And(L);
+}
+
+void Sharp::AND_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	And(temp);
+}
+
+void Sharp::AND_A() {
+	And(A);
+}
+
+void Sharp::XOR_B() {
+	Xor(B);
+}
+
+void Sharp::XOR_C() {
+	Xor(C);
+}
+
+void Sharp::XOR_D() {
+	Xor(D);
+}
+
+void Sharp::XOR_E() {
+	Xor(E);
+}
+
+void Sharp::XOR_H() {
+	Xor(H);
+}
+
+void Sharp::XOR_L() {
+	Xor(L);
+}
+
+void Sharp::XOR_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Xor(temp);
+}
+
+void Sharp::XOR_A() {
+	Xor(A);
 }
 
 Sharp::~Sharp() {
