@@ -255,7 +255,7 @@ class Sharp {
 
 	// Holder variable for the current instruction
 	SharpInstr DecodedInstr;
-	const struct SharpInstr SHARPINSTRS[128] = {
+	const struct SharpInstr SHARPINSTRS[144] = {
 		{0,  4, &Sharp::NOP          }, {2, 12, &Sharp::LD_BC_DW   }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_BC}, 
 		{0,  4, &Sharp::INC_B        }, {0,  4, &Sharp::DEC_B      }, {1,  8, &Sharp::LD_B_W         }, {0, 4, &Sharp::RLCA  }, 
 		{2, 20, &Sharp::LD_ADDR_DW_SP}, {0,  8, &Sharp::ADD_HL_BC  }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0, 8, &Sharp::DEC_BC},
@@ -286,15 +286,20 @@ class Sharp {
 		{0,  4, &Sharp::LD_E_B       }, {0,  4, &Sharp::LD_E_C      }, {0,  4, &Sharp::LD_E_D         }, {0, 4, &Sharp::LD_E_E      },
 		{0,  4, &Sharp::LD_E_H       }, {0,  4, &Sharp::LD_E_L      }, {0,  8, &Sharp::LD_E_ADDR_HL   }, {0, 4, &Sharp::LD_E_A      },
 																    
-		{0,  4,& Sharp::LD_H_B       }, {0,  4, &Sharp::LD_H_C      }, {0,  4, &Sharp::LD_H_D         }, {0, 4, &Sharp::LD_H_E      },
+		{0,  4, &Sharp::LD_H_B       }, {0,  4, &Sharp::LD_H_C      }, {0,  4, &Sharp::LD_H_D         }, {0, 4, &Sharp::LD_H_E      },
 		{0,  4, &Sharp::LD_H_H       }, {0,  4, &Sharp::LD_H_L      }, {0,  8, &Sharp::LD_H_ADDR_HL   }, {0, 4, &Sharp::LD_H_A      },
 		{0,  4, &Sharp::LD_L_B       }, {0,  4, &Sharp::LD_L_C      }, {0,  4, &Sharp::LD_L_D         }, {0, 4, &Sharp::LD_L_E      },
 		{0,  4, &Sharp::LD_L_H       }, {0,  4, &Sharp::LD_L_L      }, {0,  8, &Sharp::LD_L_ADDR_HL   }, {0, 4, &Sharp::LD_L_A      },
 
-		{0,  4,& Sharp::LD_ADDR_HL_B }, {0,  4, &Sharp::LD_ADDR_HL_C}, {0,  4, &Sharp::LD_ADDR_HL_D   }, {0, 4, &Sharp::LD_ADDR_HL_E},
+		{0,  4, &Sharp::LD_ADDR_HL_B }, {0,  4, &Sharp::LD_ADDR_HL_C}, {0,  4, &Sharp::LD_ADDR_HL_D   }, {0, 4, &Sharp::LD_ADDR_HL_E},
 		{0,  4, &Sharp::LD_ADDR_HL_H }, {0,  4, &Sharp::LD_ADDR_HL_L}, {0,  8, &Sharp::HALT           }, {0, 4, &Sharp::LD_ADDR_HL_A},
 		{0,  4, &Sharp::LD_A_B       }, {0,  4, &Sharp::LD_A_C      }, {0,  4, &Sharp::LD_A_D         }, {0, 4, &Sharp::LD_A_E      },
-		{0,  4, &Sharp::LD_A_H       }, {0,  4, &Sharp::LD_A_L      }, {0,  8, &Sharp::LD_A_ADDR_HL   }, {0, 4, &Sharp::LD_A_A      }
+		{0,  4, &Sharp::LD_A_H       }, {0,  4, &Sharp::LD_A_L      }, {0,  8, &Sharp::LD_A_ADDR_HL   }, {0, 4, &Sharp::LD_A_A      },
+
+		{0,  4, &Sharp::ADD_A_B      }, {0,  4, &Sharp::ADD_A_C     }, {0,  4, &Sharp::ADD_A_D        }, {0, 4, &Sharp::ADD_A_E     },
+		{0,  4, &Sharp::ADD_A_H      }, {0,  4, &Sharp::ADD_A_L     }, {0,  8, &Sharp::ADD_A_ADDR_HL  }, {0, 4, &Sharp::ADD_A_A     },
+		{0,  4, &Sharp::ADC_A_B      }, {0,  4, &Sharp::ADC_A_C     }, {0,  4, &Sharp::ADC_A_D        }, {0, 4, &Sharp::ADC_A_E     },
+		{0,  4, &Sharp::ADC_A_H      }, {0,  4, &Sharp::ADC_A_L     }, {0,  8, &Sharp::ADC_A_ADDR_HL  }, {0, 4, &Sharp::ADC_A_A     }
 	};																		  
 
 public:
