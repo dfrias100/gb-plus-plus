@@ -87,7 +87,7 @@ void Sharp::UnsignedAdd(uint8_t& dest, uint8_t src) {
 void Sharp::UnsignedAddCarry(uint8_t& dest, uint8_t src) {
 	temp = GetFlag(c);
 
-	if (src > (0xFF - dest) || (src + dest) == 0xFF) {
+	if (src > (0xFF - dest) || (temp && (src + dest) == 0xFF)) {
 		SetFlag(c, 1);
 	} else {
 		SetFlag(c, 0);
@@ -133,13 +133,13 @@ void Sharp::UnsignedAdd16(uint16_t& dest, uint16_t src) {
 }
 
 void Sharp::Subtract(uint8_t& dest, uint8_t src) {
-	if (src <= dest) {
+	if (src < dest) {
 		SetFlag(c, 1);
 	} else {
 		SetFlag(c, 0);
 	}
 
-	if ((src & 0xF) <= (dest & 0xF)) {
+	if ((src & 0xF) < (dest & 0xF)) {
 		SetFlag(h, 1); 
 	} else {
 		SetFlag(h, 0);
@@ -159,13 +159,13 @@ void Sharp::Subtract(uint8_t& dest, uint8_t src) {
 void Sharp::SubtractWithCarry(uint8_t& dest, uint8_t src) {
 	temp = GetFlag(c);
 
-	if (src <= dest || (src - dest) > 0x0) {
+	if (src < dest || (temp && (src - dest) > 0x0)) {
 		SetFlag(c, 1);
 	} else {
 		SetFlag(c, 0);
 	}
 
-	if ((src & 0xF) <= (dest & 0xF)) {
+	if ((src & 0xF) < (dest & 0xF)) {
 		SetFlag(h, 1);
 	} else {
 		SetFlag(h, 0);
@@ -266,6 +266,20 @@ void Sharp::And(uint8_t arg) {
 
 void Sharp::Xor(uint8_t arg) {
 	A ^= arg;
+
+	if (A == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(n, 0);
+	SetFlag(h, 0);
+	SetFlag(c, 0);
+}
+
+void Sharp::Or(uint8_t arg) {
+	A |= arg;
 
 	if (A == 0) {
 		SetFlag(z, 1);
@@ -1032,6 +1046,80 @@ void Sharp::XOR_ADDR_HL() {
 
 void Sharp::XOR_A() {
 	Xor(A);
+}
+
+void Sharp::OR_B() {
+	Or(B);
+}
+
+void Sharp::OR_C() {
+	Or(C);
+}
+
+void Sharp::OR_D() {
+	Or(D);
+}
+
+void Sharp::OR_E() {
+	Or(E);
+}
+
+void Sharp::OR_H() {
+	Or(H);
+}
+
+void Sharp::OR_L() {
+	Or(L);
+}
+
+void Sharp::OR_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Or(temp);
+}
+
+void Sharp::OR_A() {
+	Or(A);
+}
+
+void Sharp::CP_B() {
+	temp = A;
+	Subtract(temp, B);
+}
+
+void Sharp::CP_C() {
+	temp = A;
+	Subtract(temp, C);
+}
+
+void Sharp::CP_D() {
+	temp = A;
+	Subtract(temp, D);
+}
+
+void Sharp::CP_E() {
+	temp = A;
+	Subtract(temp, E);
+}
+
+void Sharp::CP_H() {
+	temp = A;
+	Subtract(temp, H);
+}
+
+void Sharp::CP_L() {
+	temp = A;
+	Subtract(temp, L);
+}
+
+void Sharp::CP_ADDR_HL() {
+	temp = A;
+	temp2 = MemoryBus->CPURead(HL);
+	Subtract(temp, temp2);
+}
+
+void Sharp::CP_A() {
+	temp = A;
+	Subtract(temp, A);
 }
 
 Sharp::~Sharp() {

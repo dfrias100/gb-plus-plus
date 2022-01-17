@@ -82,6 +82,7 @@ class Sharp {
 	void RotateRight(uint8_t& arg);
 	void And(uint8_t arg);
 	void Xor(uint8_t arg);
+	void Or(uint8_t arg);
  
 	// Needed for the logical CPU to address the memory
 	Memory* MemoryBus;
@@ -286,6 +287,24 @@ class Sharp {
 	void XOR_ADDR_HL();
 	void XOR_A();
 
+	// Twelfth Row of Table (0xB0 - 0xBF)
+	void OR_B();
+	void OR_C();
+	void OR_D();
+	void OR_E();
+	void OR_H();
+	void OR_L();
+	void OR_ADDR_HL();
+	void OR_A();
+	void CP_B();
+	void CP_C();
+	void CP_D();
+	void CP_E();
+	void CP_H();
+	void CP_L();
+	void CP_ADDR_HL();
+	void CP_A();
+
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
 		uint8_t Cycles; // Number of cycles the instructions take
@@ -294,21 +313,21 @@ class Sharp {
 
 	// Holder variable for the current instruction
 	SharpInstr DecodedInstr;
-	const struct SharpInstr SHARPINSTRS[176] = {
-		{0,  4, &Sharp::NOP          }, {2, 12, &Sharp::LD_BC_DW   }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_BC		}, 
-		{0,  4, &Sharp::INC_B        }, {0,  4, &Sharp::DEC_B      }, {1,  8, &Sharp::LD_B_W         }, {0, 4, &Sharp::RLCA			}, 
-		{2, 20, &Sharp::LD_ADDR_DW_SP}, {0,  8, &Sharp::ADD_HL_BC  }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0, 8, &Sharp::DEC_BC		},
-		{0,  4, &Sharp::INC_C        }, {0,  4, &Sharp::DEC_C      }, {1,  8, &Sharp::LD_C_W         }, {0, 4, &Sharp::RRCA			},
-																   
-		{1,  4, &Sharp::STOP         }, {2, 12, &Sharp::LD_DE_DW   }, {0, 12, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_DE		},
-		{0,  4, &Sharp::INC_D        }, {0,  4, &Sharp::DEC_D      }, {1,  8, &Sharp::LD_D_W         }, {0, 4, &Sharp::RLA			},
-		{1, 12, &Sharp::JR_SW        }, {0,  8, &Sharp::ADD_HL_DE  }, {0,  8, &Sharp::LD_A_ADDR_DE   }, {0, 8, &Sharp::DEC_DE		},
-		{0,  4, &Sharp::INC_E        }, {0,  4, &Sharp::DEC_E      }, {1,  8, &Sharp::LD_E_W         }, {0, 4, &Sharp::RRA			},
-																   
-		{1,  8, &Sharp::JR_NZ_SW     }, {2, 12, &Sharp::LD_HL_DW   }, {0,  8, &Sharp::LD_ADDR_HL_PI_A}, {0, 8, &Sharp::INC_HL		},
-		{0,  4, &Sharp::INC_H        }, {0,  4, &Sharp::DEC_H      }, {1,  8, &Sharp::LD_H_W         }, {0, 4, &Sharp::DAA			},
-		{1,  8, &Sharp::JR_Z_SW      }, {0,  8, &Sharp::ADD_HL_HL  }, {0,  8, &Sharp::LD_A_ADDR_HL_PI}, {0, 8, &Sharp::DEC_HL		},
-		{0,  4, &Sharp::INC_L        }, {0,  4, &Sharp::DEC_L      }, {1,  8, &Sharp::LD_L_W         }, {0, 4, &Sharp::CPL			},
+	const struct SharpInstr SHARPINSTRS[192] = {
+		{0,  4, &Sharp::NOP          }, {2, 12, &Sharp::LD_BC_DW    }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_BC		}, 
+		{0,  4, &Sharp::INC_B        }, {0,  4, &Sharp::DEC_B       }, {1,  8, &Sharp::LD_B_W         }, {0, 4, &Sharp::RLCA		}, 
+		{2, 20, &Sharp::LD_ADDR_DW_SP}, {0,  8, &Sharp::ADD_HL_BC   }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0, 8, &Sharp::DEC_BC		},
+		{0,  4, &Sharp::INC_C        }, {0,  4, &Sharp::DEC_C       }, {1,  8, &Sharp::LD_C_W         }, {0, 4, &Sharp::RRCA		},
+																    
+		{1,  4, &Sharp::STOP         }, {2, 12, &Sharp::LD_DE_DW    }, {0, 12, &Sharp::LD_ADDR_BC_A   }, {0, 8, &Sharp::INC_DE		},
+		{0,  4, &Sharp::INC_D        }, {0,  4, &Sharp::DEC_D       }, {1,  8, &Sharp::LD_D_W         }, {0, 4, &Sharp::RLA			},
+		{1, 12, &Sharp::JR_SW        }, {0,  8, &Sharp::ADD_HL_DE   }, {0,  8, &Sharp::LD_A_ADDR_DE   }, {0, 8, &Sharp::DEC_DE		},
+		{0,  4, &Sharp::INC_E        }, {0,  4, &Sharp::DEC_E       }, {1,  8, &Sharp::LD_E_W         }, {0, 4, &Sharp::RRA			},
+																    
+		{1,  8, &Sharp::JR_NZ_SW     }, {2, 12, &Sharp::LD_HL_DW    }, {0,  8, &Sharp::LD_ADDR_HL_PI_A}, {0, 8, &Sharp::INC_HL		},
+		{0,  4, &Sharp::INC_H        }, {0,  4, &Sharp::DEC_H       }, {1,  8, &Sharp::LD_H_W         }, {0, 4, &Sharp::DAA			},
+		{1,  8, &Sharp::JR_Z_SW      }, {0,  8, &Sharp::ADD_HL_HL   }, {0,  8, &Sharp::LD_A_ADDR_HL_PI}, {0, 8, &Sharp::DEC_HL		},
+		{0,  4, &Sharp::INC_L        }, {0,  4, &Sharp::DEC_L       }, {1,  8, &Sharp::LD_L_W         }, {0, 4, &Sharp::CPL			},
 
 		{1,  8, &Sharp::JR_NC_SW     }, {2, 12, &Sharp::LD_SP_DW    }, {0,  8, &Sharp::LD_ADDR_HL_PD_A}, {0, 8, &Sharp::INC_SP      },
 		{0, 12, &Sharp::INC_ADDR_HL  }, {0, 12, &Sharp::DEC_ADDR_HL }, {1, 12, &Sharp::LD_ADDR_HL_W   }, {0, 4, &Sharp::SCF         },
@@ -348,8 +367,13 @@ class Sharp {
 		{0,  4, &Sharp::AND_B        }, {0,  4, &Sharp::AND_C       }, {0,  4, &Sharp::AND_D          }, {0, 4, &Sharp::AND_E       },
 		{0,  4, &Sharp::AND_H        }, {0,  4, &Sharp::AND_L       }, {0,  8, &Sharp::AND_ADDR_HL    }, {0, 4, &Sharp::AND_A       },
 		{0,  4, &Sharp::XOR_B        }, {0,  4, &Sharp::XOR_C       }, {0,  4, &Sharp::XOR_D          }, {0, 4, &Sharp::XOR_E       },
-		{0,  4, &Sharp::XOR_H        }, {0,  4, &Sharp::XOR_L       }, {0,  8, &Sharp::XOR_ADDR_HL    }, {0, 4, &Sharp::XOR_A       }
-	};																		  
+		{0,  4, &Sharp::XOR_H        }, {0,  4, &Sharp::XOR_L       }, {0,  8, &Sharp::XOR_ADDR_HL    }, {0, 4, &Sharp::XOR_A       },
+
+		{0,  4, &Sharp::OR_B         }, {0,  4, &Sharp::OR_C        }, {0,  4, &Sharp::OR_D           }, {0, 4, &Sharp::OR_E        },
+		{0,  4, &Sharp::OR_H         }, {0,  4, &Sharp::OR_L        }, {0,  8, &Sharp::OR_ADDR_HL     }, {0, 4, &Sharp::OR_A        },
+		{0,  4, &Sharp::CP_B         }, {0,  4, &Sharp::CP_C        }, {0,  4, &Sharp::CP_D           }, {0, 4, &Sharp::CP_E        },
+		{0,  4, &Sharp::CP_H         }, {0,  4, &Sharp::CP_L        }, {0,  8, &Sharp::CP_ADDR_HL     }, {0, 4, &Sharp::CP_A        },
+	};	  					 
 
 public:
 	bool Suspended;
