@@ -305,6 +305,23 @@ class Sharp {
 	void CP_ADDR_HL();
 	void CP_A();
 
+	// Thirteenth Row of Table (0xC0 - 0xCF)
+	void RET_NZ();
+	void POP_BC();
+	void JP_NZ_ADDR_DW();
+	void JP_ADDR_DW();
+	void CALL_NZ_ADDR_DW();
+	void PUSH_BC();
+	void ADD_A_W();
+	void RST_00H();
+	void RET_Z();
+	void RET();
+	void JP_Z_ADDR_DW();
+	void PREFIX_CB();
+	void CALL_Z_ADDR_DW();
+	void ADC_A_W();
+	void RST_08H();
+
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
 		uint8_t Cycles; // Number of cycles the instructions take

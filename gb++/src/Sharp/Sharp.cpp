@@ -1122,6 +1122,97 @@ void Sharp::CP_A() {
 	Subtract(temp, A);
 }
 
+void Sharp::RET_NZ() {
+	if (!GetFlag(z)) {
+		PC = MemoryBus->CPURead16(SP);
+		SP += 2;
+		CurrCycles += 12;
+	}
+}
+
+void Sharp::POP_BC() {
+	BC = MemoryBus->CPURead16(SP);
+	SP += 2;
+}
+
+void Sharp::JP_NZ_ADDR_DW() {
+	if (!GetFlag(z)) {
+		PC = CurrOperand;
+		CurrCycles += 4;
+	}
+}
+
+void Sharp::JP_ADDR_DW() {
+	PC = CurrOperand;
+}
+
+void Sharp::CALL_NZ_ADDR_DW() {
+	if (!GetFlag(z)) {
+		SP -= 2;
+		MemoryBus->CPUWrite16(SP, PC);
+		PC = CurrOperand;
+		CurrCycles += 12;
+	}
+}
+
+void Sharp::PUSH_BC() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, BC);
+}
+
+void Sharp::ADD_A_W() {
+	UnsignedAdd(A, (uint8_t) CurrOperand);
+}
+
+void Sharp::RST_00H() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x0000;
+}
+
+void Sharp::RET_Z() {
+	if (GetFlag(z)) {
+		PC = MemoryBus->CPURead16(SP);
+		SP += 2;
+		CurrCycles += 12;
+	}
+}
+
+void Sharp::RET() {
+	PC = MemoryBus->CPURead16(SP);
+	SP += 2;
+}
+
+void Sharp::JP_Z_ADDR_DW() {
+	if (GetFlag(z)) {
+		PC = CurrOperand;
+		CurrCycles += 4;
+	}
+}
+
+void Sharp::PREFIX_CB() {
+	// TODO: Handle 0xCB opcode decode
+}
+
+void Sharp::CALL_Z_ADDR_DW() {
+	if (GetFlag(z)) {
+		SP -= 2;
+		MemoryBus->CPUWrite16(SP, PC);
+		PC = CurrOperand;
+		CurrCycles += 12;
+	}
+}
+
+void Sharp::ADC_A_W() {
+	UnsignedAdd(A, CurrOperand);
+}
+
+void Sharp::RST_08H() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x0008;
+}
+
 Sharp::~Sharp() {
 }
 

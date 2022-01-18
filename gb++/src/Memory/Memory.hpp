@@ -28,9 +28,6 @@ public:
 	void CPUWrite16(uint16_t address, uint16_t data);
 	uint16_t CPURead16(uint16_t address);
 
-	void CPUWriteStack(uint16_t address, uint16_t data);
-	uint16_t CPUReadStack(uint16_t address);
-
 	void Clock();
 };
 

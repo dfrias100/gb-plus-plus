@@ -42,16 +42,7 @@ void Memory::CPUWrite16(uint16_t address, uint16_t data)
 
 uint16_t Memory::CPURead16(uint16_t address)
 {
-	return uint16_t();
-}
-
-void Memory::CPUWriteStack(uint16_t address, uint16_t data)
-{
-}
-
-uint16_t Memory::CPUReadStack(uint16_t address)
-{
-	return uint16_t();
+	return 0x2FF6;
 }
 
 
