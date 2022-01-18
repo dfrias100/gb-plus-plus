@@ -119,9 +119,9 @@ void Sharp::UnsignedAdd16(uint16_t& dest, uint16_t src) {
 		SetFlag(c, 0);
 	}
 
-	temp = (dest & 0x0FFF) + (src & 0x0FFF);
+	temp3 = (dest & 0x0FFF) + (src & 0x0FFF);
 
-	if ((temp & 0x1000) == 0x1000) {
+	if ((temp3 & 0x1000) == 0x1000) {
 		SetFlag(h, 1);
 	} else {
 		SetFlag(h, 0);
@@ -290,6 +290,9 @@ void Sharp::Or(uint8_t arg) {
 	SetFlag(n, 0);
 	SetFlag(h, 0);
 	SetFlag(c, 0);
+}
+
+void Sharp::UNOP() {
 }
 
 // Non 0xCB instructions
@@ -550,7 +553,7 @@ void Sharp::DEC_ADDR_HL() {
 }
 
 void Sharp::LD_ADDR_HL_W() {
-	MemoryBus->CPUWrite(HL, CurrOperand);
+	MemoryBus->CPUWrite(HL, (uint8_t) CurrOperand);
 }
 
 void Sharp::SCF() {
@@ -1203,14 +1206,173 @@ void Sharp::CALL_Z_ADDR_DW() {
 	}
 }
 
+void Sharp::CALL_ADDR_DW() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = CurrOperand;
+}
+
 void Sharp::ADC_A_W() {
-	UnsignedAdd(A, CurrOperand);
+	UnsignedAdd(A, (uint8_t) CurrOperand);
 }
 
 void Sharp::RST_08H() {
 	SP -= 2;
 	MemoryBus->CPUWrite16(SP, PC);
 	PC = 0x0008;
+}
+
+void Sharp::RET_NC() {
+	if (!GetFlag(c)) {
+		PC = MemoryBus->CPURead16(SP);
+		SP += 2;
+		CurrCycles += 12;
+	}
+}
+
+void Sharp::POP_DE() {
+	DE = MemoryBus->CPURead16(SP);
+	SP += 2;
+}
+
+void Sharp::JP_NC_ADDR_DW() {
+	if (!GetFlag(c)) {
+		PC = CurrOperand;
+		CurrCycles += 4;
+	}
+}
+
+void Sharp::CALL_NC_ADDR_DW() {
+if (!GetFlag(c)) {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = CurrOperand;
+	CurrCycles += 12;
+}
+}
+
+void Sharp::PUSH_DE() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, DE);
+}
+
+void Sharp::SUB_W() {
+	Subtract(A, (uint8_t)CurrOperand);
+}
+
+void Sharp::RST_10H() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x0010;
+}
+
+void Sharp::RET_C() {
+	if (GetFlag(c)) {
+		PC = MemoryBus->CPURead16(SP);
+		SP += 2;
+		CurrCycles += 12;
+	}
+}
+
+void Sharp::RETI() {
+	PC = MemoryBus->CPURead16(SP);
+	SP += 2;
+	InterruptMasterEnable = 0x1;
+}
+
+void Sharp::JP_C_ADDR_DW() {
+	if (GetFlag(c)) {
+		PC = CurrOperand;
+		CurrCycles += 4;
+	}
+}
+
+void Sharp::CALL_C_ADDR_DW() {
+	if (GetFlag(c)) {
+		SP -= 2;
+		MemoryBus->CPUWrite16(SP, PC);
+		PC = CurrOperand;
+		CurrCycles += 12;
+	}
+}
+
+void Sharp::SBC_A_W() {
+	SubtractWithCarry(A, (uint8_t) CurrOperand);
+}
+
+void Sharp::RST_18H() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x0018;
+}
+
+void Sharp::LDH_ADDR_W_A() {
+	MemoryBus->CPUWrite(0xFF00 | (uint8_t)CurrOperand, A);
+}
+
+void Sharp::POP_HL() {
+	HL = MemoryBus->CPURead16(SP);
+	SP += 2;
+}
+
+void Sharp::LD_ADDR_C_A() {
+	MemoryBus->CPUWrite(0xFF00 | C, A);
+}
+
+void Sharp::PUSH_HL() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, HL);
+}
+
+void Sharp::AND_W() {
+	And((uint8_t)CurrOperand);
+}
+
+void Sharp::RST_20H() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x0020;
+}
+
+void Sharp::ADD_SP_SW() {
+	temp3 = CurrOperand & 0x80 ? 0xFF00 | CurrOperand : CurrOperand & 0xFF;
+	if (temp3 > (0xFFFF - SP)) {
+		SetFlag(c, 1);
+	}
+	else {
+		SetFlag(c, 0);
+	}
+
+	temp3 = (SP & 0x0FFF) + (temp3 & 0x0FFF);
+
+	if ((temp3 & 0x1000) == 0x1000) {
+		SetFlag(h, 1);
+	} else {
+		SetFlag(h, 0);
+	}
+
+	SP += (int8_t) CurrOperand;
+
+	SetFlag(z, 0);
+	SetFlag(n, 0);
+}
+
+void Sharp::JP_HL() {
+	PC = HL;
+}
+
+void Sharp::LD_ADDR_DW_A() {
+	MemoryBus->CPUWrite(CurrOperand, A);
+}
+
+void Sharp::XOR_W() {
+	Xor((uint8_t) CurrOperand);
+}
+
+void Sharp::RST_28H() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x0028;
 }
 
 Sharp::~Sharp() {

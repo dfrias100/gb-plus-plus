@@ -42,7 +42,7 @@ void Memory::CPUWrite16(uint16_t address, uint16_t data)
 
 uint16_t Memory::CPURead16(uint16_t address)
 {
-	return 0x2FF6;
+	return uint8_t();
 }
 
 
