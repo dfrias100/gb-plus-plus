@@ -1434,8 +1434,8 @@ void Sharp::EI() {
 }
 
 void Sharp::CP_W() {
-	Subtract(A, (uint8_t) CurrOperand);
-		
+	temp = A;
+	Subtract(temp, (uint8_t) CurrOperand);
 }
 
 void Sharp::RST_38H() {
