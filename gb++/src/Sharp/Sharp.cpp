@@ -1375,11 +1375,88 @@ void Sharp::RST_28H() {
 	PC = 0x0028;
 }
 
+void Sharp::LDH_A_ADDR_W() {
+	A = MemoryBus->CPURead(0xFF00 | (uint8_t) CurrOperand);
+}
+
+void Sharp::POP_AF() {
+	AF = MemoryBus->CPURead16(SP);
+	SP += 2;
+}
+
+void Sharp::LD_A_ADDR_C() {
+	A = MemoryBus->CPURead(0xFF00 | C);
+}
+
+// I've noticed other emulators do not try to emulate the behavior of these DI/EI
+// Instructions, where they are delayed by one instruction
+// 
+// For now, I will try to emulate this behavior but if it affects performance
+// too much and ends up being more complicated than not to implement, I will
+// instantaneously enable/disable interrupts
+void Sharp::DI() {
+	PendingIMEChange = 0x10 | 0x02;
+}
+
+void Sharp::PUSH_AF() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, AF);
+}
+
+void Sharp::OR_W() {
+	Or((uint8_t) CurrOperand);
+}
+
+void Sharp::RST_30H() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x0030;
+}
+
+void Sharp::LD_HL_SP_PLUS_SW() {
+	CurrOperand = CurrOperand & 0x80 ? 0xFF00 | CurrOperand : CurrOperand & 0xFF;
+	HL = SP;
+	UnsignedAdd16(HL, CurrOperand);
+	SetFlag(z, 0);
+	SetFlag(n, 0);
+}
+
+void Sharp::LD_SP_HL() {
+	SP = HL;
+}
+
+void Sharp::LD_A_ADDR_DW() {
+	A = MemoryBus->CPURead(CurrOperand);
+}
+
+void Sharp::EI() {
+	PendingIMEChange = 0x90 | 0x02;
+}
+
+void Sharp::CP_W() {
+	Subtract(A, (uint8_t) CurrOperand);
+		
+}
+
+void Sharp::RST_38H() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x0038;
+}
+
 Sharp::~Sharp() {
 }
 
 void Sharp::Clock() {
 	if (CurrCycles == 0) {
+		if ((PendingIMEChange & 0x10) && ((PendingIMEChange & 0x0F) > 0)) {
+			PendingIMEChange--;
+			if ((PendingIMEChange & 0x0F) == 0) {
+				InterruptMasterEnable = (PendingIMEChange & 0x80) >> 7;
+				PendingIMEChange = 0x00;
+			}
+		}
+
 		Opcode = MemoryBus->CPURead(PC++);
 		DecodedInstr = SHARPINSTRS[Opcode];
 

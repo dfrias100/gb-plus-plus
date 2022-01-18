@@ -24,6 +24,7 @@ class Sharp {
 	uint8_t  temp2;
 	uint16_t temp3;
 	uint8_t	 InterruptMasterEnable;
+	uint8_t  PendingIMEChange;
 
 	// 16-bit registers grouped together using anonymous unions and structs
 	union {
@@ -362,6 +363,21 @@ class Sharp {
 	void XOR_W();
 	void RST_28H();
 
+	// Sixteenth Row of Table (0xF0 - 0xFF)
+	void LDH_A_ADDR_W();
+	void POP_AF();
+	void LD_A_ADDR_C();
+	void DI();
+	void PUSH_AF();
+	void OR_W();
+	void RST_30H();
+	void LD_HL_SP_PLUS_SW();
+	void LD_SP_HL();
+	void LD_A_ADDR_DW();
+	void EI();
+	void CP_W();
+	void RST_38H();
+
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
 		uint8_t Cycles; // Number of cycles the instructions take
@@ -370,7 +386,7 @@ class Sharp {
 
 	// Holder variable for the current instruction
 	SharpInstr DecodedInstr;
-	const struct SharpInstr SHARPINSTRS[240] = {
+	const struct SharpInstr SHARPINSTRS[256] = {
 		{0,  4, &Sharp::NOP            }, {2, 12, &Sharp::LD_BC_DW    }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0,  8, &Sharp::INC_BC	   }, 
 		{0,  4, &Sharp::INC_B          }, {0,  4, &Sharp::DEC_B       }, {1,  8, &Sharp::LD_B_W         }, {0,  4, &Sharp::RLCA		   }, 
 		{2, 20, &Sharp::LD_ADDR_DW_SP  }, {0,  8, &Sharp::ADD_HL_BC   }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0,  8, &Sharp::DEC_BC	   },
@@ -432,9 +448,9 @@ class Sharp {
 		{0,  4, &Sharp::CP_H           }, {0,  4, &Sharp::CP_L        }, {0,  8, &Sharp::CP_ADDR_HL     }, {0,  4, &Sharp::CP_A        },
 																											 
 		{0,  8, &Sharp::RET_NZ		   }, {0, 12, &Sharp::POP_BC	  }, {2, 12, &Sharp::JP_NZ_ADDR_DW  }, {2, 16, &Sharp::JP_ADDR_DW  },
-		{2, 12, &Sharp::CALL_NZ_ADDR_DW}, {0, 16, &Sharp::PUSH_BC     }, {1, 8,&Sharp::ADD_A_W          }, {0, 16, &Sharp::RST_00H     },
-		{0,  8, &Sharp::RET_Z		   }, {0, 16, &Sharp::RET         }, {2,12,&Sharp::JP_Z_ADDR_DW     }, {0,  0, &Sharp::PREFIX_CB   },
-		{2, 12, &Sharp::CALL_Z_ADDR_DW }, {2, 24, &Sharp::CALL_ADDR_DW}, {1, 8,&Sharp::ADC_A_W          }, {0, 16, &Sharp::RST_08H     },
+		{2, 12, &Sharp::CALL_NZ_ADDR_DW}, {0, 16, &Sharp::PUSH_BC     }, {1,  8, &Sharp::ADD_A_W        }, {0, 16, &Sharp::RST_00H     },
+		{0,  8, &Sharp::RET_Z		   }, {0, 16, &Sharp::RET         }, {2, 12, &Sharp::JP_Z_ADDR_DW   }, {0,  0, &Sharp::PREFIX_CB   },
+		{2, 12, &Sharp::CALL_Z_ADDR_DW }, {2, 24, &Sharp::CALL_ADDR_DW}, {1,  8, &Sharp::ADC_A_W        }, {0, 16, &Sharp::RST_08H     },
 
 		{0,  8, &Sharp::RET_NC		   }, {0, 12, &Sharp::POP_DE	  }, {2, 12, &Sharp::JP_NC_ADDR_DW  }, {0,  4, &Sharp::UNOP		   },
 		{2, 12, &Sharp::CALL_NC_ADDR_DW}, {0, 16, &Sharp::PUSH_DE	  }, {1,  8, &Sharp::SUB_W			}, {0, 16, &Sharp::RST_10H	   },
@@ -444,7 +460,12 @@ class Sharp {
 		{1, 12, &Sharp::LDH_ADDR_W_A    }, {0, 12, &Sharp::POP_HL	  }, {0,  8, &Sharp::LD_ADDR_C_A	}, {0,  4, &Sharp::UNOP		   },
 		{0,  4, &Sharp::UNOP			}, {0, 16, &Sharp::PUSH_HL	  }, {1,  8, &Sharp::AND_W			}, {0, 16, &Sharp::RST_20H	   },
 		{1, 16, &Sharp::ADD_SP_SW		}, {0,  4, &Sharp::JP_HL	  }, {2, 16, &Sharp::LD_ADDR_DW_A	}, {0,  4, &Sharp::UNOP		   },
-		{0,  4, &Sharp::UNOP			}, {0,  4, &Sharp::UNOP		  }, {1,  8, &Sharp::XOR_W			}, {0, 16, &Sharp::RST_28H	   }
+		{0,  4, &Sharp::UNOP			}, {0,  4, &Sharp::UNOP		  }, {1,  8, &Sharp::XOR_W			}, {0, 16, &Sharp::RST_28H	   },
+
+		{1, 12, &Sharp::LDH_A_ADDR_W	}, {0, 12, &Sharp::POP_AF     }, {0,  8, &Sharp::LD_A_ADDR_C	}, {0,  4, &Sharp::DI		   },
+		{0,  4, &Sharp::UNOP			}, {0, 16, &Sharp::PUSH_AF	  }, {1,  8, &Sharp::OR_W			}, {0, 16, &Sharp::RST_30H	   },
+		{1, 12, &Sharp::LD_HL_SP_PLUS_SW}, {0,  8, &Sharp::LD_SP_HL	  }, {2, 16, &Sharp::LD_A_ADDR_DW	}, {0,  4, &Sharp::EI		   },
+		{0,  4, &Sharp::UNOP			}, {0,  4, &Sharp::UNOP		  }, {1,  8, &Sharp::CP_W			}, {0, 16, &Sharp::RST_38H	   }
 	};	  					 
 
 public:
