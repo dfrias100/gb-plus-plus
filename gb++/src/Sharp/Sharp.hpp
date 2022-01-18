@@ -349,12 +349,16 @@ class Sharp {
 	void LDH_ADDR_W_A();
 	void POP_HL();
 	void LD_ADDR_C_A();
+	// Unknown Opcode
+	// Unknown Opcode
 	void PUSH_HL();
 	void AND_W();
 	void RST_20H();
 	void ADD_SP_SW();
 	void JP_HL();
 	void LD_ADDR_DW_A();
+	// Unknown Opcode
+	// Unknown Opcode
 	void XOR_W();
 	void RST_28H();
 
@@ -366,7 +370,7 @@ class Sharp {
 
 	// Holder variable for the current instruction
 	SharpInstr DecodedInstr;
-	const struct SharpInstr SHARPINSTRS[224] = {
+	const struct SharpInstr SHARPINSTRS[240] = {
 		{0,  4, &Sharp::NOP            }, {2, 12, &Sharp::LD_BC_DW    }, {0,  8, &Sharp::LD_ADDR_BC_A   }, {0,  8, &Sharp::INC_BC	   }, 
 		{0,  4, &Sharp::INC_B          }, {0,  4, &Sharp::DEC_B       }, {1,  8, &Sharp::LD_B_W         }, {0,  4, &Sharp::RLCA		   }, 
 		{2, 20, &Sharp::LD_ADDR_DW_SP  }, {0,  8, &Sharp::ADD_HL_BC   }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0,  8, &Sharp::DEC_BC	   },
@@ -435,7 +439,12 @@ class Sharp {
 		{0,  8, &Sharp::RET_NC		   }, {0, 12, &Sharp::POP_DE	  }, {2, 12, &Sharp::JP_NC_ADDR_DW  }, {0,  4, &Sharp::UNOP		   },
 		{2, 12, &Sharp::CALL_NC_ADDR_DW}, {0, 16, &Sharp::PUSH_DE	  }, {1,  8, &Sharp::SUB_W			}, {0, 16, &Sharp::RST_10H	   },
 		{0,  8, &Sharp::RET_C		   }, {0, 16, &Sharp::RETI		  }, {2, 12, &Sharp::JP_C_ADDR_DW	}, {0,  4, &Sharp::UNOP		   },
-		{2, 12, &Sharp::CALL_C_ADDR_DW }, {0,  4, &Sharp::UNOP		  }, {1,  8, &Sharp::SBC_A_W		}, {0, 16, &Sharp::RST_18H	   }
+		{2, 12, &Sharp::CALL_C_ADDR_DW }, {0,  4, &Sharp::UNOP		  }, {1,  8, &Sharp::SBC_A_W		}, {0, 16, &Sharp::RST_18H	   },
+				 
+		{1, 12, &Sharp::LDH_ADDR_W_A    }, {0, 12, &Sharp::POP_HL	  }, {0,  8, &Sharp::LD_ADDR_C_A	}, {0,  4, &Sharp::UNOP		   },
+		{0,  4, &Sharp::UNOP			}, {0, 16, &Sharp::PUSH_HL	  }, {1,  8, &Sharp::AND_W			}, {0, 16, &Sharp::RST_20H	   },
+		{1, 16, &Sharp::ADD_SP_SW		}, {0,  4, &Sharp::JP_HL	  }, {2, 16, &Sharp::LD_ADDR_DW_A	}, {0,  4, &Sharp::UNOP		   },
+		{0,  4, &Sharp::UNOP			}, {0,  4, &Sharp::UNOP		  }, {1,  8, &Sharp::XOR_W			}, {0, 16, &Sharp::RST_28H	   }
 	};	  					 
 
 public:
