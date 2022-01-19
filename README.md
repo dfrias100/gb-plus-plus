@@ -1,9 +1,9 @@
 # gb-plus-plus
 Gameboy Emulator in C++ with SFML 2.5
 
-This is gameboy emulator that is a work in progress! Many parts have not yet been implemented. Here's the current progress as of commit [ba0c5f12](https://github.com/dfrias100/gb-plus-plus/commit/ba0c5f1210719e1310589df4322c7ecc3c78c66d):
-* CPU: 308 of 500 instructions implemented (61.6%)
-	- 68 of 260 Prefix 0xCB shift, rotate, bit instructions (26.2%)
+This is gameboy emulator that is a work in progress! Many parts have not yet been implemented. Here's the current progress as of commit [ad1cea6b](https://github.com/dfrias100/gb-plus-plus/commit/ad1cea6b5652fec5290ae3de13bd1135b4247ac3):
+* CPU: 324 of 500 instructions implemented (64.8%)
+	- 84 of 260 Prefix 0xCB shift, rotate, bit instructions (32.3%)
 	- 92 of 92 8-bit ALU instructions (100.0%)
 	- 85 of 85 8-bit load instructions (100.0%)
 	- 30 of 30 Jump / Call instructions (100.0%)
