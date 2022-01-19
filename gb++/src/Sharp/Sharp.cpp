@@ -355,6 +355,12 @@ void Sharp::Or(uint8_t arg) {
 	SetFlag(c, 0);
 }
 
+void Sharp::Bit(uint8_t pos, uint8_t arg) {
+	SetFlag(z, ~(arg >> pos) & 0x1);
+	SetFlag(h, 0);
+	SetFlag(n, 1);
+}
+
 void Sharp::UNOP() {
 }
 
@@ -1786,6 +1792,72 @@ void Sharp::SRL_ADDR_HL() {
 
 void Sharp::SRL_A() {
 	ShiftRight(A);
+}
+
+void Sharp::BIT_0_B() {
+	Bit(0, B);
+}
+
+void Sharp::BIT_0_C() {
+	Bit(0, C);
+}
+
+void Sharp::BIT_0_D() {
+	Bit(0, D);
+}
+
+void Sharp::BIT_0_E() {
+	Bit(0, E);
+}
+
+void Sharp::BIT_0_H() {
+	Bit(0, H);
+}
+
+void Sharp::BIT_0_L() {
+	Bit(0, L);
+}
+
+void Sharp::BIT_0_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Bit(0, temp);
+}
+
+void Sharp::BIT_0_A() {
+	Bit(0, A);
+}
+
+void Sharp::BIT_1_B() {
+	Bit(1, B);
+}
+
+void Sharp::BIT_1_C() {
+	Bit(1, C);
+}
+
+void Sharp::BIT_1_D() {
+	Bit(1, D);
+}
+
+void Sharp::BIT_1_E() {
+	Bit(1, E);
+}
+
+void Sharp::BIT_1_H() {
+	Bit(1, H);
+}
+
+void Sharp::BIT_1_L() {
+	Bit(1, L);
+}
+
+void Sharp::BIT_1_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Bit(1, temp);
+}
+
+void Sharp::BIT_1_A() {
+	Bit(1, A);
 }
 
 Sharp::~Sharp() {

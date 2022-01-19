@@ -89,6 +89,7 @@ class Sharp {
 	void And(uint8_t arg);
 	void Xor(uint8_t arg);
 	void Or(uint8_t arg);
+	void Bit(uint8_t pos, uint8_t arg);
  
 	// Needed for the logical CPU to address the memory
 	Memory* MemoryBus;
@@ -458,6 +459,24 @@ class Sharp {
 	void SRL_ADDR_HL();
 	void SRL_A();
 
+	// Fifth row of table (0x40 - 0x4F)
+	void BIT_0_B();
+	void BIT_0_C();
+	void BIT_0_D();
+	void BIT_0_E();
+	void BIT_0_H();
+	void BIT_0_L();
+	void BIT_0_ADDR_HL();
+	void BIT_0_A();
+	void BIT_1_B();
+	void BIT_1_C();
+	void BIT_1_D();
+	void BIT_1_E();
+	void BIT_1_H();
+	void BIT_1_L();
+	void BIT_1_ADDR_HL();
+	void BIT_1_A();
+
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
 		uint8_t Cycles; // Number of cycles the instructions take
@@ -548,27 +567,32 @@ class Sharp {
 		{0,  4, &Sharp::UNOP			}, {0,  4, &Sharp::UNOP		  }, {1,  8, &Sharp::CP_W			}, {0, 16, &Sharp::RST_38H	   }
 	};	  		
 
-	const struct SharpInstr SHARPINSTRS_CB[64] = {
-		{0, 8, &Sharp::RLC_B }, {0, 8, &Sharp::RLC_C }, {0,  8, &Sharp::RLC_D		 }, {0, 8, &Sharp::RLC_E },
-		{0, 8, &Sharp::RLC_H }, {0, 8, &Sharp::RLC_L }, {0, 16, &Sharp::RLC_ADDR_HL  }, {0, 8, &Sharp::RLC_A },
-		{0, 8, &Sharp::RRC_B }, {0, 8, &Sharp::RRC_C }, {0,  8, &Sharp::RRC_D		 }, {0, 8, &Sharp::RRC_E },
-		{0, 8, &Sharp::RRC_H }, {0, 8, &Sharp::RRC_L }, {0, 16, &Sharp::RRC_ADDR_HL  }, {0, 8, &Sharp::RRC_A },
+	const struct SharpInstr SHARPINSTRS_CB[80] = {
+		{0, 8, &Sharp::RLC_B   }, {0, 8, &Sharp::RLC_C  }, {0,  8, &Sharp::RLC_D		}, {0, 8, &Sharp::RLC_E },
+		{0, 8, &Sharp::RLC_H   }, {0, 8, &Sharp::RLC_L  }, {0, 16, &Sharp::RLC_ADDR_HL  }, {0, 8, &Sharp::RLC_A },
+		{0, 8, &Sharp::RRC_B   }, {0, 8, &Sharp::RRC_C  }, {0,  8, &Sharp::RRC_D		}, {0, 8, &Sharp::RRC_E },
+		{0, 8, &Sharp::RRC_H   }, {0, 8, &Sharp::RRC_L  }, {0, 16, &Sharp::RRC_ADDR_HL  }, {0, 8, &Sharp::RRC_A },
 
-		{0, 8, &Sharp::RL_B  }, {0, 8, &Sharp::RL_C  }, {0,  8, &Sharp::RL_D		 }, {0, 8, &Sharp::RL_E  },
-		{0, 8, &Sharp::RL_H  }, {0, 8, &Sharp::RL_L  }, {0, 16, &Sharp::RL_ADDR_HL   },	{0, 8, &Sharp::RL_A  },
-		{0, 8, &Sharp::RR_B  }, {0, 8, &Sharp::RR_C  }, {0,  8, &Sharp::RR_D		 },	{0, 8, &Sharp::RR_E  },
-		{0, 8, &Sharp::RR_H  }, {0, 8, &Sharp::RR_L  }, {0, 16, &Sharp::RR_ADDR_HL   },	{0, 8, &Sharp::RR_A  },
+		{0, 8, &Sharp::RL_B    }, {0, 8, &Sharp::RL_C   }, {0,  8, &Sharp::RL_D		    }, {0, 8, &Sharp::RL_E  },
+		{0, 8, &Sharp::RL_H    }, {0, 8, &Sharp::RL_L   }, {0, 16, &Sharp::RL_ADDR_HL   }, {0, 8, &Sharp::RL_A  },
+		{0, 8, &Sharp::RR_B    }, {0, 8, &Sharp::RR_C   }, {0,  8, &Sharp::RR_D		    }, {0, 8, &Sharp::RR_E  },
+		{0, 8, &Sharp::RR_H    }, {0, 8, &Sharp::RR_L   }, {0, 16, &Sharp::RR_ADDR_HL   }, {0, 8, &Sharp::RR_A  },
+							   						    
+		{0, 8, &Sharp::SLA_B   }, {0, 8, &Sharp::SLA_C  }, {0,  8, &Sharp::SLA_D		}, {0, 8, &Sharp::SLA_E },
+		{0, 8, &Sharp::SLA_H   }, {0, 8, &Sharp::SLA_L  }, {0, 16, &Sharp::SLA_ADDR_HL  }, {0, 8, &Sharp::SLA_A },
+		{0, 8, &Sharp::SRA_B   }, {0, 8, &Sharp::SRA_C  }, {0,  8, &Sharp::SRA_D		}, {0, 8, &Sharp::SRA_E },
+		{0, 8, &Sharp::SRA_H   }, {0, 8, &Sharp::SRA_L  }, {0, 16, &Sharp::SRA_ADDR_HL  }, {0, 8, &Sharp::SRA_A },
+													    
+		{0, 8, &Sharp::SWAP_B  }, {0, 8, &Sharp::SWAP_C }, {0,  8, &Sharp::SWAP_D		}, {0, 8, &Sharp::SWAP_E},
+		{0, 8, &Sharp::SWAP_H  }, {0, 8, &Sharp::SWAP_L }, {0, 16, &Sharp::SWAP_ADDR_HL }, {0, 8, &Sharp::SWAP_A},
+		{0, 8, &Sharp::SRL_B   }, {0, 8, &Sharp::SRL_C  }, {0,  8, &Sharp::SRL_D		}, {0, 8, &Sharp::SRL_E },
+		{0, 8, &Sharp::SRL_H   }, {0, 8, &Sharp::SRL_L  }, {0, 16, &Sharp::SRL_ADDR_HL  }, {0, 8, &Sharp::SRL_A },
 
-		{0, 8, &Sharp::SLA_B }, {0, 8, &Sharp::SLA_C }, {0,  8, &Sharp::SLA_D		 }, {0, 8, &Sharp::SLA_E },
-		{0, 8, &Sharp::SLA_H }, {0, 8, &Sharp::SLA_L }, {0, 16, &Sharp::SLA_ADDR_HL  },	{0, 8, &Sharp::SLA_A },
-		{0, 8, &Sharp::SRA_B }, {0, 8, &Sharp::SRA_C }, {0,  8, &Sharp::SRA_D		 },	{0, 8, &Sharp::SRA_E },
-		{0, 8, &Sharp::SRA_H }, {0, 8, &Sharp::SRA_L }, {0, 16, &Sharp::SRA_ADDR_HL  },	{0, 8, &Sharp::SRA_A },
-
-		{0, 8, &Sharp::SWAP_B}, {0, 8, &Sharp::SWAP_C}, {0,  8, &Sharp::SWAP_D		 }, {0, 8, &Sharp::SWAP_E},
-		{0, 8, &Sharp::SWAP_H}, {0, 8, &Sharp::SWAP_L}, {0, 16, &Sharp::SWAP_ADDR_HL },	{0, 8, &Sharp::SWAP_A},
-		{0, 8, &Sharp::SRL_B }, {0, 8, &Sharp::SRL_C }, {0,  8, &Sharp::SRL_D		 },	{0, 8, &Sharp::SRL_E },
-		{0, 8, &Sharp::SRL_H }, {0, 8, &Sharp::SRL_L }, {0, 16, &Sharp::SRL_ADDR_HL  },	{0, 8, &Sharp::SRL_A }
-	};
+		{0, 8, &Sharp::BIT_0_B }, {0, 8, &Sharp::BIT_0_C}, {0,  8, &Sharp::BIT_0_D		}, {0, 8, &Sharp::BIT_0_E},
+		{0, 8, &Sharp::BIT_0_H }, {0, 8, &Sharp::BIT_0_L}, {0, 12, &Sharp::BIT_0_ADDR_HL}, {0, 8, &Sharp::BIT_0_A},
+		{0, 8, &Sharp::BIT_1_B }, {0, 8, &Sharp::BIT_1_C}, {0,  8, &Sharp::BIT_1_D		}, {0, 8, &Sharp::BIT_1_E},
+		{0, 8, &Sharp::BIT_1_H }, {0, 8, &Sharp::BIT_1_L}, {0, 12, &Sharp::BIT_1_ADDR_HL}, {0, 8, &Sharp::BIT_1_A}
+	};											  
 
 public:
 	bool Suspended;
