@@ -82,6 +82,8 @@ class Sharp {
 	void RotateRightCircular(uint8_t& arg);
 	void RotateLeft(uint8_t& arg);
 	void RotateRight(uint8_t& arg);
+	void ShiftLeft(uint8_t& arg);
+	void ShiftRightArithmetic(uint8_t& arg);
 	void And(uint8_t arg);
 	void Xor(uint8_t arg);
 	void Or(uint8_t arg);
@@ -368,6 +370,7 @@ class Sharp {
 	void POP_AF();
 	void LD_A_ADDR_C();
 	void DI();
+	// Unknown Opcode
 	void PUSH_AF();
 	void OR_W();
 	void RST_30H();
@@ -376,7 +379,65 @@ class Sharp {
 	void LD_A_ADDR_DW();
 	void EI();
 	void CP_W();
+	// Unknown Opcode
+	// Unknown Opcode
 	void RST_38H();
+
+	// 0xCB Instructions
+	// First row of table (0x00 - 0x0F)
+	void RLC_B();
+	void RLC_C();
+	void RLC_D();
+	void RLC_E();
+	void RLC_H();
+	void RLC_L();
+	void RLC_ADDR_HL();
+	void RLC_A();
+	void RRC_B();
+	void RRC_C();
+	void RRC_D();
+	void RRC_E();
+	void RRC_H();
+	void RRC_L();
+	void RRC_ADDR_HL();
+	void RRC_A();
+
+	// Second row of table (0x10 - 0x1F)
+	void RL_B();
+	void RL_C();
+	void RL_D();
+	void RL_E();
+	void RL_H();
+	void RL_L();
+	void RL_ADDR_HL();
+	void RL_A();
+	void RR_B();
+	void RR_C();
+	void RR_D();
+	void RR_E();
+	void RR_H();
+	void RR_L();
+	void RR_ADDR_HL();
+	void RR_A();
+
+	// Third row of table (0x20 - 0x2F)
+	void SLA_B();
+	void SLA_C();
+	void SLA_D();
+	void SLA_E();
+	void SLA_H();
+	void SLA_L();
+	void SLA_ADDR_HL();
+	void SLA_A();
+	void SRA_B();
+	void SRA_C();
+	void SRA_D();
+	void SRA_E();
+	void SRA_H();
+	void SRA_L();
+	void SRA_ADDR_HL();
+	void SRA_A();
+
 
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
@@ -466,7 +527,24 @@ class Sharp {
 		{0,  4, &Sharp::UNOP			}, {0, 16, &Sharp::PUSH_AF	  }, {1,  8, &Sharp::OR_W			}, {0, 16, &Sharp::RST_30H	   },
 		{1, 12, &Sharp::LD_HL_SP_PLUS_SW}, {0,  8, &Sharp::LD_SP_HL	  }, {2, 16, &Sharp::LD_A_ADDR_DW	}, {0,  4, &Sharp::EI		   },
 		{0,  4, &Sharp::UNOP			}, {0,  4, &Sharp::UNOP		  }, {1,  8, &Sharp::CP_W			}, {0, 16, &Sharp::RST_38H	   }
-	};	  					 
+	};	  		
+
+	const struct SharpInstr SHARPINSTRS_CB[48] = {
+		{0, 8, &Sharp::RLC_B}, {0, 8, &Sharp::RLC_C}, {0,  8, &Sharp::RLC_D		 }, {0, 8, &Sharp::RLC_E},
+		{0, 8, &Sharp::RLC_H}, {0, 8, &Sharp::RLC_L}, {0, 16, &Sharp::RLC_ADDR_HL}, {0, 8, &Sharp::RLC_A},
+		{0, 8, &Sharp::RRC_B}, {0, 8, &Sharp::RRC_C}, {0,  8, &Sharp::RRC_D		 }, {0, 8, &Sharp::RRC_E},
+		{0, 8, &Sharp::RRC_H}, {0, 8, &Sharp::RRC_L}, {0, 16, &Sharp::RRC_ADDR_HL}, {0, 8, &Sharp::RRC_A},
+
+		{0, 8, &Sharp::RL_B }, {0, 8, &Sharp::RL_C }, {0,  8, &Sharp::RL_D		 }, {0, 8, &Sharp::RL_E },
+		{0, 8, &Sharp::RL_H }, {0, 8, &Sharp::RL_L }, {0, 16, &Sharp::RL_ADDR_HL },	{0, 8, &Sharp::RL_A },
+		{0, 8, &Sharp::RR_B }, {0, 8, &Sharp::RR_C }, {0,  8, &Sharp::RR_D		 },	{0, 8, &Sharp::RR_E },
+		{0, 8, &Sharp::RR_H }, {0, 8, &Sharp::RR_L }, {0, 16, &Sharp::RR_ADDR_HL },	{0, 8, &Sharp::RR_A },
+
+		{0, 8, &Sharp::SLA_B}, {0, 8, &Sharp::SLA_C}, {0,  8, &Sharp::SLA_D		 }, {0, 8, &Sharp::SLA_E},
+		{0, 8, &Sharp::SLA_H}, {0, 8, &Sharp::SLA_L}, {0, 16, &Sharp::SLA_ADDR_HL},	{0, 8, &Sharp::SLA_A},
+		{0, 8, &Sharp::SRA_B}, {0, 8, &Sharp::SRA_C}, {0,  8, &Sharp::SRA_D		 },	{0, 8, &Sharp::SRA_E},
+		{0, 8, &Sharp::SRA_H}, {0, 8, &Sharp::SRA_L}, {0, 16, &Sharp::SRA_ADDR_HL},	{0, 8, &Sharp::SRA_A}
+	};
 
 public:
 	bool Suspended;

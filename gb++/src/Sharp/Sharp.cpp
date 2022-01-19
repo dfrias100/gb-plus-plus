@@ -250,6 +250,36 @@ void Sharp::RotateRight(uint8_t& arg) {
 	SetFlag(h, 0);
 }
 
+void Sharp::ShiftLeft(uint8_t& arg) {
+	SetFlag(c, (arg & 0x80) >> 7);
+
+	arg <<= 1;
+
+	if (arg == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(n, 0);
+	SetFlag(h, 0);
+}
+
+void Sharp::ShiftRightArithmetic(uint8_t& arg) {
+	SetFlag(c, arg & 0x01);
+
+	arg = (arg & 0x80) | (arg >> 1);
+
+	if (arg == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(n, 0);
+	SetFlag(h, 0);
+}
+
 void Sharp::And(uint8_t arg) {
 	A &= arg;
 
@@ -1012,6 +1042,7 @@ void Sharp::AND_L() {
 void Sharp::AND_ADDR_HL() {
 	temp = MemoryBus->CPURead(HL);
 	And(temp);
+	MemoryBus->CPUWrite(HL, temp);
 }
 
 void Sharp::AND_A() {
@@ -1045,6 +1076,7 @@ void Sharp::XOR_L() {
 void Sharp::XOR_ADDR_HL() {
 	temp = MemoryBus->CPURead(HL);
 	Xor(temp);
+	MemoryBus->CPUWrite(HL, temp);
 }
 
 void Sharp::XOR_A() {
@@ -1078,6 +1110,7 @@ void Sharp::OR_L() {
 void Sharp::OR_ADDR_HL() {
 	temp = MemoryBus->CPURead(HL);
 	Or(temp);
+	MemoryBus->CPUWrite(HL, temp);
 }
 
 void Sharp::OR_A() {
@@ -1194,7 +1227,13 @@ void Sharp::JP_Z_ADDR_DW() {
 }
 
 void Sharp::PREFIX_CB() {
-	// TODO: Handle 0xCB opcode decode
+	Opcode = MemoryBus->CPURead(PC++);
+	DecodedInstr = SHARPINSTRS_CB[Opcode];
+
+	CurrCycles = DecodedInstr.Cycles;
+	CurrArgSize = DecodedInstr.ArgSize;
+
+	(this->*DecodedInstr.Instruction)();
 }
 
 void Sharp::CALL_Z_ADDR_DW() {
@@ -1442,6 +1481,210 @@ void Sharp::RST_38H() {
 	SP -= 2;
 	MemoryBus->CPUWrite16(SP, PC);
 	PC = 0x0038;
+}
+
+void Sharp::RLC_B() {
+	RotateLeftCircular(B);
+}
+
+void Sharp::RLC_C() {
+	RotateLeftCircular(C);
+}
+
+void Sharp::RLC_D() {
+	RotateLeftCircular(D);
+}
+
+void Sharp::RLC_E() {
+	RotateLeftCircular(E);
+}
+
+void Sharp::RLC_H() {
+	RotateLeftCircular(H);
+}
+
+void Sharp::RLC_L() {
+	RotateLeftCircular(L);
+}
+
+void Sharp::RLC_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	RotateLeftCircular(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RLC_A() {
+	RotateLeftCircular(A);
+}
+
+void Sharp::RRC_B() {
+	RotateRightCircular(B);
+}
+
+void Sharp::RRC_C() {
+	RotateRightCircular(C);
+}
+
+void Sharp::RRC_D() {
+	RotateRightCircular(D);
+}
+
+void Sharp::RRC_E() {
+	RotateRightCircular(E);
+}
+
+void Sharp::RRC_H() {
+	RotateRightCircular(H);
+}
+
+void Sharp::RRC_L() {
+	RotateRightCircular(L);
+}
+
+void Sharp::RRC_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	RotateRightCircular(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RRC_A() {
+	RotateRightCircular(A);
+}
+
+void Sharp::RL_B() {
+	RotateLeft(B);
+}
+
+void Sharp::RL_C() {
+	RotateLeft(C);
+}
+
+void Sharp::RL_D() {
+	RotateLeft(D);
+}
+
+void Sharp::RL_E() {
+	RotateLeft(E);
+}
+
+void Sharp::RL_H() {
+	RotateLeft(H);
+}
+
+void Sharp::RL_L() {
+	RotateLeft(L);
+}
+
+void Sharp::RL_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	RotateLeft(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RL_A() {
+	RotateLeft(A);
+}
+
+void Sharp::RR_B() {
+	RotateRight(B);
+}
+
+void Sharp::RR_C() {
+	RotateRight(C);
+}
+
+void Sharp::RR_D() {
+	RotateRight(D);
+}
+
+void Sharp::RR_E() {
+	RotateRight(E);
+}
+
+void Sharp::RR_H() {
+	RotateRight(H);
+}
+
+void Sharp::RR_L() {
+	RotateRight(L);
+}
+
+void Sharp::RR_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	RotateRight(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RR_A() {
+	RotateRight(A);
+}
+
+void Sharp::SLA_B() {
+	ShiftLeft(B);
+}
+
+void Sharp::SLA_C() {
+	ShiftLeft(C);
+}
+
+void Sharp::SLA_D() {
+	ShiftLeft(D);
+}
+
+void Sharp::SLA_E() {
+	ShiftLeft(E);
+}
+
+void Sharp::SLA_H() {
+	ShiftLeft(H);
+}
+
+void Sharp::SLA_L() {
+	ShiftLeft(L);
+}
+
+void Sharp::SLA_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ShiftLeft(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SLA_A() {
+	ShiftLeft(A);
+}
+
+void Sharp::SRA_B() {
+	ShiftRightArithmetic(B);
+}
+
+void Sharp::SRA_C() {
+	ShiftRightArithmetic(C);
+}
+
+void Sharp::SRA_D() {
+	ShiftRightArithmetic(D);
+}
+
+void Sharp::SRA_E() {
+	ShiftRightArithmetic(E);
+}
+
+void Sharp::SRA_H() {
+	ShiftRightArithmetic(H);
+}
+
+void Sharp::SRA_L() {
+	ShiftRightArithmetic(L);
+}
+
+void Sharp::SRA_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ShiftRightArithmetic(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SRA_A() {
+	ShiftRightArithmetic(A);
 }
 
 Sharp::~Sharp() {
