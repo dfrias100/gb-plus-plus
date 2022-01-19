@@ -280,6 +280,39 @@ void Sharp::ShiftRightArithmetic(uint8_t& arg) {
 	SetFlag(h, 0);
 }
 
+void Sharp::ShiftRight(uint8_t& arg) {
+	SetFlag(c, arg & 0x01);
+
+	arg >>= 1;
+
+	if (arg == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(n, 0);
+	SetFlag(h, 0);
+}
+
+void Sharp::Swap(uint8_t& arg) {
+	temp = arg & 0xF;
+	arg &= 0xF0;
+	arg >>= 4;
+	arg |= (temp << 4);
+
+
+	if (arg == 0) {
+		SetFlag(z, 1);
+	} else {
+		SetFlag(z, 0);
+	}
+
+	SetFlag(n, 0);
+	SetFlag(h, 0);
+	SetFlag(c, 0);
+}
+
 void Sharp::And(uint8_t arg) {
 	A &= arg;
 
@@ -1685,6 +1718,74 @@ void Sharp::SRA_ADDR_HL() {
 
 void Sharp::SRA_A() {
 	ShiftRightArithmetic(A);
+}
+
+void Sharp::SWAP_B() {
+	Swap(B);
+}
+
+void Sharp::SWAP_C() {
+	Swap(C);
+}
+
+void Sharp::SWAP_D() {
+	Swap(D);
+}
+
+void Sharp::SWAP_E() {
+	Swap(E);
+}
+
+void Sharp::SWAP_H() {
+	Swap(H);
+}
+
+void Sharp::SWAP_L() {
+	Swap(L);
+}
+
+void Sharp::SWAP_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Swap(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SWAP_A() {
+	Swap(A);
+}
+
+void Sharp::SRL_B() {
+	ShiftRight(B);
+}
+
+void Sharp::SRL_C() {
+	ShiftRight(C);
+}
+
+void Sharp::SRL_D() {
+	ShiftRight(D);
+}
+
+void Sharp::SRL_E() {
+	ShiftRight(E);
+}
+
+void Sharp::SRL_H() {
+	ShiftRight(H);
+}
+
+void Sharp::SRL_L() {
+	ShiftRight(L);
+}
+
+void Sharp::SRL_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ShiftRight(temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SRL_A() {
+	ShiftRight(A);
 }
 
 Sharp::~Sharp() {
