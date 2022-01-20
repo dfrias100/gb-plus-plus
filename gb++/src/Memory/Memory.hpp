@@ -7,7 +7,7 @@
 
 class Memory {
 	uint8_t* HighRAM;    // High RAM located at	0xFF80: 127 bytes
-	uint8_t* IO;         // IO register located at 0xFF00: 76 bytes
+	uint8_t* IO;         // IO register located at 0xFF00: 128 bytes
 	uint8_t* SpriteOAM;  // Video RAM located at 0xFE00: 160 bytes
 	uint8_t* WorkingRAM; // Working RAM located at 0xC000 (mirrored at 0xE000): 8 kilobytes
 	uint8_t* SwitchRAM;  // Switch RAM located at 0xA000: 8 kilobytes

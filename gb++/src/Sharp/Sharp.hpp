@@ -90,6 +90,8 @@ class Sharp {
 	void Xor(uint8_t arg);
 	void Or(uint8_t arg);
 	void Bit(uint8_t pos, uint8_t arg);
+	void SetBit(uint8_t pos, uint8_t& arg);
+	void ResetBit(uint8_t pos, uint8_t& arg);
  
 	// Needed for the logical CPU to address the memory
 	Memory* MemoryBus;
@@ -477,6 +479,204 @@ class Sharp {
 	void BIT_1_ADDR_HL();
 	void BIT_1_A();
 
+	// Sixth row of table (0x50 - 0x5F)
+	void BIT_2_B();
+	void BIT_2_C();
+	void BIT_2_D();
+	void BIT_2_E();
+	void BIT_2_H();
+	void BIT_2_L();
+	void BIT_2_ADDR_HL();
+	void BIT_2_A();
+	void BIT_3_B();
+	void BIT_3_C();
+	void BIT_3_D();
+	void BIT_3_E();
+	void BIT_3_H();
+	void BIT_3_L();
+	void BIT_3_ADDR_HL();
+	void BIT_3_A();
+
+	// Seventh row of table (0x60 - 0x6F)
+	void BIT_4_B();
+	void BIT_4_C();
+	void BIT_4_D();
+	void BIT_4_E();
+	void BIT_4_H();
+	void BIT_4_L();
+	void BIT_4_ADDR_HL();
+	void BIT_4_A();
+	void BIT_5_B();
+	void BIT_5_C();
+	void BIT_5_D();
+	void BIT_5_E();
+	void BIT_5_H();
+	void BIT_5_L();
+	void BIT_5_ADDR_HL();
+	void BIT_5_A();
+
+	// Eighth row of table (0x70 - 0x7F)
+	void BIT_6_B();
+	void BIT_6_C();
+	void BIT_6_D();
+	void BIT_6_E();
+	void BIT_6_H();
+	void BIT_6_L();
+	void BIT_6_ADDR_HL();
+	void BIT_6_A();
+	void BIT_7_B();
+	void BIT_7_C();
+	void BIT_7_D();
+	void BIT_7_E();
+	void BIT_7_H();
+	void BIT_7_L();
+	void BIT_7_ADDR_HL();
+	void BIT_7_A();
+
+	// Ninth row of table (0x80 - 0x8F)
+	void RES_0_B();
+	void RES_0_C();
+	void RES_0_D();
+	void RES_0_E();
+	void RES_0_H();
+	void RES_0_L();
+	void RES_0_ADDR_HL();
+	void RES_0_A();
+	void RES_1_B();
+	void RES_1_C();
+	void RES_1_D();
+	void RES_1_E();
+	void RES_1_H();
+	void RES_1_L();
+	void RES_1_ADDR_HL();
+	void RES_1_A();
+
+	// Tenth row of table (0x90 - 0x9F)
+	void RES_2_B();
+	void RES_2_C();
+	void RES_2_D();
+	void RES_2_E();
+	void RES_2_H();
+	void RES_2_L();
+	void RES_2_ADDR_HL();
+	void RES_2_A();
+	void RES_3_B();
+	void RES_3_C();
+	void RES_3_D();
+	void RES_3_E();
+	void RES_3_H();
+	void RES_3_L();
+	void RES_3_ADDR_HL();
+	void RES_3_A();
+
+	// Eleventh row of table (0xA0 - 0xAF)
+	void RES_4_B();
+	void RES_4_C();
+	void RES_4_D();
+	void RES_4_E();
+	void RES_4_H();
+	void RES_4_L();
+	void RES_4_ADDR_HL();
+	void RES_4_A();
+	void RES_5_B();
+	void RES_5_C();
+	void RES_5_D();
+	void RES_5_E();
+	void RES_5_H();
+	void RES_5_L();
+	void RES_5_ADDR_HL();
+	void RES_5_A();
+
+	// Twelfth row of table (0xB0 - 0xBF)
+	void RES_6_B();
+	void RES_6_C();
+	void RES_6_D();
+	void RES_6_E();
+	void RES_6_H();
+	void RES_6_L();
+	void RES_6_ADDR_HL();
+	void RES_6_A();
+	void RES_7_B();
+	void RES_7_C();
+	void RES_7_D();
+	void RES_7_E();
+	void RES_7_H();
+	void RES_7_L();
+	void RES_7_ADDR_HL();
+	void RES_7_A();
+
+	// Thirteenth row of table (0xC0 - 0xCF)
+	void SET_0_B();
+	void SET_0_C();
+	void SET_0_D();
+	void SET_0_E();
+	void SET_0_H();
+	void SET_0_L();
+	void SET_0_ADDR_HL();
+	void SET_0_A();
+	void SET_1_B();
+	void SET_1_C();
+	void SET_1_D();
+	void SET_1_E();
+	void SET_1_H();
+	void SET_1_L();
+	void SET_1_ADDR_HL();
+	void SET_1_A();
+
+	// Fourteenth row of table (0xC0 - 0xCF)
+	void SET_2_B();
+	void SET_2_C();
+	void SET_2_D();
+	void SET_2_E();
+	void SET_2_H();
+	void SET_2_L();
+	void SET_2_ADDR_HL();
+	void SET_2_A();
+	void SET_3_B();
+	void SET_3_C();
+	void SET_3_D();
+	void SET_3_E();
+	void SET_3_H();
+	void SET_3_L();
+	void SET_3_ADDR_HL();
+	void SET_3_A();
+
+	// Fifteenth row of table (0xA0 - 0xAF)
+	void SET_4_B();
+	void SET_4_C();
+	void SET_4_D();
+	void SET_4_E();
+	void SET_4_H();
+	void SET_4_L();
+	void SET_4_ADDR_HL();
+	void SET_4_A();
+	void SET_5_B();
+	void SET_5_C();
+	void SET_5_D();
+	void SET_5_E();
+	void SET_5_H();
+	void SET_5_L();
+	void SET_5_ADDR_HL();
+	void SET_5_A();
+
+	// Sixteenth row of table (0xB0 - 0xBF)
+	void SET_6_B();
+	void SET_6_C();
+	void SET_6_D();
+	void SET_6_E();
+	void SET_6_H();
+	void SET_6_L();
+	void SET_6_ADDR_HL();
+	void SET_6_A();
+	void SET_7_B();
+	void SET_7_C();
+	void SET_7_D();
+	void SET_7_E();
+	void SET_7_H();
+	void SET_7_L();
+	void SET_7_ADDR_HL();
+	void SET_7_A();
+
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
 		uint8_t Cycles; // Number of cycles the instructions take
@@ -567,7 +767,7 @@ class Sharp {
 		{0,  4, &Sharp::UNOP			}, {0,  4, &Sharp::UNOP		  }, {1,  8, &Sharp::CP_W			}, {0, 16, &Sharp::RST_38H	   }
 	};	  		
 
-	const struct SharpInstr SHARPINSTRS_CB[80] = {
+	const struct SharpInstr SHARPINSTRS_CB[256] = {
 		{0, 8, &Sharp::RLC_B   }, {0, 8, &Sharp::RLC_C  }, {0,  8, &Sharp::RLC_D		}, {0, 8, &Sharp::RLC_E },
 		{0, 8, &Sharp::RLC_H   }, {0, 8, &Sharp::RLC_L  }, {0, 16, &Sharp::RLC_ADDR_HL  }, {0, 8, &Sharp::RLC_A },
 		{0, 8, &Sharp::RRC_B   }, {0, 8, &Sharp::RRC_C  }, {0,  8, &Sharp::RRC_D		}, {0, 8, &Sharp::RRC_E },
@@ -591,7 +791,62 @@ class Sharp {
 		{0, 8, &Sharp::BIT_0_B }, {0, 8, &Sharp::BIT_0_C}, {0,  8, &Sharp::BIT_0_D		}, {0, 8, &Sharp::BIT_0_E},
 		{0, 8, &Sharp::BIT_0_H }, {0, 8, &Sharp::BIT_0_L}, {0, 12, &Sharp::BIT_0_ADDR_HL}, {0, 8, &Sharp::BIT_0_A},
 		{0, 8, &Sharp::BIT_1_B }, {0, 8, &Sharp::BIT_1_C}, {0,  8, &Sharp::BIT_1_D		}, {0, 8, &Sharp::BIT_1_E},
-		{0, 8, &Sharp::BIT_1_H }, {0, 8, &Sharp::BIT_1_L}, {0, 12, &Sharp::BIT_1_ADDR_HL}, {0, 8, &Sharp::BIT_1_A}
+		{0, 8, &Sharp::BIT_1_H }, {0, 8, &Sharp::BIT_1_L}, {0, 12, &Sharp::BIT_1_ADDR_HL}, {0, 8, &Sharp::BIT_1_A},
+
+		{0, 8, &Sharp::BIT_2_B }, {0, 8, &Sharp::BIT_2_C}, {0,  8, &Sharp::BIT_2_D		}, {0, 8, &Sharp::BIT_2_E},
+		{0, 8, &Sharp::BIT_2_H }, {0, 8, &Sharp::BIT_2_L}, {0, 12, &Sharp::BIT_2_ADDR_HL}, {0, 8, &Sharp::BIT_2_A},
+		{0, 8, &Sharp::BIT_3_B }, {0, 8, &Sharp::BIT_3_C}, {0,  8, &Sharp::BIT_3_D		}, {0, 8, &Sharp::BIT_3_E},
+		{0, 8, &Sharp::BIT_3_H }, {0, 8, &Sharp::BIT_3_L}, {0, 12, &Sharp::BIT_3_ADDR_HL}, {0, 8, &Sharp::BIT_3_A},
+
+		{0, 8, &Sharp::BIT_4_B }, {0, 8, &Sharp::BIT_4_C}, {0,  8, &Sharp::BIT_4_D		}, {0, 8, &Sharp::BIT_4_E},
+		{0, 8, &Sharp::BIT_4_H }, {0, 8, &Sharp::BIT_4_L}, {0, 12, &Sharp::BIT_4_ADDR_HL}, {0, 8, &Sharp::BIT_4_A},
+		{0, 8, &Sharp::BIT_5_B }, {0, 8, &Sharp::BIT_5_C}, {0,  8, &Sharp::BIT_5_D		}, {0, 8, &Sharp::BIT_5_E},
+		{0, 8, &Sharp::BIT_5_H }, {0, 8, &Sharp::BIT_5_L}, {0, 12, &Sharp::BIT_5_ADDR_HL}, {0, 8, &Sharp::BIT_5_A},
+
+		{0, 8, &Sharp::BIT_6_B }, {0, 8, &Sharp::BIT_6_C}, {0,  8, &Sharp::BIT_6_D		}, {0, 8, &Sharp::BIT_6_E},
+		{0, 8, &Sharp::BIT_6_H }, {0, 8, &Sharp::BIT_6_L}, {0, 12, &Sharp::BIT_6_ADDR_HL}, {0, 8, &Sharp::BIT_6_A},
+		{0, 8, &Sharp::BIT_7_B }, {0, 8, &Sharp::BIT_7_C}, {0,  8, &Sharp::BIT_7_D		}, {0, 8, &Sharp::BIT_7_E},
+		{0, 8, &Sharp::BIT_7_H }, {0, 8, &Sharp::BIT_7_L}, {0, 12, &Sharp::BIT_7_ADDR_HL}, {0, 8, &Sharp::BIT_7_A},
+
+		{0, 8, &Sharp::RES_0_B }, {0, 8, &Sharp::RES_0_C}, {0,  8, &Sharp::RES_0_D		}, {0, 8, &Sharp::RES_0_E},
+		{0, 8, &Sharp::RES_0_H }, {0, 8, &Sharp::RES_0_L}, {0, 16, &Sharp::RES_0_ADDR_HL}, {0, 8, &Sharp::RES_0_A},
+		{0, 8, &Sharp::RES_1_B }, {0, 8, &Sharp::RES_1_C}, {0,  8, &Sharp::RES_1_D		}, {0, 8, &Sharp::RES_1_E},
+		{0, 8, &Sharp::RES_1_H }, {0, 8, &Sharp::RES_1_L}, {0, 16, &Sharp::RES_1_ADDR_HL}, {0, 8, &Sharp::RES_1_A},
+
+		{0, 8, &Sharp::RES_2_B }, {0, 8, &Sharp::RES_2_C}, {0,  8, &Sharp::RES_2_D		}, {0, 8, &Sharp::RES_2_E},
+		{0, 8, &Sharp::RES_2_H }, {0, 8, &Sharp::RES_2_L}, {0, 16, &Sharp::RES_2_ADDR_HL}, {0, 8, &Sharp::RES_2_A},
+		{0, 8, &Sharp::RES_3_B }, {0, 8, &Sharp::RES_3_C}, {0,  8, &Sharp::RES_3_D		}, {0, 8, &Sharp::RES_3_E},
+		{0, 8, &Sharp::RES_3_H }, {0, 8, &Sharp::RES_3_L}, {0, 16, &Sharp::RES_3_ADDR_HL}, {0, 8, &Sharp::RES_3_A},
+
+		{0, 8, &Sharp::RES_4_B }, {0, 8, &Sharp::RES_4_C}, {0,  8, &Sharp::RES_4_D		}, {0, 8, &Sharp::RES_4_E},
+		{0, 8, &Sharp::RES_4_H }, {0, 8, &Sharp::RES_4_L}, {0, 16, &Sharp::RES_4_ADDR_HL}, {0, 8, &Sharp::RES_4_A},
+		{0, 8, &Sharp::RES_5_B }, {0, 8, &Sharp::RES_5_C}, {0,  8, &Sharp::RES_5_D		}, {0, 8, &Sharp::RES_5_E},
+		{0, 8, &Sharp::RES_5_H }, {0, 8, &Sharp::RES_5_L}, {0, 16, &Sharp::RES_5_ADDR_HL}, {0, 8, &Sharp::RES_5_A},
+
+		{0, 8,& Sharp::RES_6_B }, {0, 8, &Sharp::RES_6_C}, {0,  8, &Sharp::RES_6_D		}, {0, 8, &Sharp::RES_6_E},
+		{0, 8, &Sharp::RES_6_H }, {0, 8, &Sharp::RES_6_L}, {0, 16, &Sharp::RES_6_ADDR_HL}, {0, 8, &Sharp::RES_6_A},
+		{0, 8, &Sharp::RES_7_B }, {0, 8, &Sharp::RES_7_C}, {0,  8, &Sharp::RES_7_D		}, {0, 8, &Sharp::RES_7_E},
+		{0, 8, &Sharp::RES_7_H }, {0, 8, &Sharp::RES_7_L}, {0, 16, &Sharp::RES_7_ADDR_HL}, {0, 8, &Sharp::RES_7_A},
+
+		{0, 8, &Sharp::SET_0_B }, {0, 8, &Sharp::SET_0_C}, {0,  8, &Sharp::SET_0_D		}, {0, 8, &Sharp::SET_0_E},
+		{0, 8, &Sharp::SET_0_H }, {0, 8, &Sharp::SET_0_L}, {0, 16, &Sharp::SET_0_ADDR_HL}, {0, 8, &Sharp::SET_0_A},
+		{0, 8, &Sharp::SET_1_B }, {0, 8, &Sharp::SET_1_C}, {0,  8, &Sharp::SET_1_D		}, {0, 8, &Sharp::SET_1_E},
+		{0, 8, &Sharp::SET_1_H }, {0, 8, &Sharp::SET_1_L}, {0, 16, &Sharp::SET_1_ADDR_HL}, {0, 8, &Sharp::SET_1_A},
+
+		{0, 8, &Sharp::SET_2_B }, {0, 8, &Sharp::SET_2_C}, {0,  8, &Sharp::SET_2_D		}, {0, 8, &Sharp::SET_2_E},
+		{0, 8, &Sharp::SET_2_H }, {0, 8, &Sharp::SET_2_L}, {0, 16, &Sharp::SET_2_ADDR_HL}, {0, 8, &Sharp::SET_2_A},
+		{0, 8, &Sharp::SET_3_B }, {0, 8, &Sharp::SET_3_C}, {0,  8, &Sharp::SET_3_D		}, {0, 8, &Sharp::SET_3_E},
+		{0, 8, &Sharp::SET_3_H }, {0, 8, &Sharp::SET_3_L}, {0, 16, &Sharp::SET_3_ADDR_HL}, {0, 8, &Sharp::SET_3_A},
+
+		{0, 8, &Sharp::SET_4_B }, {0, 8, &Sharp::SET_4_C}, {0,  8, &Sharp::SET_4_D		}, {0, 8, &Sharp::SET_4_E},
+		{0, 8, &Sharp::SET_4_H }, {0, 8, &Sharp::SET_4_L}, {0, 16, &Sharp::SET_4_ADDR_HL}, {0, 8, &Sharp::SET_4_A},
+		{0, 8, &Sharp::SET_5_B }, {0, 8, &Sharp::SET_5_C}, {0,  8, &Sharp::SET_5_D		}, {0, 8, &Sharp::SET_5_E},
+		{0, 8, &Sharp::SET_5_H }, {0, 8, &Sharp::SET_5_L}, {0, 16, &Sharp::SET_5_ADDR_HL}, {0, 8, &Sharp::SET_5_A},
+
+		{0, 8, &Sharp::SET_6_B }, {0, 8, &Sharp::SET_6_C}, {0,  8, &Sharp::SET_6_D		}, {0, 8, &Sharp::SET_6_E},
+		{0, 8, &Sharp::SET_6_H }, {0, 8, &Sharp::SET_6_L}, {0, 16, &Sharp::SET_6_ADDR_HL}, {0, 8, &Sharp::SET_6_A},
+		{0, 8, &Sharp::SET_7_B }, {0, 8, &Sharp::SET_7_C}, {0,  8, &Sharp::SET_7_D		}, {0, 8, &Sharp::SET_7_E},
+		{0, 8, &Sharp::SET_7_H }, {0, 8, &Sharp::SET_7_L}, {0, 16, &Sharp::SET_7_ADDR_HL}, {0, 8, &Sharp::SET_7_A}
 	};											  
 
 public:

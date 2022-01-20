@@ -357,8 +357,16 @@ void Sharp::Or(uint8_t arg) {
 
 void Sharp::Bit(uint8_t pos, uint8_t arg) {
 	SetFlag(z, ~(arg >> pos) & 0x1);
-	SetFlag(h, 0);
-	SetFlag(n, 1);
+	SetFlag(n, 0);
+	SetFlag(h, 1);
+}
+
+void Sharp::SetBit(uint8_t pos, uint8_t& arg) {
+	arg |= 0x01 << pos;
+}
+
+void Sharp::ResetBit(uint8_t pos, uint8_t& arg) {
+	arg = arg & ~(0x01 << pos);
 }
 
 void Sharp::UNOP() {
@@ -1858,6 +1866,748 @@ void Sharp::BIT_1_ADDR_HL() {
 
 void Sharp::BIT_1_A() {
 	Bit(1, A);
+}
+
+void Sharp::BIT_2_B() {
+	Bit(2, B);
+}
+
+void Sharp::BIT_2_C() {
+	Bit(2, C);
+}
+
+void Sharp::BIT_2_D() {
+	Bit(2, D);
+}
+
+void Sharp::BIT_2_E() {
+	Bit(2, E);
+}
+
+void Sharp::BIT_2_H() {
+	Bit(2, H);
+}
+
+void Sharp::BIT_2_L() {
+	Bit(2, L);
+}
+
+void Sharp::BIT_2_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Bit(2, temp);
+}
+
+void Sharp::BIT_2_A() {
+	Bit(2, A);
+}
+
+void Sharp::BIT_3_B() {
+	Bit(3, B);
+}
+
+void Sharp::BIT_3_C() {
+	Bit(3, C);
+}
+
+void Sharp::BIT_3_D() {
+	Bit(3, D);
+}
+
+void Sharp::BIT_3_E() {
+	Bit(3, E);
+}
+
+void Sharp::BIT_3_H() {
+	Bit(3, H);
+}
+
+void Sharp::BIT_3_L() {
+	Bit(3, L);
+}
+
+void Sharp::BIT_3_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Bit(3, temp);
+}
+
+void Sharp::BIT_3_A() {
+	Bit(3, A);
+}
+
+void Sharp::BIT_4_B() {
+	Bit(4, B);
+}
+
+void Sharp::BIT_4_C() {
+	Bit(4, C);
+}
+
+void Sharp::BIT_4_D() {
+	Bit(4, D);
+}
+
+void Sharp::BIT_4_E() {
+	Bit(4, E);
+}
+
+void Sharp::BIT_4_H() {
+	Bit(4, H);
+}
+
+void Sharp::BIT_4_L() {
+	Bit(4, L);
+}
+
+void Sharp::BIT_4_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Bit(4, temp);
+}
+
+void Sharp::BIT_4_A() {
+	Bit(4, A);
+}
+
+void Sharp::BIT_5_B() {
+	Bit(5, B);
+}
+
+void Sharp::BIT_5_C() {
+	Bit(5, C);
+}
+
+void Sharp::BIT_5_D() {
+	Bit(5, D);
+}
+
+void Sharp::BIT_5_E() {
+	Bit(5, E);
+}
+
+void Sharp::BIT_5_H() {
+	Bit(5, H);
+}
+
+void Sharp::BIT_5_L() {
+	Bit(5, L);
+}
+
+void Sharp::BIT_5_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Bit(5, temp);
+}
+
+void Sharp::BIT_5_A() {
+	Bit(5, A);
+}
+
+void Sharp::BIT_6_B() {
+	Bit(6, B);
+}
+
+void Sharp::BIT_6_C() {
+	Bit(6, C);
+}
+
+void Sharp::BIT_6_D() {
+	Bit(6, D);
+}
+
+void Sharp::BIT_6_E() {
+	Bit(6, E);
+}
+
+void Sharp::BIT_6_H() {
+	Bit(6, H);
+}
+
+void Sharp::BIT_6_L() {
+	Bit(6, L);
+}
+
+void Sharp::BIT_6_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Bit(6, temp);
+}
+
+void Sharp::BIT_6_A() {
+	Bit(6, A);
+}
+
+void Sharp::BIT_7_B() {
+	Bit(7, B);
+}
+
+void Sharp::BIT_7_C() {
+	Bit(7, C);
+}
+
+void Sharp::BIT_7_D() {
+	Bit(7, D);
+}
+
+void Sharp::BIT_7_E() {
+	Bit(7, E);
+}
+
+void Sharp::BIT_7_H() {
+	Bit(7, H);
+}
+
+void Sharp::BIT_7_L() {
+	Bit(7, L);
+}
+
+void Sharp::BIT_7_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	Bit(7, temp);
+}
+
+void Sharp::BIT_7_A() {
+	Bit(7, A);
+}
+
+void Sharp::RES_0_B() {
+	ResetBit(0, B);
+}
+
+void Sharp::RES_0_C() {
+	ResetBit(0, C);
+}
+
+void Sharp::RES_0_D() {
+	ResetBit(0, D);
+}
+
+void Sharp::RES_0_E() {
+	ResetBit(0, E);
+}
+
+void Sharp::RES_0_H() {
+	ResetBit(0, H);
+}
+
+void Sharp::RES_0_L() {
+	ResetBit(0, L);
+}
+
+void Sharp::RES_0_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ResetBit(0, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RES_0_A() {
+	ResetBit(1, A);
+}
+
+void Sharp::RES_1_B() {
+	ResetBit(1, B);
+}
+
+void Sharp::RES_1_C() {
+	ResetBit(1, C);
+}
+
+void Sharp::RES_1_D() {
+	ResetBit(1, D);
+}
+
+void Sharp::RES_1_E() {
+	ResetBit(1, E);
+}
+
+void Sharp::RES_1_H() {
+	ResetBit(1, H);
+}
+
+void Sharp::RES_1_L() {
+	ResetBit(1, L);
+}
+
+void Sharp::RES_1_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ResetBit(1, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RES_1_A() {
+	ResetBit(1, A);
+}
+
+void Sharp::RES_2_B() {
+	ResetBit(2, B);
+}
+
+void Sharp::RES_2_C() {
+	ResetBit(2, C);
+}
+
+void Sharp::RES_2_D() { 
+	ResetBit(2, D);
+}
+
+void Sharp::RES_2_E() {
+	ResetBit(2, E);
+}
+
+void Sharp::RES_2_H() {
+	ResetBit(2, H);
+}
+
+void Sharp::RES_2_L() {
+	ResetBit(2, L);
+}
+
+void Sharp::RES_2_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ResetBit(2, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RES_2_A() {
+	ResetBit(2, A);
+}
+
+void Sharp::RES_3_B() {
+	ResetBit(3, B);
+}
+
+void Sharp::RES_3_C() {
+	ResetBit(3, C);
+}
+
+void Sharp::RES_3_D() {
+	ResetBit(3, D);
+}
+
+void Sharp::RES_3_E() {
+	ResetBit(3, E);
+}
+
+void Sharp::RES_3_H() {
+	ResetBit(3, H);
+}
+
+void Sharp::RES_3_L() {
+	ResetBit(3, L);
+}
+
+void Sharp::RES_3_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ResetBit(3, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RES_3_A() {
+	ResetBit(3, A);
+}
+
+void Sharp::RES_4_B() {
+	ResetBit(4, B);
+}
+
+void Sharp::RES_4_C() {
+	ResetBit(4, C);
+}
+
+void Sharp::RES_4_D() {
+	ResetBit(4, D);
+}
+
+void Sharp::RES_4_E() {
+	ResetBit(4, E);
+}
+
+void Sharp::RES_4_H() {
+	ResetBit(4, H);
+}
+
+void Sharp::RES_4_L() {
+	ResetBit(4, L);
+}
+
+void Sharp::RES_4_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ResetBit(4, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RES_4_A() {
+	ResetBit(4, A);
+}
+
+void Sharp::RES_5_B() {
+	ResetBit(5, B);
+}
+
+void Sharp::RES_5_C() {
+	ResetBit(5, C);
+}
+
+void Sharp::RES_5_D() {
+	ResetBit(5, D);
+}
+
+void Sharp::RES_5_E() {
+	ResetBit(5, E);
+}
+
+void Sharp::RES_5_H() {
+	ResetBit(5, H);
+}
+
+void Sharp::RES_5_L() {
+	ResetBit(5, L);
+}
+
+void Sharp::RES_5_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ResetBit(5, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RES_5_A() {
+	ResetBit(5, A);
+}
+
+void Sharp::RES_6_B() {
+	ResetBit(6, B);
+}
+
+void Sharp::RES_6_C() {
+	ResetBit(6, C);
+}
+
+void Sharp::RES_6_D() {
+	ResetBit(6, D);
+}
+
+void Sharp::RES_6_E() {
+	ResetBit(6, E);
+}
+
+void Sharp::RES_6_H() {
+	ResetBit(6, H);
+}
+
+void Sharp::RES_6_L() {
+	ResetBit(6, L);
+}
+
+void Sharp::RES_6_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ResetBit(6, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RES_6_A() {
+	ResetBit(6, A);
+}
+
+void Sharp::RES_7_B() {
+	ResetBit(7, B);
+}
+
+void Sharp::RES_7_C() {
+	ResetBit(7, C);
+}
+
+void Sharp::RES_7_D() {
+	ResetBit(7, D);
+}
+
+void Sharp::RES_7_E() {
+	ResetBit(7, E);
+}
+
+void Sharp::RES_7_H() {
+	ResetBit(7, H);
+}
+
+void Sharp::RES_7_L() {
+	ResetBit(7, L);
+}
+
+void Sharp::RES_7_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	ResetBit(7, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::RES_7_A() {
+	ResetBit(7, A);
+}
+
+void Sharp::SET_0_B() {
+	SetBit(0, B);
+}
+
+void Sharp::SET_0_C() {
+	SetBit(0, C);
+}
+
+void Sharp::SET_0_D() {
+	SetBit(0, D);
+}
+
+void Sharp::SET_0_E() {
+	SetBit(0, E);
+}
+
+void Sharp::SET_0_H() {
+	SetBit(0, H);
+}
+
+void Sharp::SET_0_L() {
+	SetBit(0, L);
+}
+
+void Sharp::SET_0_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	SetBit(0, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SET_0_A() {
+	SetBit(1, A);
+}
+
+void Sharp::SET_1_B() {
+	SetBit(1, B);
+}
+
+void Sharp::SET_1_C() {
+	SetBit(1, C);
+}
+
+void Sharp::SET_1_D() {
+	SetBit(1, D);
+}
+
+void Sharp::SET_1_E() {
+	SetBit(1, E);
+}
+
+void Sharp::SET_1_H() {
+	SetBit(1, H);
+}
+
+void Sharp::SET_1_L() {
+	SetBit(1, L);
+}
+
+void Sharp::SET_1_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	SetBit(1, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SET_1_A() {
+	SetBit(1, A);
+}
+
+void Sharp::SET_2_B() {
+	SetBit(2, B);
+}
+
+void Sharp::SET_2_C() {
+	SetBit(2, C);
+}
+
+void Sharp::SET_2_D() {
+	SetBit(2, D);
+}
+
+void Sharp::SET_2_E() {
+	SetBit(2, E);
+}
+
+void Sharp::SET_2_H() {
+	SetBit(2, H);
+}
+
+void Sharp::SET_2_L() {
+	SetBit(2, L);
+}
+
+void Sharp::SET_2_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	SetBit(2, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SET_2_A() {
+	SetBit(2, A);
+}
+
+void Sharp::SET_3_B() {
+	SetBit(3, B);
+}
+
+void Sharp::SET_3_C() {
+	SetBit(3, C);
+}
+
+void Sharp::SET_3_D() {
+	SetBit(3, D);
+}
+
+void Sharp::SET_3_E() {
+	SetBit(3, E);
+}
+
+void Sharp::SET_3_H() {
+	SetBit(3, H);
+}
+
+void Sharp::SET_3_L() {
+	SetBit(3, L);
+}
+
+void Sharp::SET_3_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	SetBit(3, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SET_3_A() {
+	SetBit(3, A);
+}
+
+void Sharp::SET_4_B() {
+	SetBit(4, B);
+}
+
+void Sharp::SET_4_C() {
+	SetBit(4, C);
+}
+
+void Sharp::SET_4_D() {
+	SetBit(4, D);
+}
+
+void Sharp::SET_4_E() {
+	SetBit(4, E);
+}
+
+void Sharp::SET_4_H() {
+	SetBit(4, H);
+}
+
+void Sharp::SET_4_L() {
+	SetBit(4, L);
+}
+
+void Sharp::SET_4_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	SetBit(4, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SET_4_A() {
+	SetBit(4, A);
+}
+
+void Sharp::SET_5_B() {
+	SetBit(5, B);
+}
+
+void Sharp::SET_5_C() {
+	SetBit(5, C);
+}
+
+void Sharp::SET_5_D() {
+	SetBit(5, D);
+}
+
+void Sharp::SET_5_E() {
+	SetBit(5, E);
+}
+
+void Sharp::SET_5_H() {
+	SetBit(5, H);
+}
+
+void Sharp::SET_5_L() {
+	SetBit(5, L);
+}
+
+void Sharp::SET_5_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	SetBit(5, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SET_5_A() {
+	SetBit(5, A);
+}
+
+void Sharp::SET_6_B() {
+	SetBit(6, B);
+}
+
+void Sharp::SET_6_C() {
+	SetBit(6, C);
+}
+
+void Sharp::SET_6_D() {
+	SetBit(6, D);
+}
+
+void Sharp::SET_6_E() {
+	SetBit(6, E);
+}
+
+void Sharp::SET_6_H() {
+	SetBit(6, H);
+}
+
+void Sharp::SET_6_L() {
+	SetBit(6, L);
+}
+
+void Sharp::SET_6_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	SetBit(6, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SET_6_A() {
+	SetBit(6, A);
+}
+
+void Sharp::SET_7_B() {
+	SetBit(7, B);
+}
+
+void Sharp::SET_7_C() {
+	SetBit(7, C);
+}
+
+void Sharp::SET_7_D() {
+	SetBit(7, D);
+}
+
+void Sharp::SET_7_E() {
+	SetBit(7, E);
+}
+
+void Sharp::SET_7_H() {
+	SetBit(7, H);
+}
+
+void Sharp::SET_7_L() {
+	SetBit(7, L);
+}
+
+void Sharp::SET_7_ADDR_HL() {
+	temp = MemoryBus->CPURead(HL);
+	SetBit(7, temp);
+	MemoryBus->CPUWrite(HL, temp);
+}
+
+void Sharp::SET_7_A() {
+	SetBit(7, A);
 }
 
 Sharp::~Sharp() {
