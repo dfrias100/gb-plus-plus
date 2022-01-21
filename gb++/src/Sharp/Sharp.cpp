@@ -14,7 +14,7 @@ Sharp::Sharp(Memory* _MemoryBus) {
 	HL = 0x014D;
 	SP = 0xFFFE;
 
-	Log.open("execlog.txt", std::ios::trunc | std::ios::binary);
+	//Log.open("execlog.txt", std::ios::trunc | std::ios::binary);
 }
 
 void Sharp::SetFlag(SharpFlags flag, bool set) {
@@ -2634,36 +2634,11 @@ void Sharp::Clock() {
 			}
 		}
 
-		if (PC == 0xCB33)
-			Log.close();
-		memlog[0] = MemoryBus->CPURead(PC);
-		memlog[1] = MemoryBus->CPURead(PC + 1);
-		memlog[2] = MemoryBus->CPURead(PC + 2);
-		memlog[3] = MemoryBus->CPURead(PC + 3);
-		if (Log)
-			Log << std::hex << std::uppercase << "A: " << std::setw(2) << std::setfill('0') << (uint16_t)A 
-											 << " F: " << std::setw(2) << std::setfill('0') << (uint16_t)F 
-											 << " B: " << std::setw(2) << std::setfill('0') << (uint16_t)B 
-											 << " C: " << std::setw(2) << std::setfill('0') << (uint16_t)C 
-											 << " D: " << std::setw(2) << std::setfill('0') << (uint16_t)D 
-											 << " E: " << std::setw(2) << std::setfill('0') << (uint16_t)E 
-											 << " H: " << std::setw(2) << std::setfill('0') << (uint16_t)H 
-											 << " L: " << std::setw(2) << std::setfill('0') << (uint16_t)L 
-											<< " SP: " << std::setw(4) << std::setfill('0') << SP
-										 << " PC: 00:" << std::setw(4) << std::setfill('0') << PC << std::setw(2) << " (" 
-													   << std::setw(2) << std::setfill('0') << (uint16_t)memlog[0] << " " 
-													   << std::setw(2) << std::setfill('0') << (uint16_t)memlog[1] << " " 
-													   << std::setw(2) << std::setfill('0') << (uint16_t)memlog[2] << " " 
-													   << std::setw(2) << std::setfill('0') << (uint16_t)memlog[3] << ")\n";
-
 		Opcode = MemoryBus->CPURead(PC++);
 		DecodedInstr = SHARPINSTRS[Opcode];
 
 		CurrCycles = DecodedInstr.Cycles;
 		CurrArgSize = DecodedInstr.ArgSize;
-
-		//CurrCycles = SHARPINSTRS[Opcode].Cycles;
-		//CurrArgSize = SHARPINSTRS[Opcode].ArgSize;
 
 		switch (CurrArgSize) {
 			case 1:
