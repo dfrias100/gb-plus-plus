@@ -7,6 +7,14 @@ Sharp::Sharp(Memory* _MemoryBus) {
 	MemoryBus = _MemoryBus;
 	PC = 0x100;
 	Suspended = false;
+
+	AF = 0x01B0;
+	BC = 0x0013;
+	DE = 0x00D8;
+	HL = 0x014D;
+	SP = 0xFFFE;
+
+	Log.open("execlog.txt", std::ios::trunc | std::ios::binary);
 }
 
 void Sharp::SetFlag(SharpFlags flag, bool set) {
@@ -23,15 +31,15 @@ uint8_t Sharp::GetFlag(SharpFlags flag) {
 
 // Helper Functions
 void Sharp::DecrementRegister(uint8_t& reg) {
-	if ((reg & 0xF) > 0) {
+	if ((reg & 0xF) == 0) {
 		SetFlag(h, 1);
 	} else {
 		SetFlag(h, 0);
 	}
 
-	B--;
+	reg--;
 
-	if (B == 0) {
+	if (reg == 0) {
 		SetFlag(z, 1);
 	} else {
 		SetFlag(z, 0);
@@ -41,7 +49,7 @@ void Sharp::DecrementRegister(uint8_t& reg) {
 }
 
 void Sharp::IncrementRegister(uint8_t& reg) {
-	if (reg & 0xF) {
+	if ((reg & 0xF) == 0xF) {
 		SetFlag(h, 1);
 	} else {
 		SetFlag(h, 0);
@@ -93,7 +101,7 @@ void Sharp::UnsignedAddCarry(uint8_t& dest, uint8_t src) {
 		SetFlag(c, 0);
 	}
 
-	temp2 = (dest & 0xF) + (src & 0xF);
+	temp2 = (dest & 0xF) + (src & 0xF) + temp;
 
 	if ((temp2 & 0x10) == 0x10) {
 		SetFlag(h, 1);
@@ -133,13 +141,13 @@ void Sharp::UnsignedAdd16(uint16_t& dest, uint16_t src) {
 }
 
 void Sharp::Subtract(uint8_t& dest, uint8_t src) {
-	if (src < dest) {
+	if (src > dest) {
 		SetFlag(c, 1);
 	} else {
 		SetFlag(c, 0);
 	}
 
-	if ((src & 0xF) < (dest & 0xF)) {
+	if ((src & 0xF) > (dest & 0xF)) {
 		SetFlag(h, 1); 
 	} else {
 		SetFlag(h, 0);
@@ -159,13 +167,13 @@ void Sharp::Subtract(uint8_t& dest, uint8_t src) {
 void Sharp::SubtractWithCarry(uint8_t& dest, uint8_t src) {
 	temp = GetFlag(c);
 
-	if (src < dest || (temp && (src - dest) > 0x0)) {
+	if (src > dest || (temp && (dest - src) == 0x0)) {
 		SetFlag(c, 1);
 	} else {
 		SetFlag(c, 0);
 	}
 
-	if ((src & 0xF) < (dest & 0xF)) {
+	if ((src & 0xF) > (dest & 0xF) || (temp && ((src & 0xF) - (dest & 0xF)) == 0)) {
 		SetFlag(h, 1);
 	} else {
 		SetFlag(h, 0);
@@ -216,11 +224,11 @@ void Sharp::RotateRightCircular(uint8_t& arg) {
 }
 
 void Sharp::RotateLeft(uint8_t& arg) {
-	temp = GetFlag(c);
+	temp2 = GetFlag(c);
 	SetFlag(c, (arg & 0x80) >> 7);
 
 	arg <<= 1;
-	arg += temp;
+	arg += temp2;
 
 	if (arg == 0) {
 		SetFlag(z, 1);
@@ -233,11 +241,11 @@ void Sharp::RotateLeft(uint8_t& arg) {
 }
 
 void Sharp::RotateRight(uint8_t& arg) {
-	temp = GetFlag(c);
+	temp2 = GetFlag(c);
 	SetFlag(c, arg & 0x1);
 
 	arg >>= 1;
-	arg += (temp << 7);
+	arg += (temp2 << 7);
 
 	if (arg == 0) {
 		SetFlag(z, 1);
@@ -296,10 +304,10 @@ void Sharp::ShiftRight(uint8_t& arg) {
 }
 
 void Sharp::Swap(uint8_t& arg) {
-	temp = arg & 0xF;
+	temp2 = arg & 0xF;
 	arg &= 0xF0;
 	arg >>= 4;
-	arg |= (temp << 4);
+	arg |= (temp2 << 4);
 
 
 	if (arg == 0) {
@@ -468,6 +476,7 @@ void Sharp::LD_D_W() {
 
 void Sharp::RLA() {
 	RotateLeft(A);
+	SetFlag(z, 0);
 }
 
 void Sharp::JR_SW() {
@@ -500,6 +509,7 @@ void Sharp::LD_E_W() {
 
 void Sharp::RRA() {
 	RotateRight(A);
+	SetFlag(z, 0);
 }
 
 void Sharp::JR_NZ_SW() {
@@ -549,7 +559,7 @@ void Sharp::DAA() {
 		SetFlag(c, GetFlag(c) | (!GetFlag(n) && (GetFlag(c) || (A > 0x99)) ) );
 	}
 
-	temp += GetFlag(n) ? -temp : temp;
+	A += GetFlag(n) ? -temp : temp;
 
 	if (A == 0) {
 		SetFlag(z, 1);
@@ -1299,7 +1309,7 @@ void Sharp::CALL_ADDR_DW() {
 }
 
 void Sharp::ADC_A_W() {
-	UnsignedAdd(A, (uint8_t) CurrOperand);
+	UnsignedAddCarry(A, (uint8_t) CurrOperand);
 }
 
 void Sharp::RST_08H() {
@@ -1422,16 +1432,15 @@ void Sharp::RST_20H() {
 
 void Sharp::ADD_SP_SW() {
 	temp3 = CurrOperand & 0x80 ? 0xFF00 | CurrOperand : CurrOperand & 0xFF;
-	if (temp3 > (0xFFFF - SP)) {
+	if ((temp3 & 0xFF) > (0xFF - (SP & 0xFF))) {
 		SetFlag(c, 1);
-	}
-	else {
+	} else {
 		SetFlag(c, 0);
 	}
 
-	temp3 = (SP & 0x0FFF) + (temp3 & 0x0FFF);
+	temp3 = (SP & 0xF) + (temp3 & 0xF);
 
-	if ((temp3 & 0x1000) == 0x1000) {
+	if ((temp3 & 0x10) == 0x10) {
 		SetFlag(h, 1);
 	} else {
 		SetFlag(h, 0);
@@ -1466,7 +1475,7 @@ void Sharp::LDH_A_ADDR_W() {
 }
 
 void Sharp::POP_AF() {
-	AF = MemoryBus->CPURead16(SP);
+	AF = MemoryBus->CPURead16(SP) & 0xFFF0;
 	SP += 2;
 }
 
@@ -1501,8 +1510,9 @@ void Sharp::RST_30H() {
 
 void Sharp::LD_HL_SP_PLUS_SW() {
 	CurrOperand = CurrOperand & 0x80 ? 0xFF00 | CurrOperand : CurrOperand & 0xFF;
-	HL = SP;
-	UnsignedAdd16(HL, CurrOperand);
+	temp = SP;
+	UnsignedAdd(temp, CurrOperand);
+	HL = SP + (int8_t) CurrOperand;
 	SetFlag(z, 0);
 	SetFlag(n, 0);
 }
@@ -2097,7 +2107,7 @@ void Sharp::RES_0_ADDR_HL() {
 }
 
 void Sharp::RES_0_A() {
-	ResetBit(1, A);
+	ResetBit(0, A);
 }
 
 void Sharp::RES_1_B() {
@@ -2369,7 +2379,7 @@ void Sharp::SET_0_ADDR_HL() {
 }
 
 void Sharp::SET_0_A() {
-	SetBit(1, A);
+	SetBit(0, A);
 }
 
 void Sharp::SET_1_B() {
@@ -2611,6 +2621,7 @@ void Sharp::SET_7_A() {
 }
 
 Sharp::~Sharp() {
+	Log.close();
 }
 
 void Sharp::Clock() {
@@ -2622,6 +2633,28 @@ void Sharp::Clock() {
 				PendingIMEChange = 0x00;
 			}
 		}
+
+		if (PC == 0xCB33)
+			Log.close();
+		memlog[0] = MemoryBus->CPURead(PC);
+		memlog[1] = MemoryBus->CPURead(PC + 1);
+		memlog[2] = MemoryBus->CPURead(PC + 2);
+		memlog[3] = MemoryBus->CPURead(PC + 3);
+		if (Log)
+			Log << std::hex << std::uppercase << "A: " << std::setw(2) << std::setfill('0') << (uint16_t)A 
+											 << " F: " << std::setw(2) << std::setfill('0') << (uint16_t)F 
+											 << " B: " << std::setw(2) << std::setfill('0') << (uint16_t)B 
+											 << " C: " << std::setw(2) << std::setfill('0') << (uint16_t)C 
+											 << " D: " << std::setw(2) << std::setfill('0') << (uint16_t)D 
+											 << " E: " << std::setw(2) << std::setfill('0') << (uint16_t)E 
+											 << " H: " << std::setw(2) << std::setfill('0') << (uint16_t)H 
+											 << " L: " << std::setw(2) << std::setfill('0') << (uint16_t)L 
+											<< " SP: " << std::setw(4) << std::setfill('0') << SP
+										 << " PC: 00:" << std::setw(4) << std::setfill('0') << PC << std::setw(2) << " (" 
+													   << std::setw(2) << std::setfill('0') << (uint16_t)memlog[0] << " " 
+													   << std::setw(2) << std::setfill('0') << (uint16_t)memlog[1] << " " 
+													   << std::setw(2) << std::setfill('0') << (uint16_t)memlog[2] << " " 
+													   << std::setw(2) << std::setfill('0') << (uint16_t)memlog[3] << ")\n";
 
 		Opcode = MemoryBus->CPURead(PC++);
 		DecodedInstr = SHARPINSTRS[Opcode];

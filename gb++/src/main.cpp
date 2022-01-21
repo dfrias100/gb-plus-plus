@@ -18,16 +18,18 @@ int main(int argc, char* argv[]) {
 
     Memory GB;
 
+    GB.CartridgeLoader(argv[1]);
+
     while (!exit) {
-        while (EmuWindow.windowEvent(emuEvent)) {
-            if (emuEvent.type == sf::Event::Closed) {
-                exit = true;
-            }
-        }
+        //while (EmuWindow.windowEvent(emuEvent)) {
+        //    if (emuEvent.type == sf::Event::Closed) {
+        //        exit = true;
+        //    }
+        //}
 
-        //GB.Clock();
+        GB.Clock();
 
-        EmuWindow.draw();
+        //EmuWindow.draw();
     }
 
     delete[] frameBuffer;

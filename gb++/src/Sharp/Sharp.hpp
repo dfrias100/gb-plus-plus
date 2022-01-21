@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <string>
+#include <iomanip>
+#include <fstream>
 
 class Memory;
 
@@ -12,6 +14,10 @@ class Memory;
 // Signed Word (SW) = 8 bits / 1 byte, signed integer
 
 class Sharp {
+	// Used to debug CPU operation, but this ability has been removed for now
+	std::ofstream Log;
+	uint8_t memlog[4];
+
 	uint16_t SP; // Stack pointer
 	uint16_t PC; // Program counter (Instruction pointer)
 
@@ -691,7 +697,7 @@ class Sharp {
 		{2, 20, &Sharp::LD_ADDR_DW_SP  }, {0,  8, &Sharp::ADD_HL_BC   }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0,  8, &Sharp::DEC_BC	   },
 		{0,  4, &Sharp::INC_C          }, {0,  4, &Sharp::DEC_C       }, {1,  8, &Sharp::LD_C_W         }, {0,  4, &Sharp::RRCA		   },
 									  							    										 
-		{1,  4, &Sharp::STOP           }, {2, 12, &Sharp::LD_DE_DW    }, {0, 12, &Sharp::LD_ADDR_BC_A   }, {0,  8, &Sharp::INC_DE	   },
+		{1,  4, &Sharp::STOP           }, {2, 12, &Sharp::LD_DE_DW    }, {0, 12, &Sharp::LD_ADDR_DE_A   }, {0,  8, &Sharp::INC_DE	   },
 		{0,  4, &Sharp::INC_D          }, {0,  4, &Sharp::DEC_D       }, {1,  8, &Sharp::LD_D_W         }, {0,  4, &Sharp::RLA		   },
 		{1, 12, &Sharp::JR_SW          }, {0,  8, &Sharp::ADD_HL_DE   }, {0,  8, &Sharp::LD_A_ADDR_DE   }, {0,  8, &Sharp::DEC_DE	   },
 		{0,  4, &Sharp::INC_E          }, {0,  4, &Sharp::DEC_E       }, {1,  8, &Sharp::LD_E_W         }, {0,  4, &Sharp::RRA 		   },
