@@ -1,8 +1,8 @@
 # gb-plus-plus
 Gameboy Emulator in C++ with SFML 2.5
 
-This is gameboy emulator that is a work in progress! Many parts have not yet been implemented. Here's the current progress as of commit [f6d17564](https://github.com/dfrias100/gb-plus-plus/commit/f6d175644f4eebcf8f8c7720c524574a31dc1752):
-* CPU: 500 of 500 instructions implemented (100.0%). All instructions not involving interrupts have been confirmed working by Blargg's test ROMS, interrupts have to be tested later once they are implemented.
+This is gameboy emulator that is a work in progress! Many parts have not yet been implemented. Here's the current progress as of commit [8a16172](https://github.com/dfrias100/gb-plus-plus/commit/8a161724cc6659cc9840751e6ac401a8f1eafb21):
+* CPU: 500 of 500 instructions implemented (100.0%). All instructions and interrupt handling have been implemented. Timer emulation is also implemented, other interrupt sources will have to be emulated.
 	- 260 of 260 Prefix 0xCB shift, rotate, bit instructions (100.0%)
 	- 92 of 92 8-bit ALU instructions (100.0%)
 	- 85 of 85 8-bit load instructions (100.0%)
@@ -16,4 +16,4 @@ This is gameboy emulator that is a work in progress! Many parts have not yet bee
 * Video: No progress yet.
 * Audio: No progress yet, it may not even be implemented at all.
 * Input: Not available yet, as at least CPU, Memory, and Video have to be somewhat implemented.
-* General: Barebones console program, only opens an SFML window with a white background. I may implement a basic UI later.
+* General: Barebones console program, loads ROM-only carts opens an SFML window with a white background. I may implement a basic UI later.
