@@ -12,9 +12,9 @@ int main(int argc, char* argv[]) {
     uint8_t* frameBuffer = new uint8_t[GB_SCREEN_WIDTH * GB_SCREEN_HEIGHT * 4];
     std::fill(frameBuffer, frameBuffer + (GB_SCREEN_WIDTH * GB_SCREEN_HEIGHT * 4), 0xFF);
 
-    Window EmuWindow(GB_SCREEN_WIDTH, GB_SCREEN_HEIGHT, frameBuffer);
+    //Window EmuWindow(GB_SCREEN_WIDTH, GB_SCREEN_HEIGHT, frameBuffer);
 
-    sf::Event emuEvent;
+    //sf::Event emuEvent;
 
     Memory GB;
 
@@ -22,15 +22,15 @@ int main(int argc, char* argv[]) {
         GB.CartridgeLoader(argv[1]);
 
     while (!exit) {
-        while (EmuWindow.windowEvent(emuEvent)) {
-            if (emuEvent.type == sf::Event::Closed) {
-                exit = true;
-            }
-        }
+        //while (EmuWindow.windowEvent(emuEvent)) {
+        //    if (emuEvent.type == sf::Event::Closed) {
+        //        exit = true;
+        //    }
+        //}
 
         GB.Clock();
 
-        EmuWindow.draw();
+        //EmuWindow.draw();
     }
 
     delete[] frameBuffer;

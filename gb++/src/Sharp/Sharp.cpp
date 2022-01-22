@@ -6,6 +6,7 @@
 Sharp::Sharp(Memory* _MemoryBus) {
 	MemoryBus = _MemoryBus;
 	PC = 0x100;
+	InterruptMasterEnable = 0xF;
 	Suspended = false;
 
 	AF = 0x01B0;
@@ -898,11 +899,7 @@ void Sharp::LD_ADDR_HL_L() {
 
 // TODO: Implement this halt
 void Sharp::HALT() {
-	if (InterruptMasterEnable) {
-
-	} else {
-		PC++;
-	}
+	Suspended = true;
 }
 
 void Sharp::LD_ADDR_HL_A() {
@@ -1373,7 +1370,7 @@ void Sharp::RET_C() {
 void Sharp::RETI() {
 	PC = MemoryBus->CPURead16(SP);
 	SP += 2;
-	InterruptMasterEnable = 0x1;
+	InterruptMasterEnable = 0xF;
 }
 
 void Sharp::JP_C_ADDR_DW() {
@@ -2620,37 +2617,109 @@ void Sharp::SET_7_A() {
 	SetBit(7, A);
 }
 
+void Sharp::INT_40() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x40;
+	CurrCycles += 12;
+}
+
+void Sharp::INT_48() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x48;
+	CurrCycles += 12;
+}
+
+void Sharp::INT_50() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x50;
+	CurrCycles += 12;
+}
+
+void Sharp::INT_58() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x58;
+	CurrCycles += 12;
+}
+
+void Sharp::INT_60() {
+	SP -= 2;
+	MemoryBus->CPUWrite16(SP, PC);
+	PC = 0x60;
+	CurrCycles += 12;
+}
+
 Sharp::~Sharp() {
 	Log.close();
 }
 
-void Sharp::Clock() {
-	if (CurrCycles == 0) {
-		if ((PendingIMEChange & 0x10) && ((PendingIMEChange & 0x0F) > 0)) {
-			PendingIMEChange--;
-			if ((PendingIMEChange & 0x0F) == 0) {
-				InterruptMasterEnable = (PendingIMEChange & 0x80) >> 7;
-				PendingIMEChange = 0x00;
-			}
+// this is kind of a mess
+void Sharp::InterruptHandler() {
+	if (MemoryBus->InterruptEnableRegister && *(MemoryBus->InterruptFlags))
+		Suspended = false;
+
+	if (InterruptMasterEnable && MemoryBus->InterruptEnableRegister && *(MemoryBus->InterruptFlags)) {
+		temp = MemoryBus->InterruptEnableRegister & *(MemoryBus->InterruptFlags);
+
+		if (temp & VBLANK) {
+			*(MemoryBus->InterruptFlags) &= ~VBLANK;
+			INT_40();
 		}
 
-		Opcode = MemoryBus->CPURead(PC++);
-		DecodedInstr = SHARPINSTRS[Opcode];
+		if (temp & LCDSTAT) {
+			*(MemoryBus->InterruptFlags) &= ~LCDSTAT;
+			INT_48();
+		}
 
-		CurrCycles = DecodedInstr.Cycles;
-		CurrArgSize = DecodedInstr.ArgSize;
+		if (temp & TIMER) {
+			*(MemoryBus->InterruptFlags) &= ~TIMER;
+			INT_50();
+		}
 
-		switch (CurrArgSize) {
+		if (temp & SERIAL) {
+			*(MemoryBus->InterruptFlags) &= ~SERIAL;
+			INT_58();
+		}
+
+		if (temp & JOYPAD) {
+			*(MemoryBus->InterruptFlags) &= ~JOYPAD;
+			INT_60();
+		}
+	}
+}
+
+void Sharp::Clock() {
+	if (!Suspended) {
+		if (CurrCycles == 0) {
+			Opcode = MemoryBus->CPURead(PC++);
+			DecodedInstr = SHARPINSTRS[Opcode];
+
+			CurrCycles = DecodedInstr.Cycles;
+			CurrArgSize = DecodedInstr.ArgSize;
+
+			switch (CurrArgSize) {
 			case 1:
-				CurrOperand = (uint16_t) MemoryBus->CPURead(PC++);
+				CurrOperand = (uint16_t)MemoryBus->CPURead(PC++);
 				break;
 			case 2:
 				CurrOperand = MemoryBus->CPURead16(PC);
 				PC += 2;
 				break;
-		}
+			}
 
-		(this->*DecodedInstr.Instruction)();
+			(this->*DecodedInstr.Instruction)();
+
+			if ((PendingIMEChange & 0x10) && ((PendingIMEChange & 0x0F) > 0)) {
+				PendingIMEChange--;
+				if ((PendingIMEChange & 0x0F) == 0) {
+					InterruptMasterEnable = (PendingIMEChange & 0x80) >> 7;
+					PendingIMEChange = 0x00;
+				}
+			}
+		}
+		CurrCycles--;
 	}
-	CurrCycles--;
 }

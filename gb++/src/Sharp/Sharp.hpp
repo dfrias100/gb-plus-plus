@@ -73,6 +73,14 @@ class Sharp {
 		c = (1 << 4)
 	};
 
+	enum SystemInterrupts {
+		VBLANK  = 0x01,
+		LCDSTAT = 0x02,
+		TIMER   = 0x04,
+		SERIAL  = 0x08,
+		JOYPAD  = 0x10
+	};
+
 	void SetFlag(SharpFlags flag, bool set);
 	uint8_t GetFlag(SharpFlags flag);
 
@@ -683,6 +691,13 @@ class Sharp {
 	void SET_7_ADDR_HL();
 	void SET_7_A();
 
+	// Interrupts
+	void INT_40();
+	void INT_48();
+	void INT_50();
+	void INT_58();
+	void INT_60();
+
 	struct SharpInstr {
 		uint8_t ArgSize; // Can be 0 words, 1 word, or 2 words
 		uint8_t Cycles; // Number of cycles the instructions take
@@ -697,7 +712,7 @@ class Sharp {
 		{2, 20, &Sharp::LD_ADDR_DW_SP  }, {0,  8, &Sharp::ADD_HL_BC   }, {0,  8, &Sharp::LD_A_ADDR_BC   }, {0,  8, &Sharp::DEC_BC	   },
 		{0,  4, &Sharp::INC_C          }, {0,  4, &Sharp::DEC_C       }, {1,  8, &Sharp::LD_C_W         }, {0,  4, &Sharp::RRCA		   },
 									  							    										 
-		{1,  4, &Sharp::STOP           }, {2, 12, &Sharp::LD_DE_DW    }, {0, 12, &Sharp::LD_ADDR_DE_A   }, {0,  8, &Sharp::INC_DE	   },
+		{1,  4, &Sharp::STOP           }, {2, 12, &Sharp::LD_DE_DW    }, {0,  8, &Sharp::LD_ADDR_DE_A   }, {0,  8, &Sharp::INC_DE	   },
 		{0,  4, &Sharp::INC_D          }, {0,  4, &Sharp::DEC_D       }, {1,  8, &Sharp::LD_D_W         }, {0,  4, &Sharp::RLA		   },
 		{1, 12, &Sharp::JR_SW          }, {0,  8, &Sharp::ADD_HL_DE   }, {0,  8, &Sharp::LD_A_ADDR_DE   }, {0,  8, &Sharp::DEC_DE	   },
 		{0,  4, &Sharp::INC_E          }, {0,  4, &Sharp::DEC_E       }, {1,  8, &Sharp::LD_E_W         }, {0,  4, &Sharp::RRA 		   },
@@ -727,8 +742,8 @@ class Sharp {
 		{0,  4, &Sharp::LD_L_B         }, {0,  4, &Sharp::LD_L_C      }, {0,  4, &Sharp::LD_L_D         }, {0,  4, &Sharp::LD_L_E      },
 		{0,  4, &Sharp::LD_L_H         }, {0,  4, &Sharp::LD_L_L      }, {0,  8, &Sharp::LD_L_ADDR_HL   }, {0,  4, &Sharp::LD_L_A      },
 									  																		 
-		{0,  4, &Sharp::LD_ADDR_HL_B   }, {0,  4, &Sharp::LD_ADDR_HL_C}, {0,  4, &Sharp::LD_ADDR_HL_D   }, {0,  4, &Sharp::LD_ADDR_HL_E},
-		{0,  4, &Sharp::LD_ADDR_HL_H   }, {0,  4, &Sharp::LD_ADDR_HL_L}, {0,  8, &Sharp::HALT           }, {0,  4, &Sharp::LD_ADDR_HL_A},
+		{0,  8, &Sharp::LD_ADDR_HL_B   }, {0,  8, &Sharp::LD_ADDR_HL_C}, {0,  8, &Sharp::LD_ADDR_HL_D   }, {0,  8, &Sharp::LD_ADDR_HL_E},
+		{0,  8, &Sharp::LD_ADDR_HL_H   }, {0,  8, &Sharp::LD_ADDR_HL_L}, {0,  4, &Sharp::HALT           }, {0,  8, &Sharp::LD_ADDR_HL_A},
 		{0,  4, &Sharp::LD_A_B         }, {0,  4, &Sharp::LD_A_C      }, {0,  4, &Sharp::LD_A_D         }, {0,  4, &Sharp::LD_A_E      },
 		{0,  4, &Sharp::LD_A_H         }, {0,  4, &Sharp::LD_A_L      }, {0,  8, &Sharp::LD_A_ADDR_HL   }, {0,  4, &Sharp::LD_A_A      },
 									  																		 
@@ -861,6 +876,7 @@ public:
 	Sharp(Memory* _MemoryBus);
 	~Sharp();
 
+	void InterruptHandler();
 	void Clock();
 };
 

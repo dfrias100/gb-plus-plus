@@ -13,13 +13,15 @@ class Memory {
 	uint8_t* IO;         // IO register located at 0xFF00: 128 bytes
 	uint8_t* SpriteOAM;  // Video RAM located at 0xFE00: 160 bytes
 	uint8_t* WorkingRAM; // Working RAM located at 0xC000 (mirrored at 0xE000): 8 kilobytes
-	uint8_t* ExtRAM;  // Switch RAM located at 0xA000: 8 kilobytes
-	uint8_t* VideoRAM;   // Switch RAM located at 0x8000: 2 kilobytes
+	uint8_t* ExtRAM;	 // External RAM located at 0xA000: 8 kilobytes
+	uint8_t* VideoRAM;   // Video RAM located at 0x8000: 2 kilobytes
 	uint8_t* Cartridge;  // Cartridge ROM beginning at 0x0000: 32 kilobytes
 
-	uint8_t InterruptEnableRegister; // Interrupt Enable Register located at 0xFFFF: 1 byte
-
 	Sharp* CPU; // The Memory class will need to tick the CPU itself
+
+	// Ticks
+	int64_t SystemCycles;
+	int64_t SystemCyclesTMA;
 
 	const uint8_t IOPowerOn[0x80]{
 		0xCF, 0x00, 0x7E, 0x00, 0xAB, 0x00, 0x00, 0xF8,
@@ -40,7 +42,17 @@ class Memory {
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 	};
 
+	const int TimerControl[4] {
+		1024,
+		  16,
+		  64,
+		 256
+	};
+
 public:
+	uint8_t InterruptEnableRegister; // Interrupt Enable Register located at 0xFFFF: 1 byte
+	uint8_t* InterruptFlags;
+
 	Memory();
 	~Memory();
 
@@ -49,6 +61,8 @@ public:
 
 	void CPUWrite16(uint16_t address, uint16_t data);
 	uint16_t CPURead16(uint16_t address);
+
+	void UpdateTimer();
 
 	// This is a temporary function
 	bool CartridgeLoader(std::string filename);

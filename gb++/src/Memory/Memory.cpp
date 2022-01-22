@@ -19,6 +19,11 @@ Memory::Memory() {
 	std::fill(VideoRAM, VideoRAM + 1024 * 2, 0x00);
 	std::copy(IOPowerOn, IOPowerOn + 0x80, IO);
 
+	InterruptFlags = &IO[0xF];
+
+	SystemCycles = 0;
+	SystemCyclesTMA = 0;
+
 	CPU = new Sharp(this);
 }
 
@@ -94,6 +99,33 @@ uint16_t Memory::CPURead16(uint16_t address) {
 	return ((uint16_t) CPURead(address + 1) << 8) | CPURead(address);
 }
 
+void Memory::UpdateTimer() {
+	// IO[0x04] is DIV
+	// IO[0x05] is TIMA
+	// IO[0x06] is TMA
+	// IO[0x07] is TAC
+	// IO[0x0F] is IF
+
+	SystemCycles++;
+
+	if (SystemCycles % 256 == 0) {
+		IO[0x04]++;
+	}
+
+	if (IO[0x07] & 0x04) {
+		SystemCyclesTMA++;
+		while (SystemCyclesTMA >= TimerControl[IO[0x07] & 0x03]) {
+			SystemCyclesTMA -= TimerControl[IO[0x07] & 0x03];
+			IO[0x05]++;
+
+			if (IO[0x05] == 0) {
+				IO[0x0F] |= 0x04;
+				IO[0x05] = IO[0x06];
+			}
+		}
+	}
+}
+
 bool Memory::CartridgeLoader(std::string filename) {
 	std::ifstream ROM;
 	ROM.open(filename, std::ios::binary);
@@ -105,5 +137,7 @@ bool Memory::CartridgeLoader(std::string filename) {
 
 void Memory::Clock() {
 	CPU->Clock();
+	CPU->InterruptHandler();
+	UpdateTimer();
 }
 
