@@ -390,7 +390,7 @@ void Sharp::LD_BC_DW() {
 }
 
 void Sharp::LD_ADDR_BC_A() {
-	MemoryBus->CPUWrite(BC, A);
+	MemoryBus->WriteWord(BC, A);
 }
 
 void Sharp::INC_BC() {
@@ -415,7 +415,7 @@ void Sharp::RLCA() {
 }
 
 void Sharp::LD_ADDR_DW_SP() {
-	MemoryBus->CPUWrite16(CurrOperand, SP);
+	MemoryBus->WriteDoubleWord(CurrOperand, SP);
 }
 
 void Sharp::ADD_HL_BC() {
@@ -423,7 +423,7 @@ void Sharp::ADD_HL_BC() {
 }
 
 void Sharp::LD_A_ADDR_BC() {
-	A = MemoryBus->CPURead(BC);
+	A = MemoryBus->ReadWord(BC);
 }
 
 void Sharp::DEC_BC() {
@@ -456,7 +456,7 @@ void Sharp::LD_DE_DW() {
 }
 
 void Sharp::LD_ADDR_DE_A() {
-	MemoryBus->CPUWrite(DE, A);
+	MemoryBus->WriteWord(DE, A);
 }
 
 void Sharp::INC_DE(){
@@ -489,7 +489,7 @@ void Sharp::ADD_HL_DE() {
 }
 
 void Sharp::LD_A_ADDR_DE() {
-	A = MemoryBus->CPURead(DE);
+	A = MemoryBus->ReadWord(DE);
 }
 
 void Sharp::DEC_DE() {
@@ -525,7 +525,7 @@ void Sharp::LD_HL_DW() {
 }
 
 void Sharp::LD_ADDR_HL_PI_A() {
-	MemoryBus->CPUWrite(HL++, A);
+	MemoryBus->WriteWord(HL++, A);
 }
 
 void Sharp::INC_HL() {
@@ -583,7 +583,7 @@ void Sharp::ADD_HL_HL() {
 }
 
 void Sharp::LD_A_ADDR_HL_PI() {
-	A = MemoryBus->CPURead(HL++);
+	A = MemoryBus->ReadWord(HL++);
 }
 
 void Sharp::DEC_HL() {
@@ -621,7 +621,7 @@ void Sharp::LD_SP_DW() {
 }
 
 void Sharp::LD_ADDR_HL_PD_A() {
-	MemoryBus->CPUWrite(HL--, A);
+	MemoryBus->WriteWord(HL--, A);
 }
 
 void Sharp::INC_SP() {
@@ -629,19 +629,19 @@ void Sharp::INC_SP() {
 }
 
 void Sharp::INC_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	IncrementRegister(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::DEC_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	DecrementRegister(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::LD_ADDR_HL_W() {
-	MemoryBus->CPUWrite(HL, (uint8_t) CurrOperand);
+	MemoryBus->WriteWord(HL, (uint8_t) CurrOperand);
 }
 
 void Sharp::SCF() {
@@ -662,7 +662,7 @@ void Sharp::ADD_HL_SP() {
 }
 
 void Sharp::LD_A_ADDR_HL_PD() {
-	A = MemoryBus->CPURead(HL--);
+	A = MemoryBus->ReadWord(HL--);
 }
 
 void Sharp::DEC_SP() {
@@ -711,7 +711,7 @@ void Sharp::LD_B_L() {
 }
 
 void Sharp::LD_B_ADDR_HL() {
-	B = MemoryBus->CPURead(HL);
+	B = MemoryBus->ReadWord(HL);
 }
 
 void Sharp::LD_B_A() {
@@ -742,7 +742,7 @@ void Sharp::LD_C_L() {
 }
 
 void Sharp::LD_C_ADDR_HL() {
-	C = MemoryBus->CPURead(HL);
+	C = MemoryBus->ReadWord(HL);
 }
 
 void Sharp::LD_C_A() {
@@ -773,7 +773,7 @@ void Sharp::LD_D_L() {
 }
 
 void Sharp::LD_D_ADDR_HL() {
-	D = MemoryBus->CPURead(HL);
+	D = MemoryBus->ReadWord(HL);
 }
 
 void Sharp::LD_D_A() {
@@ -804,7 +804,7 @@ void Sharp::LD_E_L() {
 }
 
 void Sharp::LD_E_ADDR_HL() {
-	E = MemoryBus->CPURead(HL);
+	E = MemoryBus->ReadWord(HL);
 }
 
 void Sharp::LD_E_A() {
@@ -835,7 +835,7 @@ void Sharp::LD_H_L() {
 }
 
 void Sharp::LD_H_ADDR_HL() {
-	H = MemoryBus->CPURead(HL);
+	H = MemoryBus->ReadWord(HL);
 }
 
 void Sharp::LD_H_A() {
@@ -866,7 +866,7 @@ void Sharp::LD_L_L() {
 }
 
 void Sharp::LD_L_ADDR_HL() {
-	L = MemoryBus->CPURead(HL);
+	L = MemoryBus->ReadWord(HL);
 }
 
 void Sharp::LD_L_A() {
@@ -874,27 +874,27 @@ void Sharp::LD_L_A() {
 }
 
 void Sharp::LD_ADDR_HL_B() {
-	MemoryBus->CPUWrite(HL, B);
+	MemoryBus->WriteWord(HL, B);
 }
 
 void Sharp::LD_ADDR_HL_C() {
-	MemoryBus->CPUWrite(HL, C);
+	MemoryBus->WriteWord(HL, C);
 }
 
 void Sharp::LD_ADDR_HL_D() {
-	MemoryBus->CPUWrite(HL, D);
+	MemoryBus->WriteWord(HL, D);
 }
 
 void Sharp::LD_ADDR_HL_E() {
-	MemoryBus->CPUWrite(HL, E);
+	MemoryBus->WriteWord(HL, E);
 }
 
 void Sharp::LD_ADDR_HL_H() {
-	MemoryBus->CPUWrite(HL, H);
+	MemoryBus->WriteWord(HL, H);
 }
 
 void Sharp::LD_ADDR_HL_L() {
-	MemoryBus->CPUWrite(HL, L);
+	MemoryBus->WriteWord(HL, L);
 }
 
 // TODO: Implement this halt
@@ -903,7 +903,7 @@ void Sharp::HALT() {
 }
 
 void Sharp::LD_ADDR_HL_A() {
-	MemoryBus->CPUWrite(HL, A);
+	MemoryBus->WriteWord(HL, A);
 }
 
 void Sharp::LD_A_B() {
@@ -931,7 +931,7 @@ void Sharp::LD_A_L() {
 }
 
 void Sharp::LD_A_ADDR_HL() {
-	A = MemoryBus->CPURead(HL);
+	A = MemoryBus->ReadWord(HL);
 }
 
 void Sharp::LD_A_A() {
@@ -962,7 +962,7 @@ void Sharp::ADD_A_L() {
 }
 
 void Sharp::ADD_A_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	UnsignedAdd(A, temp);
 }
 
@@ -995,7 +995,7 @@ void Sharp::ADC_A_L() {
 }
 
 void Sharp::ADC_A_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	UnsignedAddCarry(A, temp);
 }
 
@@ -1028,7 +1028,7 @@ void Sharp::SUB_L() {
 }
 
 void Sharp::SUB_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Subtract(A, temp);
 }
 
@@ -1061,7 +1061,7 @@ void Sharp::SBC_A_L() {
 }
 
 void Sharp::SBC_A_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	SubtractWithCarry(A, temp);
 }
 
@@ -1094,9 +1094,9 @@ void Sharp::AND_L() {
 }
 
 void Sharp::AND_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	And(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::AND_A() {
@@ -1128,9 +1128,9 @@ void Sharp::XOR_L() {
 }
 
 void Sharp::XOR_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Xor(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::XOR_A() {
@@ -1162,9 +1162,9 @@ void Sharp::OR_L() {
 }
 
 void Sharp::OR_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Or(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::OR_A() {
@@ -1203,7 +1203,7 @@ void Sharp::CP_L() {
 
 void Sharp::CP_ADDR_HL() {
 	temp = A;
-	temp2 = MemoryBus->CPURead(HL);
+	temp2 = MemoryBus->ReadWord(HL);
 	Subtract(temp, temp2);
 }
 
@@ -1214,14 +1214,14 @@ void Sharp::CP_A() {
 
 void Sharp::RET_NZ() {
 	if (!GetFlag(z)) {
-		PC = MemoryBus->CPURead16(SP);
+		PC = MemoryBus->ReadDoubleWord(SP);
 		SP += 2;
 		CurrCycles += 12;
 	}
 }
 
 void Sharp::POP_BC() {
-	BC = MemoryBus->CPURead16(SP);
+	BC = MemoryBus->ReadDoubleWord(SP);
 	SP += 2;
 }
 
@@ -1239,7 +1239,7 @@ void Sharp::JP_ADDR_DW() {
 void Sharp::CALL_NZ_ADDR_DW() {
 	if (!GetFlag(z)) {
 		SP -= 2;
-		MemoryBus->CPUWrite16(SP, PC);
+		MemoryBus->WriteDoubleWord(SP, PC);
 		PC = CurrOperand;
 		CurrCycles += 12;
 	}
@@ -1247,7 +1247,7 @@ void Sharp::CALL_NZ_ADDR_DW() {
 
 void Sharp::PUSH_BC() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, BC);
+	MemoryBus->WriteDoubleWord(SP, BC);
 }
 
 void Sharp::ADD_A_W() {
@@ -1256,20 +1256,20 @@ void Sharp::ADD_A_W() {
 
 void Sharp::RST_00H() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x0000;
 }
 
 void Sharp::RET_Z() {
 	if (GetFlag(z)) {
-		PC = MemoryBus->CPURead16(SP);
+		PC = MemoryBus->ReadDoubleWord(SP);
 		SP += 2;
 		CurrCycles += 12;
 	}
 }
 
 void Sharp::RET() {
-	PC = MemoryBus->CPURead16(SP);
+	PC = MemoryBus->ReadDoubleWord(SP);
 	SP += 2;
 }
 
@@ -1281,7 +1281,7 @@ void Sharp::JP_Z_ADDR_DW() {
 }
 
 void Sharp::PREFIX_CB() {
-	Opcode = MemoryBus->CPURead(PC++);
+	Opcode = MemoryBus->ReadWord(PC++);
 	DecodedInstr = SHARPINSTRS_CB[Opcode];
 
 	CurrCycles = DecodedInstr.Cycles;
@@ -1293,7 +1293,7 @@ void Sharp::PREFIX_CB() {
 void Sharp::CALL_Z_ADDR_DW() {
 	if (GetFlag(z)) {
 		SP -= 2;
-		MemoryBus->CPUWrite16(SP, PC);
+		MemoryBus->WriteDoubleWord(SP, PC);
 		PC = CurrOperand;
 		CurrCycles += 12;
 	}
@@ -1301,7 +1301,7 @@ void Sharp::CALL_Z_ADDR_DW() {
 
 void Sharp::CALL_ADDR_DW() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = CurrOperand;
 }
 
@@ -1311,20 +1311,20 @@ void Sharp::ADC_A_W() {
 
 void Sharp::RST_08H() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x0008;
 }
 
 void Sharp::RET_NC() {
 	if (!GetFlag(c)) {
-		PC = MemoryBus->CPURead16(SP);
+		PC = MemoryBus->ReadDoubleWord(SP);
 		SP += 2;
 		CurrCycles += 12;
 	}
 }
 
 void Sharp::POP_DE() {
-	DE = MemoryBus->CPURead16(SP);
+	DE = MemoryBus->ReadDoubleWord(SP);
 	SP += 2;
 }
 
@@ -1338,7 +1338,7 @@ void Sharp::JP_NC_ADDR_DW() {
 void Sharp::CALL_NC_ADDR_DW() {
 if (!GetFlag(c)) {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = CurrOperand;
 	CurrCycles += 12;
 }
@@ -1346,7 +1346,7 @@ if (!GetFlag(c)) {
 
 void Sharp::PUSH_DE() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, DE);
+	MemoryBus->WriteDoubleWord(SP, DE);
 }
 
 void Sharp::SUB_W() {
@@ -1355,20 +1355,20 @@ void Sharp::SUB_W() {
 
 void Sharp::RST_10H() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x0010;
 }
 
 void Sharp::RET_C() {
 	if (GetFlag(c)) {
-		PC = MemoryBus->CPURead16(SP);
+		PC = MemoryBus->ReadDoubleWord(SP);
 		SP += 2;
 		CurrCycles += 12;
 	}
 }
 
 void Sharp::RETI() {
-	PC = MemoryBus->CPURead16(SP);
+	PC = MemoryBus->ReadDoubleWord(SP);
 	SP += 2;
 	InterruptMasterEnable = 0xF;
 }
@@ -1383,7 +1383,7 @@ void Sharp::JP_C_ADDR_DW() {
 void Sharp::CALL_C_ADDR_DW() {
 	if (GetFlag(c)) {
 		SP -= 2;
-		MemoryBus->CPUWrite16(SP, PC);
+		MemoryBus->WriteDoubleWord(SP, PC);
 		PC = CurrOperand;
 		CurrCycles += 12;
 	}
@@ -1395,26 +1395,26 @@ void Sharp::SBC_A_W() {
 
 void Sharp::RST_18H() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x0018;
 }
 
 void Sharp::LDH_ADDR_W_A() {
-	MemoryBus->CPUWrite(0xFF00 | (uint8_t)CurrOperand, A);
+	MemoryBus->WriteWord(0xFF00 | (uint8_t)CurrOperand, A);
 }
 
 void Sharp::POP_HL() {
-	HL = MemoryBus->CPURead16(SP);
+	HL = MemoryBus->ReadDoubleWord(SP);
 	SP += 2;
 }
 
 void Sharp::LD_ADDR_C_A() {
-	MemoryBus->CPUWrite(0xFF00 | C, A);
+	MemoryBus->WriteWord(0xFF00 | C, A);
 }
 
 void Sharp::PUSH_HL() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, HL);
+	MemoryBus->WriteDoubleWord(SP, HL);
 }
 
 void Sharp::AND_W() {
@@ -1423,7 +1423,7 @@ void Sharp::AND_W() {
 
 void Sharp::RST_20H() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x0020;
 }
 
@@ -1454,7 +1454,7 @@ void Sharp::JP_HL() {
 }
 
 void Sharp::LD_ADDR_DW_A() {
-	MemoryBus->CPUWrite(CurrOperand, A);
+	MemoryBus->WriteWord(CurrOperand, A);
 }
 
 void Sharp::XOR_W() {
@@ -1463,21 +1463,21 @@ void Sharp::XOR_W() {
 
 void Sharp::RST_28H() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x0028;
 }
 
 void Sharp::LDH_A_ADDR_W() {
-	A = MemoryBus->CPURead(0xFF00 | (uint8_t) CurrOperand);
+	A = MemoryBus->ReadWord(0xFF00 | (uint8_t) CurrOperand);
 }
 
 void Sharp::POP_AF() {
-	AF = MemoryBus->CPURead16(SP) & 0xFFF0;
+	AF = MemoryBus->ReadDoubleWord(SP) & 0xFFF0;
 	SP += 2;
 }
 
 void Sharp::LD_A_ADDR_C() {
-	A = MemoryBus->CPURead(0xFF00 | C);
+	A = MemoryBus->ReadWord(0xFF00 | C);
 }
 
 // I've noticed other emulators do not try to emulate the behavior of these DI/EI
@@ -1492,7 +1492,7 @@ void Sharp::DI() {
 
 void Sharp::PUSH_AF() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, AF);
+	MemoryBus->WriteDoubleWord(SP, AF);
 }
 
 void Sharp::OR_W() {
@@ -1501,7 +1501,7 @@ void Sharp::OR_W() {
 
 void Sharp::RST_30H() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x0030;
 }
 
@@ -1519,7 +1519,7 @@ void Sharp::LD_SP_HL() {
 }
 
 void Sharp::LD_A_ADDR_DW() {
-	A = MemoryBus->CPURead(CurrOperand);
+	A = MemoryBus->ReadWord(CurrOperand);
 }
 
 void Sharp::EI() {
@@ -1533,7 +1533,7 @@ void Sharp::CP_W() {
 
 void Sharp::RST_38H() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x0038;
 }
 
@@ -1562,9 +1562,9 @@ void Sharp::RLC_L() {
 }
 
 void Sharp::RLC_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	RotateLeftCircular(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RLC_A() {
@@ -1596,9 +1596,9 @@ void Sharp::RRC_L() {
 }
 
 void Sharp::RRC_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	RotateRightCircular(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RRC_A() {
@@ -1630,9 +1630,9 @@ void Sharp::RL_L() {
 }
 
 void Sharp::RL_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	RotateLeft(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RL_A() {
@@ -1664,9 +1664,9 @@ void Sharp::RR_L() {
 }
 
 void Sharp::RR_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	RotateRight(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RR_A() {
@@ -1698,9 +1698,9 @@ void Sharp::SLA_L() {
 }
 
 void Sharp::SLA_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ShiftLeft(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SLA_A() {
@@ -1732,9 +1732,9 @@ void Sharp::SRA_L() {
 }
 
 void Sharp::SRA_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ShiftRightArithmetic(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SRA_A() {
@@ -1766,9 +1766,9 @@ void Sharp::SWAP_L() {
 }
 
 void Sharp::SWAP_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Swap(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SWAP_A() {
@@ -1800,9 +1800,9 @@ void Sharp::SRL_L() {
 }
 
 void Sharp::SRL_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ShiftRight(temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SRL_A() {
@@ -1834,7 +1834,7 @@ void Sharp::BIT_0_L() {
 }
 
 void Sharp::BIT_0_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Bit(0, temp);
 }
 
@@ -1867,7 +1867,7 @@ void Sharp::BIT_1_L() {
 }
 
 void Sharp::BIT_1_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Bit(1, temp);
 }
 
@@ -1900,7 +1900,7 @@ void Sharp::BIT_2_L() {
 }
 
 void Sharp::BIT_2_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Bit(2, temp);
 }
 
@@ -1933,7 +1933,7 @@ void Sharp::BIT_3_L() {
 }
 
 void Sharp::BIT_3_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Bit(3, temp);
 }
 
@@ -1966,7 +1966,7 @@ void Sharp::BIT_4_L() {
 }
 
 void Sharp::BIT_4_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Bit(4, temp);
 }
 
@@ -1999,7 +1999,7 @@ void Sharp::BIT_5_L() {
 }
 
 void Sharp::BIT_5_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Bit(5, temp);
 }
 
@@ -2032,7 +2032,7 @@ void Sharp::BIT_6_L() {
 }
 
 void Sharp::BIT_6_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Bit(6, temp);
 }
 
@@ -2065,7 +2065,7 @@ void Sharp::BIT_7_L() {
 }
 
 void Sharp::BIT_7_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	Bit(7, temp);
 }
 
@@ -2098,9 +2098,9 @@ void Sharp::RES_0_L() {
 }
 
 void Sharp::RES_0_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ResetBit(0, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RES_0_A() {
@@ -2132,9 +2132,9 @@ void Sharp::RES_1_L() {
 }
 
 void Sharp::RES_1_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ResetBit(1, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RES_1_A() {
@@ -2166,9 +2166,9 @@ void Sharp::RES_2_L() {
 }
 
 void Sharp::RES_2_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ResetBit(2, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RES_2_A() {
@@ -2200,9 +2200,9 @@ void Sharp::RES_3_L() {
 }
 
 void Sharp::RES_3_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ResetBit(3, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RES_3_A() {
@@ -2234,9 +2234,9 @@ void Sharp::RES_4_L() {
 }
 
 void Sharp::RES_4_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ResetBit(4, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RES_4_A() {
@@ -2268,9 +2268,9 @@ void Sharp::RES_5_L() {
 }
 
 void Sharp::RES_5_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ResetBit(5, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RES_5_A() {
@@ -2302,9 +2302,9 @@ void Sharp::RES_6_L() {
 }
 
 void Sharp::RES_6_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ResetBit(6, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RES_6_A() {
@@ -2336,9 +2336,9 @@ void Sharp::RES_7_L() {
 }
 
 void Sharp::RES_7_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	ResetBit(7, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::RES_7_A() {
@@ -2370,9 +2370,9 @@ void Sharp::SET_0_L() {
 }
 
 void Sharp::SET_0_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	SetBit(0, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SET_0_A() {
@@ -2404,9 +2404,9 @@ void Sharp::SET_1_L() {
 }
 
 void Sharp::SET_1_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	SetBit(1, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SET_1_A() {
@@ -2438,9 +2438,9 @@ void Sharp::SET_2_L() {
 }
 
 void Sharp::SET_2_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	SetBit(2, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SET_2_A() {
@@ -2472,9 +2472,9 @@ void Sharp::SET_3_L() {
 }
 
 void Sharp::SET_3_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	SetBit(3, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SET_3_A() {
@@ -2506,9 +2506,9 @@ void Sharp::SET_4_L() {
 }
 
 void Sharp::SET_4_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	SetBit(4, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SET_4_A() {
@@ -2540,9 +2540,9 @@ void Sharp::SET_5_L() {
 }
 
 void Sharp::SET_5_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	SetBit(5, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SET_5_A() {
@@ -2574,9 +2574,9 @@ void Sharp::SET_6_L() {
 }
 
 void Sharp::SET_6_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	SetBit(6, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SET_6_A() {
@@ -2608,9 +2608,9 @@ void Sharp::SET_7_L() {
 }
 
 void Sharp::SET_7_ADDR_HL() {
-	temp = MemoryBus->CPURead(HL);
+	temp = MemoryBus->ReadWord(HL);
 	SetBit(7, temp);
-	MemoryBus->CPUWrite(HL, temp);
+	MemoryBus->WriteWord(HL, temp);
 }
 
 void Sharp::SET_7_A() {
@@ -2619,35 +2619,35 @@ void Sharp::SET_7_A() {
 
 void Sharp::INT_40() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x40;
 	CurrCycles += 12;
 }
 
 void Sharp::INT_48() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x48;
 	CurrCycles += 12;
 }
 
 void Sharp::INT_50() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x50;
 	CurrCycles += 12;
 }
 
 void Sharp::INT_58() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x58;
 	CurrCycles += 12;
 }
 
 void Sharp::INT_60() {
 	SP -= 2;
-	MemoryBus->CPUWrite16(SP, PC);
+	MemoryBus->WriteDoubleWord(SP, PC);
 	PC = 0x60;
 	CurrCycles += 12;
 }
@@ -2658,8 +2658,9 @@ Sharp::~Sharp() {
 
 // this is kind of a mess
 void Sharp::InterruptHandler() {
-	if (MemoryBus->InterruptEnableRegister && *(MemoryBus->InterruptFlags))
+	if (MemoryBus->InterruptEnableRegister & *(MemoryBus->InterruptFlags)) {
 		Suspended = false;
+	}
 
 	if (InterruptMasterEnable && MemoryBus->InterruptEnableRegister && *(MemoryBus->InterruptFlags)) {
 		temp = MemoryBus->InterruptEnableRegister & *(MemoryBus->InterruptFlags);
@@ -2694,20 +2695,20 @@ void Sharp::InterruptHandler() {
 void Sharp::Clock() {
 	if (!Suspended) {
 		if (CurrCycles == 0) {
-			Opcode = MemoryBus->CPURead(PC++);
+			Opcode = MemoryBus->ReadWord(PC++);
 			DecodedInstr = SHARPINSTRS[Opcode];
 
 			CurrCycles = DecodedInstr.Cycles;
 			CurrArgSize = DecodedInstr.ArgSize;
 
 			switch (CurrArgSize) {
-			case 1:
-				CurrOperand = (uint16_t)MemoryBus->CPURead(PC++);
-				break;
-			case 2:
-				CurrOperand = MemoryBus->CPURead16(PC);
-				PC += 2;
-				break;
+				case 1:
+					CurrOperand = (uint16_t)MemoryBus->ReadWord(PC++);
+					break;
+				case 2:
+					CurrOperand = MemoryBus->ReadDoubleWord(PC);
+					PC += 2;
+					break;
 			}
 
 			(this->*DecodedInstr.Instruction)();

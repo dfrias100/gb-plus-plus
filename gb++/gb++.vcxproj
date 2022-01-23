@@ -21,11 +21,13 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Memory\Memory.cpp" />
+    <ClCompile Include="src\PPU\PPU.cpp" />
     <ClCompile Include="src\Sharp\Sharp.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Memory\Memory.hpp" />
+    <ClInclude Include="src\PPU\PPU.hpp" />
     <ClInclude Include="src\Sharp\Sharp.hpp" />
     <ClInclude Include="src\Window\Window.hpp" />
   </ItemGroup>
@@ -135,6 +137,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

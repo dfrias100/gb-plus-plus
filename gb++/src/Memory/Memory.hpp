@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "../Sharp/Sharp.hpp"
+#include "../PPU/PPU.hpp"
 
 class Memory {
 	uint8_t* HighRAM;    // High RAM located at	0xFF80: 127 bytes
@@ -14,14 +15,11 @@ class Memory {
 	uint8_t* SpriteOAM;  // Video RAM located at 0xFE00: 160 bytes
 	uint8_t* WorkingRAM; // Working RAM located at 0xC000 (mirrored at 0xE000): 8 kilobytes
 	uint8_t* ExtRAM;	 // External RAM located at 0xA000: 8 kilobytes
-	uint8_t* VideoRAM;   // Video RAM located at 0x8000: 2 kilobytes
+	uint8_t* VideoRAM;   // Video RAM located at 0x8000: 8 kilobytes
 	uint8_t* Cartridge;  // Cartridge ROM beginning at 0x0000: 32 kilobytes
 
 	Sharp* CPU; // The Memory class will need to tick the CPU itself
-
-	// Ticks
-	int64_t SystemCycles;
-	int64_t SystemCyclesTMA;
+	PPU* GPU;
 
 	const uint8_t IOPowerOn[0x80]{
 		0xCF, 0x00, 0x7E, 0x00, 0xAB, 0x00, 0x00, 0xF8,
@@ -53,14 +51,20 @@ public:
 	uint8_t InterruptEnableRegister; // Interrupt Enable Register located at 0xFFFF: 1 byte
 	uint8_t* InterruptFlags;
 
+	// Ticks
+	int64_t SystemCycles;
+	int64_t SystemCyclesTMA;
+
 	Memory();
 	~Memory();
 
-	void CPUWrite(uint16_t address, uint8_t data);
-	uint8_t CPURead(uint16_t address);
+	void WriteWord(uint16_t address, uint8_t data);
+	uint8_t ReadWord(uint16_t address);
 
-	void CPUWrite16(uint16_t address, uint16_t data);
-	uint16_t CPURead16(uint16_t address);
+	void WriteDoubleWord(uint16_t address, uint16_t data);
+	uint16_t ReadDoubleWord(uint16_t address);
+
+	void OAMDMACopy();
 
 	void UpdateTimer();
 

@@ -7,7 +7,7 @@ Memory::Memory() {
 	SpriteOAM  = new uint8_t[160];
 	WorkingRAM = new uint8_t[1024 * 8];
 	ExtRAM     = new uint8_t[1024 * 8];
-	VideoRAM   = new uint8_t[1024 * 2];
+	VideoRAM   = new uint8_t[1024 * 8];
 	Cartridge  = new uint8_t[1024 * 32];
 
 	InterruptEnableRegister = 0x00;
@@ -25,6 +25,7 @@ Memory::Memory() {
 	SystemCyclesTMA = 0;
 
 	CPU = new Sharp(this);
+	GPU = new PPU(this);
 }
 
 Memory::~Memory()
@@ -40,7 +41,7 @@ Memory::~Memory()
 	delete CPU;
 }
 
-void Memory::CPUWrite(uint16_t address, uint8_t data) {
+void Memory::WriteWord(uint16_t address, uint8_t data) {
 	if (address <= 0x7FFF) {
 		Cartridge[address] = data;
 	} else if (address <= 0x9FFF) {
@@ -56,8 +57,12 @@ void Memory::CPUWrite(uint16_t address, uint8_t data) {
 	} else if (address <= 0xFEFF) {
 	} else if (address <= 0xFF7F) {
 		IO[address - 0xFF00] = data;
+		if (address == 0xFF46) {
+			IO[0x46] = data;
+			OAMDMACopy();
+		}
 		if (address == 0xFF02 && data == 0x81) {
-			std::cout << CPURead(0xFF01);
+			std::cout << ReadWord(0xFF01);
 		}
 	} else if (address <= 0xFFFE) {
 		HighRAM[address - 0xFF80] = data;
@@ -66,7 +71,7 @@ void Memory::CPUWrite(uint16_t address, uint8_t data) {
 	}
 }
 
-uint8_t Memory::CPURead(uint16_t address) {
+uint8_t Memory::ReadWord(uint16_t address) {
 	if (address <= 0x7FFF) {
 		return Cartridge[address];
 	} else if (address <= 0x9FFF) {
@@ -90,13 +95,22 @@ uint8_t Memory::CPURead(uint16_t address) {
 	}
  }
 
-void Memory::CPUWrite16(uint16_t address, uint16_t data) {
-	CPUWrite(address, (uint8_t)(data & 0x00FF));
-	CPUWrite(address + 1, (uint8_t)((data & 0xFF00) >> 8));
+void Memory::WriteDoubleWord(uint16_t address, uint16_t data) {
+	WriteWord(address, (uint8_t)(data & 0x00FF));
+	WriteWord(address + 1, (uint8_t)((data & 0xFF00) >> 8));
 }
 
-uint16_t Memory::CPURead16(uint16_t address) {
-	return ((uint16_t) CPURead(address + 1) << 8) | CPURead(address);
+uint16_t Memory::ReadDoubleWord(uint16_t address) {
+	return ((uint16_t) ReadWord(address + 1) << 8) | ReadWord(address);
+}
+
+void Memory::OAMDMACopy() {
+	uint16_t source = IO[0x46] << 8;
+	uint16_t end = source + 0xA0;
+
+	for (; source < end; source++) {
+		SpriteOAM[source & 0xFF] = ReadWord(source);
+	}
 }
 
 void Memory::UpdateTimer() {
@@ -137,6 +151,7 @@ bool Memory::CartridgeLoader(std::string filename) {
 
 void Memory::Clock() {
 	CPU->Clock();
+	GPU->Clock();
 	CPU->InterruptHandler();
 	UpdateTimer();
 }

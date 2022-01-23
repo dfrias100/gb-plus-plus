@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdint>
+#include <chrono>
 
 #include "Window/Window.hpp"
 #include "Memory/Memory.hpp" 
@@ -12,26 +13,52 @@ int main(int argc, char* argv[]) {
     uint8_t* frameBuffer = new uint8_t[GB_SCREEN_WIDTH * GB_SCREEN_HEIGHT * 4];
     std::fill(frameBuffer, frameBuffer + (GB_SCREEN_WIDTH * GB_SCREEN_HEIGHT * 4), 0xFF);
 
-    //Window EmuWindow(GB_SCREEN_WIDTH, GB_SCREEN_HEIGHT, frameBuffer);
+    Window EmuWindow(GB_SCREEN_WIDTH, GB_SCREEN_HEIGHT, frameBuffer);
 
-    //sf::Event emuEvent;
+    sf::Event emuEvent;
 
     Memory GB;
 
     if (argc > 1)
         GB.CartridgeLoader(argv[1]);
 
+    float ResidualTime = 0.0f;
+    float ElapsedTime = 0.0f;
+    sf::Clock c;
+    float s = 0.0f;
+    float e = 0.0f;
+
+    auto start = std::chrono::system_clock::now();
+    auto end = std::chrono::system_clock::now();
+
+    start = std::chrono::system_clock::now();
     while (!exit) {
-        //while (EmuWindow.windowEvent(emuEvent)) {
-        //    if (emuEvent.type == sf::Event::Closed) {
-        //        exit = true;
-        //    }
-        //}
+        s = c.getElapsedTime().asSeconds();
+        while (EmuWindow.windowEvent(emuEvent)) {
+            if (emuEvent.type == sf::Event::Closed) {
+                exit = true;
+            }
+        }
 
-        GB.Clock();
-
-        //EmuWindow.draw();
+        
+        if (ResidualTime > 0.0f) {
+            ResidualTime -= ElapsedTime;
+        } else {
+            ResidualTime += 1.0f - ElapsedTime;
+            do {
+                GB.Clock(); 
+            } while (GB.SystemCycles % 4194304 != 0);
+        }
+        
+        EmuWindow.draw();
+        ElapsedTime = c.getElapsedTime().asSeconds() - s;
     }
+    end = std::chrono::system_clock::now();
+
+    auto duration = end - start;
+
+    std::cout << "Duration: " << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << " ms, Cycles: " << GB.SystemCycles << std::endl;
+    std::cout << "Clock speed: " << ((float)GB.SystemCycles / std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()) * (1000.0f / 1e6f) << " MHz" << std::endl;
 
     delete[] frameBuffer;
 
