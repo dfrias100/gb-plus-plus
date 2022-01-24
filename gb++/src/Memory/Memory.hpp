@@ -50,6 +50,17 @@ class Memory {
 public:
 	PPU* GPU;
 
+	uint8_t Joypad[8] = { 
+		0, // A
+		0, // B
+		0, // SELECT
+		0, // START
+		0, // LEFT 
+		0, // RIGHT
+		0, // UP
+		0, // DOWN
+	};
+
 	uint8_t InterruptEnableRegister; // Interrupt Enable Register located at 0xFFFF: 1 byte
 	uint8_t* InterruptFlags;
 
@@ -69,7 +80,7 @@ public:
 	uint16_t ReadDoubleWord(uint16_t address);
 
 	void OAMDMACopy();
-
+	uint8_t UpdateJoypad(uint8_t button_mask);
 	void UpdateTimer();
 
 	// This is a temporary function

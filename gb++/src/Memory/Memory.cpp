@@ -52,7 +52,7 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 	if (address <= 0xFF && BootROMEnable) {
 		BootROM[address] = data;
 	} else if (address <= 0x7FFF) {
-		Cartridge[address] = data;
+		//Cartridge[address] = data;
 	} else if (address <= 0x9FFF) {
 		VideoRAM[address - 0x8000] = data;
 	} else if (address <= 0xBFFF) {
@@ -66,8 +66,9 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 	} else if (address <= 0xFEFF) {
 	} else if (address <= 0xFF7F) {
 		IO[address - 0xFF00] = data;
-		if (address == 0xFF46) {
-			IO[0x46] = data;
+		if (address == 0xFF00) {
+			IO[0x00] = UpdateJoypad(data);
+		} else if (address == 0xFF46) {
 			OAMDMACopy();
 		} else if (address == 0xFF47) {
 			GPU->UpdateBGPalette();
@@ -79,8 +80,7 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 			IO[0x0F] = 0xE0 | (data & 0x1F);
 		}
 	} else if (address <= 0xFFFE) {
-		//if (address != 0xFF80)
-			HighRAM[address - 0xFF80] = data;
+		HighRAM[address - 0xFF80] = data;
 	} else if (address == 0xFFFF) {
 		InterruptEnableRegister = data;
 	}
@@ -128,6 +128,32 @@ void Memory::OAMDMACopy() {
 	for (; source < end; source++) {
 		SpriteOAM[source & 0xFF] = ReadWord(source);
 	}
+}
+
+uint8_t Memory::UpdateJoypad(uint8_t button_mask) {
+	// This will hold which buttons are pressed
+	uint8_t buttons = 0x00;
+
+	// Check which set of buttons we will check
+	// The emulator sets a pushed button to 1, but
+	// on the gameboy it sets it to 0, so we invert the bit
+	if ((button_mask & 0x30) == 0x10) {
+		buttons |= ~Joypad[0] & 0x1;
+		buttons |= (~Joypad[1] & 0x1) << 1;
+		buttons |= (~Joypad[2] & 0x1) << 2;
+		buttons |= (~Joypad[3] & 0x1) << 3;
+	} else if ((button_mask & 0x30) == 0x20) {
+		buttons |= ~Joypad[5] & 0x1;
+		buttons |= (~Joypad[4] & 0x1) << 1;
+		buttons |= (~Joypad[6] & 0x1) << 2;
+		buttons |= (~Joypad[7] & 0x1) << 3;
+	}
+
+	// Clear the lower four bits and or them with the two unused bits
+	button_mask = (button_mask & 0xF0) | 0xC0;
+
+	// Return the entire register with the buttons that are NOT pressed
+	return button_mask | buttons;
 }
 
 void Memory::UpdateTimer() {

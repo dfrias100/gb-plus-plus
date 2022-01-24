@@ -250,7 +250,7 @@ void PPU::DrawSprites() {
 			SpriteHeight = (LCDC >> 2) & 0x1 ? 16 : 8;
 			uint8_t FlipCase = (SpriteFlags & 0x60) >> 5;
 
-			if (LY >= (SpriteYPos - 16) && LY <= ((SpriteYPos - 16) + SpriteHeight)) {
+			if (LY >= (SpriteYPos - 16) && LY < ((SpriteYPos - 16) + SpriteHeight)) {
 				for (int i = 0; i < SpriteHeight; i++) {
 					for (int j = 0; j < 8; j++) {
 						HeightOffset = FlipCase & 0x02 ? (SpriteHeight - 1) - i : i;

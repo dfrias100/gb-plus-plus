@@ -5,16 +5,18 @@
 
 Sharp::Sharp(Memory* _MemoryBus) {
 	MemoryBus = _MemoryBus;
-	PC = 0x0100;
-	InterruptMasterEnable = 0xF;
 	Suspended = false;
 	HaltBug = false;
 
+	// These are the register values when the PC is at
+	// $0100 after the boot ROM is unmapped from memory
+	PC = 0x0100;
 	AF = 0x01B0;
 	BC = 0x0013;
 	DE = 0x00D8;
 	HL = 0x014D;
 	SP = 0xFFFE;
+	InterruptMasterEnable = 0x01;
 
 	//Log.open("execlog.txt", std::ios::trunc | std::ios::binary);
 }
@@ -898,8 +900,9 @@ void Sharp::LD_ADDR_HL_L() {
 	MemoryBus->WriteWord(HL, L);
 }
 
-// TODO: Implement this halt
 void Sharp::HALT() {
+	// We only want to enter halt mode if the IME is enabled or we do not have a pending interrupt
+	// Otherwise, we trigger the halt bug
 	if (InterruptMasterEnable) {
 		Suspended = true;
 	} else {
@@ -1379,7 +1382,7 @@ void Sharp::RET_C() {
 void Sharp::RETI() {
 	PC = MemoryBus->ReadDoubleWord(SP);
 	SP += 2;
-	InterruptMasterEnable = 0xF;
+	InterruptMasterEnable = 0x1;
 }
 
 void Sharp::JP_C_ADDR_DW() {
@@ -1489,12 +1492,7 @@ void Sharp::LD_A_ADDR_C() {
 	A = MemoryBus->ReadWord(0xFF00 | C);
 }
 
-// I've noticed other emulators do not try to emulate the behavior of these DI/EI
-// Instructions, where they are delayed by one instruction
-// 
-// For now, I will try to emulate this behavior but if it affects performance
-// too much and ends up being more complicated than not to implement, I will
-// instantaneously enable/disable interrupts
+// Blargg's ROMs seem to conclude the behavior of these instructions are O.K.
 void Sharp::DI() {
 	PendingIMEChange = 0x10 | 0x02;
 }
@@ -2665,9 +2663,10 @@ Sharp::~Sharp() {
 	Log.close();
 }
 
-// this is kind of a mess
+// This is kind of a mess, but looking past all the pointer dereferencing
+// we exit halt (if any) and service the ISR based on the bits set 
 void Sharp::InterruptHandler() {
-	if (MemoryBus->InterruptEnableRegister & *(MemoryBus->InterruptFlags)) {
+	if (MemoryBus->InterruptEnableRegister & *(MemoryBus->InterruptFlags) & 0x1F) {
 		Suspended = false;
 	}
 
@@ -2720,7 +2719,7 @@ void Sharp::Clock() {
 
 			switch (CurrArgSize) {
 				case 1:
-					CurrOperand = (uint16_t)MemoryBus->ReadWord(PC++);
+					CurrOperand = (uint16_t) MemoryBus->ReadWord(PC++);
 					break;
 				case 2:
 					CurrOperand = MemoryBus->ReadDoubleWord(PC);
@@ -2742,6 +2741,11 @@ void Sharp::Clock() {
 	}
 }
 
+/*/
+	Should the emulator report to the CPU that it will be loading the
+	boot ROM, these values should be zero iniialized; we will let the
+	code from the boot ROM set the registers when as it reaches PC = $0100
+*/
 void Sharp::SetupBootRom() {
 	PC = 0x0000;
 	AF = 0x0000;

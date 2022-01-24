@@ -4,18 +4,20 @@
 
 #include "Window/Window.hpp"
 #include "Memory/Memory.hpp" 
+#include "Input/Input.hpp"
 
 const unsigned int GB_SCREEN_WIDTH = 160;
 const unsigned int GB_SCREEN_HEIGHT = 144;
 
 int main(int argc, char* argv[]) {
-    bool exit = false;
-  
     Memory GB;
-
     Window EmuWindow(GB_SCREEN_WIDTH, GB_SCREEN_HEIGHT, GB.GPU->GetFrameBufferPointer());
+    sf::Event EmuEvent;
 
-    sf::Event emuEvent;
+    struct InputHandler Input;
+    Input.EmuWindow = &EmuWindow;
+    Input.EmulatorCore = &GB;
+    Input.EventVar = &EmuEvent;
 
     if (argc > 1)
         GB.CartridgeLoader(argv[1]);
@@ -24,23 +26,14 @@ int main(int argc, char* argv[]) {
 
     float ResidualTime = 0.0f;
     float ElapsedTime = 0.0f;
-    sf::Clock c;
-    float s = 0.0f;
-    float e = 0.0f;
+    sf::Clock Clock;
+    float Start = 0.0f;
 
     auto start = std::chrono::system_clock::now();
     auto end = std::chrono::system_clock::now();
 
     start = std::chrono::system_clock::now();
-    while (!exit) {
-        s = c.getElapsedTime().asSeconds();
-        while (EmuWindow.windowEvent(emuEvent)) {
-            if (emuEvent.type == sf::Event::Closed) {
-                exit = true;
-            }
-        }
-
-        
+    while (Input.GetInput()) {
         if (ResidualTime > 0.0f) {
            ResidualTime -= ElapsedTime;
         } else {
@@ -53,7 +46,9 @@ int main(int argc, char* argv[]) {
         }
         
         EmuWindow.draw();
-        ElapsedTime = c.getElapsedTime().asSeconds() - s;
+
+        ElapsedTime = Clock.getElapsedTime().asSeconds() - Start;
+        Start = Clock.getElapsedTime().asSeconds();
     }
     end = std::chrono::system_clock::now();
 
