@@ -5,9 +5,16 @@
 
 Sharp::Sharp(Memory* _MemoryBus) {
 	MemoryBus = _MemoryBus;
-	PC = 0x100;
+	PC = 0x0100;
 	InterruptMasterEnable = 0xF;
 	Suspended = false;
+	HaltBug = false;
+
+	//AF = 0x0000;
+	//BC = 0x0000;
+	//DE = 0x0000;
+	//HL = 0x0000;
+	//SP = 0xFFFE;
 
 	AF = 0x01B0;
 	BC = 0x0013;
@@ -899,7 +906,15 @@ void Sharp::LD_ADDR_HL_L() {
 
 // TODO: Implement this halt
 void Sharp::HALT() {
-	Suspended = true;
+	if (InterruptMasterEnable) {
+		Suspended = true;
+	} else {
+		if ((MemoryBus->InterruptEnableRegister & *(MemoryBus->InterruptFlags) & 0x1F) == 0) {
+			Suspended = true;
+		} else {
+			HaltBug = true;
+		}
+	}
 }
 
 void Sharp::LD_ADDR_HL_A() {
@@ -2663,7 +2678,7 @@ void Sharp::InterruptHandler() {
 	}
 
 	if (InterruptMasterEnable && MemoryBus->InterruptEnableRegister && *(MemoryBus->InterruptFlags)) {
-		temp = MemoryBus->InterruptEnableRegister & *(MemoryBus->InterruptFlags);
+		temp = MemoryBus->InterruptEnableRegister & *(MemoryBus->InterruptFlags) & 0x1F;
 
 		if (temp & VBLANK) {
 			*(MemoryBus->InterruptFlags) &= ~VBLANK;
@@ -2695,7 +2710,15 @@ void Sharp::InterruptHandler() {
 void Sharp::Clock() {
 	if (!Suspended) {
 		if (CurrCycles == 0) {
-			Opcode = MemoryBus->ReadWord(PC++);
+			switch(HaltBug) {
+				case false:
+					Opcode = MemoryBus->ReadWord(PC++);
+					break;
+				case true:
+					Opcode = MemoryBus->ReadWord(PC);
+					HaltBug = false;
+					break;
+			}
 			DecodedInstr = SHARPINSTRS[Opcode];
 
 			CurrCycles = DecodedInstr.Cycles;
@@ -2723,4 +2746,13 @@ void Sharp::Clock() {
 		}
 		CurrCycles--;
 	}
+}
+
+void Sharp::SetupBootRom() {
+	PC = 0x0000;
+	AF = 0x0000;
+	BC = 0x0000;
+	DE = 0x0000;
+	HL = 0x0000;
+	SP = 0xFFFE;
 }

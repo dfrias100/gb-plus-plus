@@ -31,6 +31,7 @@ class Sharp {
 	uint16_t temp3;
 	uint8_t	 InterruptMasterEnable;
 	uint8_t  PendingIMEChange;
+	bool HaltBug;
 
 	// 16-bit registers grouped together using anonymous unions and structs
 	union {
@@ -844,7 +845,7 @@ class Sharp {
 		{0, 8, &Sharp::RES_5_B }, {0, 8, &Sharp::RES_5_C}, {0,  8, &Sharp::RES_5_D		}, {0, 8, &Sharp::RES_5_E},
 		{0, 8, &Sharp::RES_5_H }, {0, 8, &Sharp::RES_5_L}, {0, 16, &Sharp::RES_5_ADDR_HL}, {0, 8, &Sharp::RES_5_A},
 
-		{0, 8,& Sharp::RES_6_B }, {0, 8, &Sharp::RES_6_C}, {0,  8, &Sharp::RES_6_D		}, {0, 8, &Sharp::RES_6_E},
+		{0, 8, &Sharp::RES_6_B }, {0, 8, &Sharp::RES_6_C}, {0,  8, &Sharp::RES_6_D		}, {0, 8, &Sharp::RES_6_E},
 		{0, 8, &Sharp::RES_6_H }, {0, 8, &Sharp::RES_6_L}, {0, 16, &Sharp::RES_6_ADDR_HL}, {0, 8, &Sharp::RES_6_A},
 		{0, 8, &Sharp::RES_7_B }, {0, 8, &Sharp::RES_7_C}, {0,  8, &Sharp::RES_7_D		}, {0, 8, &Sharp::RES_7_E},
 		{0, 8, &Sharp::RES_7_H }, {0, 8, &Sharp::RES_7_L}, {0, 16, &Sharp::RES_7_ADDR_HL}, {0, 8, &Sharp::RES_7_A},
@@ -878,6 +879,7 @@ public:
 
 	void InterruptHandler();
 	void Clock();
+	void SetupBootRom();
 };
 
 #endif

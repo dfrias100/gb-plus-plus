@@ -10,17 +10,17 @@ const unsigned int GB_SCREEN_HEIGHT = 144;
 
 int main(int argc, char* argv[]) {
     bool exit = false;
-    uint8_t* frameBuffer = new uint8_t[GB_SCREEN_WIDTH * GB_SCREEN_HEIGHT * 4];
-    std::fill(frameBuffer, frameBuffer + (GB_SCREEN_WIDTH * GB_SCREEN_HEIGHT * 4), 0xFF);
+  
+    Memory GB;
 
-    Window EmuWindow(GB_SCREEN_WIDTH, GB_SCREEN_HEIGHT, frameBuffer);
+    Window EmuWindow(GB_SCREEN_WIDTH, GB_SCREEN_HEIGHT, GB.GPU->GetFrameBufferPointer());
 
     sf::Event emuEvent;
 
-    Memory GB;
-
     if (argc > 1)
         GB.CartridgeLoader(argv[1]);
+
+    GB.LoadBootRom();
 
     float ResidualTime = 0.0f;
     float ElapsedTime = 0.0f;
@@ -42,12 +42,14 @@ int main(int argc, char* argv[]) {
 
         
         if (ResidualTime > 0.0f) {
-            ResidualTime -= ElapsedTime;
+           ResidualTime -= ElapsedTime;
         } else {
-            ResidualTime += 1.0f - ElapsedTime;
+            ResidualTime += (1.0f / 59.73f) - ElapsedTime;
             do {
                 GB.Clock(); 
-            } while (GB.SystemCycles % 4194304 != 0);
+            } while (!GB.GPU->FrameReady);
+            GB.GPU->FrameReady = false;
+            GB.GPU->FrameDrawn = true;
         }
         
         EmuWindow.draw();
@@ -58,9 +60,7 @@ int main(int argc, char* argv[]) {
     auto duration = end - start;
 
     std::cout << "Duration: " << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << " ms, Cycles: " << GB.SystemCycles << std::endl;
-    std::cout << "Clock speed: " << ((float)GB.SystemCycles / std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()) * (1000.0f / 1e6f) << " MHz" << std::endl;
-
-    delete[] frameBuffer;
+    std::cout << "Average clock speed: " << ((float)GB.SystemCycles / std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()) * (1000.0f / 1e6f) << " MHz" << std::endl;
 
 	return 0;
 }

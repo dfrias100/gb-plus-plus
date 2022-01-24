@@ -13,7 +13,7 @@ Window::Window(unsigned int _width, unsigned int _height, uint8_t* _fbPointer, s
 
     fbTexture.create(screenWidth, screenHeight);
     fbSprite = sf::Sprite(fbTexture);
-    fbSprite.setScale(sf::Vector2f(4, 4));
+    fbSprite.setScale(sf::Vector2f(scalingFactor, scalingFactor));
 }
 
 Window::~Window() {
