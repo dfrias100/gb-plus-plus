@@ -10,12 +10,6 @@ Sharp::Sharp(Memory* _MemoryBus) {
 	Suspended = false;
 	HaltBug = false;
 
-	//AF = 0x0000;
-	//BC = 0x0000;
-	//DE = 0x0000;
-	//HL = 0x0000;
-	//SP = 0xFFFE;
-
 	AF = 0x01B0;
 	BC = 0x0013;
 	DE = 0x00D8;
