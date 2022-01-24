@@ -9,8 +9,7 @@ This is gameboy emulator that is a work in progress! Many parts have not yet bee
 	- 30 of 30 Jump / Call instructions (100.0%)
 	- 15 of 15 16-bit load instructions (100.0%)
 	- 13 of 13 16-bit ALU instructions (100.0%)
-	-  5 of 5 Miscellaneous instructions (100.0%)*
-		- 1 of these instructions are partially implemented due to lack of general system implementation	
+	-  5 of 5 Miscellaneous instructions (100.0%)
 * Memory: CPU and PPU can reasonably read and write to memory, some edge cases implemented, all memory except that explicitly not usable (as defined in the Pandocs) is readable and writable. Cartriges can be loaded (ROM ONLY, NO MAPPERS), boot ROM boots.
   - Cartridge mapping: ROM only right now, no mappers implemented.
 * Video: PPU renders backgrounds.
