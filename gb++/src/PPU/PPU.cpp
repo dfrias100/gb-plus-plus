@@ -5,6 +5,7 @@
 PPU::PPU(Memory* _MemoryBus) {
 	MemoryBus = _MemoryBus;
 	State = OAM;
+	PastState = HBLANK;
 	PPUCycles = 0;
 	FrameReady = false;
 	FrameDrawn = false;

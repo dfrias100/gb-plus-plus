@@ -16,7 +16,7 @@ Memory::Memory() {
 	std::fill(HighRAM, HighRAM + 127, 0x00);
 	std::fill(SpriteOAM, SpriteOAM + 160, 0x00);
 	std::fill(WorkingRAM, WorkingRAM + 1024 * 8, 0x00);
-	std::fill(ExtRAM, ExtRAM + 1024 * 8, 0xFF);
+	std::fill(ExtRAM, ExtRAM + 1024 * 8, 0x00);
 	std::fill(VideoRAM, VideoRAM + 1024 * 8, 0x00);
 
 	InterruptFlags = &IO[0xF];
@@ -31,7 +31,7 @@ Memory::Memory() {
 		CPU->SetupBootRom();
 		std::fill(IO, IO + 128, 0x00);
 	} else {
-		std::copy(IOPowerOn, IOPowerOn + 0x80, IO);
+		std::copy(IOPowerOn, IOPowerOn + 128, IO);
 	}
 }
 
@@ -60,10 +60,11 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 	} else if (address <= 0xDFFF) {
 		WorkingRAM[address - 0xC000] = data;
 	} else if (address <= 0xFDFF) {
-		WorkingRAM[(address & 0xDFFF) - 0xC000] = data;
+		WorkingRAM[address - 0xE000] = data;
 	} else if (address <= 0xFE9F) {
 		SpriteOAM[address - 0xFE00] = data;
 	} else if (address <= 0xFEFF) {
+		return;
 	} else if (address <= 0xFF7F) {
 		IO[address - 0xFF00] = data;
 		if (address == 0xFF00) {
@@ -74,6 +75,7 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 			GPU->UpdateBGPalette();
 		} else if (address == 0xFF50) {
 			BootROMEnable = false;
+			IO[0x44] = 0x8F;
 		} else if (address == 0xFF02 && data == 0x81) {
 			std::cout << ReadWord(0xFF01);
 		} else if (address == 0xFF0F) {
@@ -98,11 +100,11 @@ uint8_t Memory::ReadWord(uint16_t address) {
 	} else if (address <= 0xDFFF) {
 		return WorkingRAM[address - 0xC000];
 	} else if (address <= 0xFDFF) {
-		return WorkingRAM[(address & 0xDFFF) - 0xC000];
+		return WorkingRAM[address - 0xE000];
 	} else if (address <= 0xFE9F) {
 		return SpriteOAM[address - 0xFE00];
 	} else if (address <= 0xFEFF) {
-		return 0x00;
+		return 0xFF;
 	} else if (address <= 0xFF7F) {
 		return IO[address - 0xFF00];
 	} else if (address <= 0xFFFE) {

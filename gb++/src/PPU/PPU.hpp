@@ -5,15 +5,15 @@
 
 class Memory;
 
-class PPU {
+class PPU {	
+	uint8_t BGPalette[4];
+
 	enum PPUSTATE {
 		HBLANK,
 		VBLANK,
 		OAM,
 		DRAW
 	};
-	
-	uint8_t BGPalette[4];
 
 	const uint8_t Colors[4] = {
 		0xFF,
@@ -58,13 +58,13 @@ class PPU {
 	uint8_t OffsetY;
 
 	uint8_t STAT;
-
-	bool STATEnabled;
-
 	uint16_t PPUCycles;
 
 	PPUSTATE PastState;
 	PPUSTATE State;
+
+	bool STATEnabled;
+
 public:
 	bool FrameReady;
 	bool FrameDrawn;

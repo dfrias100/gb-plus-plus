@@ -19,15 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Cartridge\Cartridge.cpp" />
     <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Mapper\Mapper.cpp" />
+    <ClCompile Include="src\Mapper\MBC0\MBC0.cpp" />
     <ClCompile Include="src\Memory\Memory.cpp" />
     <ClCompile Include="src\PPU\PPU.cpp" />
     <ClCompile Include="src\Sharp\Sharp.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Cartridge\Cartridge.hpp" />
     <ClInclude Include="src\Input\Input.hpp" />
+    <ClInclude Include="src\Mapper\Mapper.hpp" />
+    <ClInclude Include="src\Mapper\MBC0\MBC0.hpp" />
     <ClInclude Include="src\Memory\Memory.hpp" />
     <ClInclude Include="src\PPU\PPU.hpp" />
     <ClInclude Include="src\Sharp\Sharp.hpp" />

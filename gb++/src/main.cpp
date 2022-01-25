@@ -5,6 +5,7 @@
 #include "Window/Window.hpp"
 #include "Memory/Memory.hpp" 
 #include "Input/Input.hpp"
+#include "Cartridge/Cartridge.hpp"
 
 const unsigned int GB_SCREEN_WIDTH = 160;
 const unsigned int GB_SCREEN_HEIGHT = 144;
@@ -18,6 +19,8 @@ int main(int argc, char* argv[]) {
     Input.EmuWindow = &EmuWindow;
     Input.EmulatorCore = &GB;
     Input.EventVar = &EmuEvent;
+
+    Cartridge(std::string(argv[1]));
 
     if (argc > 1)
         GB.CartridgeLoader(argv[1]);
