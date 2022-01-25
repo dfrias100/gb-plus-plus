@@ -26,7 +26,6 @@ uint8_t* PPU::GetFrameBufferPointer() {
 
 void PPU::Clock() {
 	SetState();
-	STATEnabled = MemoryBus->InterruptEnableRegister & 0x02;
 
 	STAT = MemoryBus->ReadWord(0xFF41);
 	switch (State) {
@@ -94,8 +93,8 @@ void PPU::Clock() {
 
 	LYC = MemoryBus->ReadWord(0xFF45);
 	if (LY == LYC) {
-		MemoryBus->WriteWord(0xFF41, STAT | 0x04);
-		if (STATEnabled && (STAT & 0x40)) {
+		if ((STAT & 0x44) == 0x40) {
+			MemoryBus->WriteWord(0xFF41, STAT | 0x04);
 			RaiseSTATInterrupt();
 		}
 	} else {
@@ -252,27 +251,24 @@ void PPU::DrawSprites() {
 			uint8_t FlipCase = (SpriteFlags & 0x60) >> 5;
 
 			if (LY >= (SpriteYPos - 16) && LY < ((SpriteYPos - 16) + SpriteHeight)) {
-				for (int i = 0; i < SpriteHeight; i++) {
-					for (int j = 0; j < 8; j++) {
-						HeightOffset = FlipCase & 0x02 ? (SpriteHeight - 1) - i : i;
-						XShift = FlipCase & 0x01 ? j : 7 - j;
+				for (int i = 0; i < 8; i++) {
+					HeightOffset = FlipCase & 0x02 ? (SpriteHeight - 1) - (LY - (SpriteYPos - 16)) : (LY - (SpriteYPos - 16));
+					XShift = FlipCase & 0x01 ? i : 7 - i;
 
-						SpriteLine = PatternTable + TileID * 0x10 + HeightOffset * 0x02;
-						PixelBitL = (MemoryBus->ReadWord(SpriteLine) >> XShift) & 0x01;
-						PixelBitH = (MemoryBus->ReadWord(SpriteLine + 1) >> XShift) & 0x01;
-						PixelColor = PixelBitL | PixelBitH << 1;
+					SpriteLine = PatternTable + TileID * 0x10 + HeightOffset * 0x02;
+					PixelBitL = (MemoryBus->ReadWord(SpriteLine) >> XShift) & 0x01;
+					PixelBitH = (MemoryBus->ReadWord(SpriteLine + 1) >> XShift) & 0x01;
+					PixelColor = PixelBitL | PixelBitH << 1;
 
-
-						// TODO: Implement Sprite palette
-						uint16_t SpritePalette = (SpriteFlags >> 4) & 0x01 ? 0xFF49 : 0xFF48;
-						RealColor = (MemoryBus->ReadWord(SpritePalette) >> (2 * PixelColor)) & 0x03;
-						
-						if (PixelColor != 0 && (SpriteYPos + i) <= 0xFF && (SpriteXPos + j) <= 0xFF) {
-							ObjectLayer[(SpriteYPos + i - 16) * 256 * 4 + ((SpriteXPos + j - 8) * 4)] = Colors[RealColor];
-							ObjectLayer[(SpriteYPos + i - 16) * 256 * 4 + ((SpriteXPos + j - 8) * 4) + 1] = Colors[RealColor];
-							ObjectLayer[(SpriteYPos + i - 16) * 256 * 4 + ((SpriteXPos + j - 8) * 4) + 2] = Colors[RealColor];
-							ObjectLayer[(SpriteYPos + i - 16) * 256 * 4 + ((SpriteXPos + j - 8) * 4) + 3] = 0xFF;
-						}
+					// TODO: Implement Sprite palette
+					uint16_t SpritePalette = (SpriteFlags >> 4) & 0x01 ? 0xFF49 : 0xFF48;
+					RealColor = (MemoryBus->ReadWord(SpritePalette) >> (2 * PixelColor)) & 0x03;
+					
+					if (PixelColor != 0 && (SpriteXPos + i) <= 0xFF) {
+						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4)] = Colors[RealColor];
+						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 1] = Colors[RealColor];
+						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 2] = Colors[RealColor];
+						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 3] = 0xFF;
 					}
 				}
 			}

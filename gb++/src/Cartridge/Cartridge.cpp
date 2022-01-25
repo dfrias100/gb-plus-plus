@@ -23,7 +23,7 @@ Cartridge::Cartridge(std::string FileName) {
 		std::cout << "CGB flag: "    << std::hex << std::setw(2) << std::setfill('0') << (uint16_t) Header.CGBFlag    << std::endl;
 		std::cout << "SGB flag: "    << std::hex << std::setw(2) << std::setfill('0') << (uint16_t) Header.SGBFlag    << std::endl;
 		std::cout << "Mapper type: " << std::hex << std::setw(2) << std::setfill('0') << (uint16_t) Header.MapperType << std::endl;
-		std::cout << "ROM size: "    << std::dec << TrueROMSize << " bytes " << std::endl;
+		std::cout << "ROM size: "    << std::dec << TrueROMSize << " kilobytes " << std::endl;
 		std::cout << "RAM type: "    << std::hex << std::setw(2) << std::setfill('0') << (uint16_t) Header.RAMType    << std::endl;
 
 		if (Header.CGBFlag == 0xC0) {
