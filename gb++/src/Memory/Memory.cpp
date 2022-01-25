@@ -6,9 +6,7 @@ Memory::Memory() {
 	IO         = new uint8_t[128];
 	SpriteOAM  = new uint8_t[160];
 	WorkingRAM = new uint8_t[1024 * 8];
-	ExtRAM     = new uint8_t[1024 * 8];
 	VideoRAM   = new uint8_t[1024 * 8];
-	Cartridge  = new uint8_t[1024 * 32];
 	BootROM	   = new uint8_t[256];
 
 	InterruptEnableRegister = 0x00;
@@ -16,8 +14,6 @@ Memory::Memory() {
 	std::fill(HighRAM, HighRAM + 127, 0x00);
 	std::fill(SpriteOAM, SpriteOAM + 160, 0x00);
 	std::fill(WorkingRAM, WorkingRAM + 1024 * 8, 0x00);
-	std::fill(ExtRAM, ExtRAM + 1024 * 8, 0x00);
-	std::fill(VideoRAM, VideoRAM + 1024 * 8, 0x00);
 
 	InterruptFlags = &IO[0xF];
 
@@ -41,22 +37,15 @@ Memory::~Memory()
 	delete[] IO;
 	delete[] SpriteOAM;
 	delete[] WorkingRAM;
-	delete[] ExtRAM;
-	delete[] VideoRAM;
-	delete[] Cartridge;
 
 	delete CPU;
 }
 
 void Memory::WriteWord(uint16_t address, uint8_t data) {
-	if (address <= 0xFF && BootROMEnable) {
-		BootROM[address] = data;
-	} else if (address <= 0x7FFF) {
-		//Cartridge[address] = data;
+	if (ConnectedCartridge->WriteWord(address, data)) {
+		return;
 	} else if (address <= 0x9FFF) {
 		VideoRAM[address - 0x8000] = data;
-	} else if (address <= 0xBFFF) {
-		ExtRAM[address - 0xA000] = data;
 	} else if (address <= 0xDFFF) {
 		WorkingRAM[address - 0xC000] = data;
 	} else if (address <= 0xFDFF) {
@@ -89,14 +78,13 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 }
 
 uint8_t Memory::ReadWord(uint16_t address) {
-	if (address <= 0xFF && BootROMEnable) {
+	uint8_t data;
+	if (((BootROMEnable && address > 0xFF) || !BootROMEnable) && ConnectedCartridge->ReadWord(address, data)) {
+		return data;
+    } else if (address <= 0xFF && BootROMEnable) {
 		return BootROM[address];
-	} else if (address <= 0x7FFF) {
-		return Cartridge[address];
 	} else if (address <= 0x9FFF) {
 		return VideoRAM[address - 0x8000];
-	} else if (address <= 0xBFFF) {
-		return ExtRAM[address - 0xA000];
 	} else if (address <= 0xDFFF) {
 		return WorkingRAM[address - 0xC000];
 	} else if (address <= 0xFDFF) {
@@ -185,12 +173,8 @@ void Memory::UpdateTimer() {
 	}
 }
 
-bool Memory::CartridgeLoader(std::string filename) {
-	std::ifstream ROM;
-	ROM.open(filename, std::ios::binary);
-	ROM.read(reinterpret_cast<char *>(Cartridge), 1024 * 32);
-	ROM.close();
-	return true;
+void Memory::CartridgeLoader(Cartridge* Cart) {
+	ConnectedCartridge = Cart;
 }
 
 bool Memory::LoadBootRom() {

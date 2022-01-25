@@ -3,10 +3,9 @@
 
 #include <cstdint>
 #include <string>
-#include <iostream>
-#include <fstream>
 
 #include "../Sharp/Sharp.hpp"
+#include "../Cartridge/Cartridge.hpp"
 #include "../PPU/PPU.hpp"
 
 class Memory {
@@ -14,10 +13,14 @@ class Memory {
 	uint8_t* IO;         // IO register located at 0xFF00: 128 bytes
 	uint8_t* SpriteOAM;  // Video RAM located at 0xFE00: 160 bytes
 	uint8_t* WorkingRAM; // Working RAM located at 0xC000 (mirrored at 0xE000): 8 kilobytes
-	uint8_t* ExtRAM;	 // External RAM located at 0xA000: 8 kilobytes
 	uint8_t* VideoRAM;   // Video RAM located at 0x8000: 8 kilobytes
-	uint8_t* Cartridge;  // Cartridge ROM beginning at 0x0000: 32 kilobytes
+
+	// These elements are in the cartridge class now
+	// External RAM located at 0xA000: 8 kilobyte address space
+	// Cartridge ROM beginning at 0x0000: 32 kilobyte address space
+
 	uint8_t* BootROM;
+	Cartridge* ConnectedCartridge;
 
 	Sharp* CPU; // The Memory class will need to tick the CPU itself
 
@@ -83,8 +86,7 @@ public:
 	uint8_t UpdateJoypad(uint8_t button_mask);
 	void UpdateTimer();
 
-	// This is a temporary function
-	bool CartridgeLoader(std::string filename);
+	void CartridgeLoader(Cartridge* Cart);
 	bool LoadBootRom();
 
 	void Clock();

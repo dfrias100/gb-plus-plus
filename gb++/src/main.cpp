@@ -20,11 +20,15 @@ int main(int argc, char* argv[]) {
     Input.EmulatorCore = &GB;
     Input.EventVar = &EmuEvent;
 
-    Cartridge(std::string(argv[1]));
+    std::string ROMFile;
 
     if (argc > 1)
-        GB.CartridgeLoader(argv[1]);
+        ROMFile = argv[1];
+    else
+        return 1;
 
+    Cartridge GamePak(ROMFile);
+    GB.CartridgeLoader(&GamePak);
     GB.LoadBootRom();
 
     float ResidualTime = 0.0f;
@@ -57,6 +61,7 @@ int main(int argc, char* argv[]) {
 
     auto duration = end - start;
 
+    std::cout << std::dec;
     std::cout << "Duration: " << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << " ms, Cycles: " << GB.SystemCycles << std::endl;
     std::cout << "Average clock speed: " << ((float)GB.SystemCycles / std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()) * (1000.0f / 1e6f) << " MHz" << std::endl;
 

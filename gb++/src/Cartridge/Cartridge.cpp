@@ -44,17 +44,21 @@ Cartridge::Cartridge(std::string FileName) {
 		}
 
 		switch (Header.MapperType) {
+			case 0x02:
+			case 0x01:
 			case 0x00:
 				CartridgeMapper = new MBC0(1, RAMBanks);
 				break;
 		}
 		
+		File.seekg(0);
 		File.read(reinterpret_cast<char *>(ROM.data()), TrueROMSize * 1024);
 		File.close();
 	}
 }
 
 Cartridge::~Cartridge() {
+	delete CartridgeMapper;
 }
 
 bool Cartridge::ReadWord(uint16_t address, uint8_t& data) {
