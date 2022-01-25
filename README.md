@@ -14,5 +14,5 @@ This is gameboy emulator that is a work in progress! Many parts have not yet bee
   - Cartridge mapping: ROM only right now, no mappers implemented.
 * Video: PPU fully implemented, timing is not proper, but this emulator is not focused on extreme accuracy. Only B/W palette supported, may add ability to add a custom monochrome palette later.
 * Audio: No progress yet, it may not even be implemented at all.
-* Input: Not available yet, as at least CPU, Memory, and Video have to be somewhat implemented.
-* General: Barebones console program, loads ROM-only carts opens an SFML window with a white background. I may implement a basic UI later.
+* Input: Keyboard support has been implemented, games can now be played. Inputs are handled through a dedicated function.
+* General: Main has some form of structure: loads a rom, and the DMG bootrom, then starts the emulation loop.
