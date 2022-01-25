@@ -5,7 +5,7 @@
 
 class MBC0 : public Mapper {
 public:
-	MBC0(uint8_t NumROMBanks, uint8_t NumRAMBanks);
+	MBC0(uint16_t NumROMBanks, uint16_t NumRAMBanks);
 	~MBC0();
 
 	bool ROMReadMappedWord(uint16_t address, uint16_t& newAddress) override;

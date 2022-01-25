@@ -5,7 +5,7 @@
 
 class Mapper {
 public:
-	Mapper(uint8_t NumROMBanks, uint8_t NumRAMBanks);
+	Mapper(uint16_t NumROMBanks, uint16_t NumRAMBanks);
 	virtual ~Mapper();
 
 	virtual bool ROMReadMappedWord(uint16_t address, uint16_t& newAddress) = 0;
@@ -14,8 +14,8 @@ public:
 	virtual bool RAMReadMappedWord(uint16_t address, uint16_t& newAddress) = 0;
 	virtual bool RAMWriteMappedWord(uint16_t address, uint16_t& newAddress) = 0;
 protected:
-	uint8_t ROMBanks;
-	uint8_t RAMBanks;
+	uint16_t ROMBanks;
+	uint16_t RAMBanks;
 };
 
 #endif

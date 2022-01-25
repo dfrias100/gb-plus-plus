@@ -1,6 +1,6 @@
 #include "MBC1.hpp"
 
-MBC1::MBC1(uint8_t NumROMBanks, uint8_t NumRAMBanks) : Mapper(NumROMBanks, NumRAMBanks) {
+MBC1::MBC1(uint16_t NumROMBanks, uint16_t NumRAMBanks) : Mapper(NumROMBanks, NumRAMBanks) {
 }
 
 MBC1::~MBC1() {

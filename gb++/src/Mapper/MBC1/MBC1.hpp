@@ -9,7 +9,7 @@ class MBC1 : public Mapper {
 	uint8_t RAMBankNo = 0x00;
 	uint8_t BankingMode = 0x00;
 public:
-	MBC1(uint8_t NumROMBanks, uint8_t NumRAMBanks);
+	MBC1(uint16_t NumROMBanks, uint16_t NumRAMBanks);
 	~MBC1();
 
 	bool ROMReadMappedWord(uint16_t address, uint16_t& newAddress) override;
