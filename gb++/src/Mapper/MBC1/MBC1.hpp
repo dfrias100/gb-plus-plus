@@ -1,18 +1,22 @@
-#ifndef MBC0_HPP
-#define MBC0_HPP
+#ifndef MBC1_HPP
+#define MBC1_HPP
 
 #include "../Mapper.hpp"
 
-class MBC0 : public Mapper {
+class MBC1 : public Mapper {
+	uint8_t RAMEnable = 0x00;
+	uint16_t ROMBankNo = 0x01;
+	uint8_t RAMBankNo = 0x00;
+	uint8_t BankingMode = 0x00;
 public:
-	MBC0(uint8_t NumROMBanks, uint8_t NumRAMBanks);
-	~MBC0();
+	MBC1(uint8_t NumROMBanks, uint8_t NumRAMBanks);
+	~MBC1();
 
 	bool ROMReadMappedWord(uint16_t address, uint16_t& newAddress) override;
 	bool ROMWriteMappedWord(uint16_t address, uint8_t data) override;
 
 	bool RAMReadMappedWord(uint16_t address, uint16_t& newAddress) override;
 	bool RAMWriteMappedWord(uint16_t address, uint16_t& newAddress) override;
-};	
+};
 
 #endif

@@ -9,6 +9,7 @@
 #include <fstream>
 
 #include "../Mapper/MBC0/MBC0.hpp"
+#include "../Mapper/MBC1/MBC1.hpp"
 
 class Cartridge {
 	struct CartridgeHeader {

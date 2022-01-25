@@ -451,7 +451,7 @@ void Sharp::RRCA() {
 }
 
 void Sharp::STOP() {
-	Suspended = true;
+	// I will ignore this instruction for now
 }
 
 void Sharp::LD_DE_DW() {

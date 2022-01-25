@@ -42,6 +42,9 @@
     <ClCompile Include="src\Cartridge\Cartridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mapper\MBC1\MBC1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window\Window.hpp">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Cartridge\Cartridge.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mapper\MBC1\MBC1.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

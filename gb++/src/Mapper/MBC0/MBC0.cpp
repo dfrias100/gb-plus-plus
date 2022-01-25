@@ -11,7 +11,7 @@ bool MBC0::ROMReadMappedWord(uint16_t address, uint16_t& newAddress) {
 	return true;
 }
 
-bool MBC0::ROMWriteMappedWord(uint16_t address, uint16_t& newAddress) {
+bool MBC0::ROMWriteMappedWord(uint16_t address, uint8_t data) {
 	return false;
 }
 

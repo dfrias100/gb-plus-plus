@@ -17,6 +17,7 @@ Cartridge::Cartridge(std::string FileName) {
 
 		uint32_t TrueROMSize = 0x20 << Header.ROMSize;
 		uint8_t RAMBanks = 0;
+		uint8_t ROMBanks = 0;
 
 		std::cout << "ROM title: "   << Header.Title             << std::endl;
 		std::cout << "CGB flag: "    << std::hex << std::setw(2) << std::setfill('0') << (uint16_t) Header.CGBFlag    << std::endl;
@@ -27,14 +28,14 @@ Cartridge::Cartridge(std::string FileName) {
 
 		if (Header.CGBFlag == 0xC0) {
 			std::cout << "ROM not supported! This works in CGB mode only which is not emulated." << std::endl;
-			exit(0);
+			exit(1);
 		}
 		
 		if (Header.SGBFlag == 0x03) {
 			std::cout << "The SGB flag is set in this cartridge, however it will NOT run in SGB mode." << std::endl;
 		}
 
-		ROM.resize(TrueROMSize * 1024);
+		
 
 		switch (Header.RAMType) {
 			case 0x00:
@@ -43,12 +44,34 @@ Cartridge::Cartridge(std::string FileName) {
 				break;
 		}
 
-		switch (Header.MapperType) {
-			case 0x02:
-			case 0x01:
+		switch (Header.ROMSize) {
 			case 0x00:
-				CartridgeMapper = new MBC0(1, RAMBanks);
+				ROMBanks = 2;
 				break;
+			case 0x01:
+				ROMBanks = 4;
+				break;
+			case 0x02:
+				ROMBanks = 8;
+				break;
+			case 0x03:
+				ROMBanks = 16;
+				break;
+			case 0x04:
+				ROMBanks = 32;
+				break;
+		}
+
+		ROM.resize(TrueROMSize * 1024);
+
+		switch (Header.MapperType) {
+			case 0x00:
+				CartridgeMapper = new MBC0(ROMBanks, RAMBanks);
+				break;
+			case 0x01:
+			case 0x02:
+			case 0x03:
+				CartridgeMapper = new MBC1(ROMBanks, RAMBanks);
 		}
 		
 		File.seekg(0);
@@ -77,9 +100,14 @@ bool Cartridge::ReadWord(uint16_t address, uint8_t& data) {
 }
 
 bool Cartridge::WriteWord(uint16_t address, uint8_t data) {
+	uint16_t NewAddress;
 	if (address >= 0x0000 && address < 0x8000) {
+		CartridgeMapper->ROMWriteMappedWord(address, data);
 		return true;
 	} else if (address >= 0xA000 && address < 0xC000) {
+		if (CartridgeMapper->RAMWriteMappedWord(address, NewAddress)) {
+			ExtRAM[NewAddress] = data;
+		}
 		return true;
 	}
 	return false;
