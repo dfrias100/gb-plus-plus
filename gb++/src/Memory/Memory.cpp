@@ -14,6 +14,7 @@ Memory::Memory() {
 	std::fill(HighRAM, HighRAM + 127, 0x00);
 	std::fill(SpriteOAM, SpriteOAM + 160, 0x00);
 	std::fill(WorkingRAM, WorkingRAM + 1024 * 8, 0x00);
+	std::fill(VideoRAM, VideoRAM + 1024 * 8, 0x00);
 
 	InterruptFlags = &IO[0xF];
 
@@ -62,6 +63,10 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 			OAMDMACopy();
 		} else if (address == 0xFF47) {
 			GPU->UpdateBGPalette();
+		} else if (address == 0xFF48) {
+			GPU->UpdateSpritePalette(0, data);
+		} else if (address == 0xFF49) {
+			GPU->UpdateSpritePalette(1, data);
 		} else if (address == 0xFF50) {
 			BootROMEnable = false;
 			IO[0x44] = 0x8F;

@@ -69,6 +69,7 @@ void PPU::Clock() {
 					std::fill(BGLayer, BGLayer + 256 * 256 * 4, 0x00);
 					std::fill(WindowLayer, WindowLayer + 256 * 256 * 4, 0x00);
 					std::fill(ObjectLayer, ObjectLayer + 256 * 256 * 4, 0x00);
+					WindowLine = 0;
 				}
 			}
 			break;
@@ -133,6 +134,13 @@ void PPU::UpdateBGPalette() {
 	BGPalette[3] = (Byte & 0xC0) >> 6;
 }
 
+void PPU::UpdateSpritePalette(uint8_t paletteNo, uint8_t newPalette) {
+	SpritePalette[paletteNo][0] = (newPalette & 0x03);
+	SpritePalette[paletteNo][1] = (newPalette & 0x0C) >> 2;
+	SpritePalette[paletteNo][2] = (newPalette & 0x30) >> 4;
+	SpritePalette[paletteNo][3] = (newPalette & 0xC0) >> 6;
+}
+
 void PPU::DrawFrameBuffer() {
 	for (int i = 0; i < 144; i++) {
 		for (int j = 0; j < 160; j++) {
@@ -184,10 +192,10 @@ void PPU::DrawBackground() {
 		PixelBitH = ((MemoryBus->ReadWord(TileLine + 1)) >> (7 - (OffsetX % 8))) & 0x01;
 		PixelColor = PixelBitL | PixelBitH << 1;
 
-		uint8_t RealColor = BGPalette[PixelColor];
+		RealColor = BGPalette[PixelColor] * 3;
 		BGLayer[LY * 256 * 4 + (i * 4)] = Colors[RealColor];
-		BGLayer[LY * 256 * 4 + (i * 4) + 1] = Colors[RealColor];
-		BGLayer[LY * 256 * 4 + (i * 4) + 2] = Colors[RealColor];
+		BGLayer[LY * 256 * 4 + (i * 4) + 1] = Colors[RealColor + 1];
+		BGLayer[LY * 256 * 4 + (i * 4) + 2] = Colors[RealColor + 2];
 		BGLayer[LY * 256 * 4 + (i * 4) + 3] = 0xFF;
 	}
 }
@@ -199,33 +207,38 @@ void PPU::DrawWindow() {
 
 	LCDC = MemoryBus->ReadWord(0xFF40);
 
-	TileMapAddress = (LCDC & 0x20) ? 0x9C00 : 0x9800;
+	TileMapAddress = (LCDC & 0x40) ? 0x9C00 : 0x9800;
 	TileDataBasePointer = (LCDC & 0x10) ? 0x8000 : 0x9000;
 	bool SignedAddressingMode = (LCDC & 0x10) ? false : true;
+	bool WindowLineDrawn = false;
 
 	uint8_t PixelBitL;
 	uint8_t PixelBitH;
 	if (LCDC & 0x20) {
-		for (int i = 0; i < 256; i++) {
-			if ((WX <= i && i < WX + 160) && (WY <= LY && LY < WY + 144)) {
+		for (int i = 0; i < 160; i++) {
+			if ((WX <= i && i < (WX + 160)) && WindowLine < 144 && (WY <= LY && LY < WY + 144)) {
+				WindowLineDrawn = i < 160 ? true : false;
 				OffsetX = i - WX;
-				OffsetY = LY - WY;
-				TileID = MemoryBus->ReadWord(TileMapAddress + (OffsetX / 8) + 32 * (OffsetY / 8));
+				OffsetY = (WindowLine / 8) % 32;
+				TileID = MemoryBus->ReadWord(TileMapAddress + (OffsetX / 8) + 32 * OffsetY);
 
-				TileLine = TileDataBasePointer + (OffsetY % 8 * 0x02);
+				TileLine = TileDataBasePointer + ((WindowLine % 8) * 0x02);
 				TileLine += SignedAddressingMode ? ((int8_t) TileID * 0x10) : TileID * 0x010;
 
 				PixelBitL = (MemoryBus->ReadWord(TileLine) >> (7 - (OffsetX % 8))) & 0x01;
 				PixelBitH = ((MemoryBus->ReadWord(TileLine + 1)) >> (7 - (OffsetX % 8))) & 0x01;
 				PixelColor = PixelBitL | PixelBitH << 1;
 
-				RealColor = BGPalette[PixelColor];
+				RealColor = BGPalette[PixelColor] * 3;
 				WindowLayer[LY * 256 * 4 + (i * 4)] = Colors[RealColor];
-				WindowLayer[LY * 256 * 4 + (i * 4) + 1] = Colors[RealColor];
-				WindowLayer[LY * 256 * 4 + (i * 4) + 2] = Colors[RealColor];
+				WindowLayer[LY * 256 * 4 + (i * 4) + 1] = Colors[RealColor + 1];
+				WindowLayer[LY * 256 * 4 + (i * 4) + 2] = Colors[RealColor + 2];
 				WindowLayer[LY * 256 * 4 + (i * 4) + 3] = 0xFF;
 			}
 		}
+
+		if (WindowLineDrawn)
+			WindowLine++;
 	}
 }
 
@@ -250,6 +263,8 @@ void PPU::DrawSprites() {
 			SpriteHeight = (LCDC >> 2) & 0x1 ? 16 : 8;
 			uint8_t FlipCase = (SpriteFlags & 0x60) >> 5;
 
+			TileID &= SpriteHeight == 16 ? 0xFE : 0xFF;
+
 			if (LY >= (SpriteYPos - 16) && LY < ((SpriteYPos - 16) + SpriteHeight)) {
 				for (int i = 0; i < 8; i++) {
 					HeightOffset = FlipCase & 0x02 ? (SpriteHeight - 1) - (LY - (SpriteYPos - 16)) : (LY - (SpriteYPos - 16));
@@ -260,14 +275,13 @@ void PPU::DrawSprites() {
 					PixelBitH = (MemoryBus->ReadWord(SpriteLine + 1) >> XShift) & 0x01;
 					PixelColor = PixelBitL | PixelBitH << 1;
 
-					// TODO: Implement Sprite palette
-					uint16_t SpritePalette = (SpriteFlags >> 4) & 0x01 ? 0xFF49 : 0xFF48;
-					RealColor = (MemoryBus->ReadWord(SpritePalette) >> (2 * PixelColor)) & 0x03;
+					uint16_t PaletteNum = (SpriteFlags >> 4) & 0x01;
 					
+					RealColor = SpritePalette[PaletteNum][PixelColor] * 3;
 					if (PixelColor != 0 && (SpriteXPos + i) <= 0xFF) {
 						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4)] = Colors[RealColor];
-						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 1] = Colors[RealColor];
-						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 2] = Colors[RealColor];
+						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 1] = Colors[RealColor + 1];
+						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 2] = Colors[RealColor + 2];
 						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 3] = 0xFF;
 					}
 				}
