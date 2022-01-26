@@ -215,9 +215,10 @@ void PPU::DrawWindow() {
 	uint8_t PixelBitL;
 	uint8_t PixelBitH;
 	if (LCDC & 0x20) {
-		for (int i = 0; i < 160; i++) {
+		for (int i = 0; i < 256; i++) {
 			if ((WX <= i && i < (WX + 160)) && WindowLine < 144 && (WY <= LY && LY < WY + 144)) {
-				WindowLineDrawn = i < 160 ? true : false;
+				WindowLineDrawn = i < 160 ? true : WindowLineDrawn;
+
 				OffsetX = i - WX;
 				OffsetY = (WindowLine / 8) % 32;
 				TileID = MemoryBus->ReadWord(TileMapAddress + (OffsetX / 8) + 32 * OffsetY);
