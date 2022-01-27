@@ -42,6 +42,10 @@ Cartridge::Cartridge(std::string FileName) {
 				ExtRAM.resize(0);
 				RAMBanks = 0;
 				break;
+			case 0x02:
+				ExtRAM.resize(1024 * 8);
+				RAMBanks = 1;
+				break;
 		}
 
 		switch (Header.ROMSize) {
@@ -72,6 +76,7 @@ Cartridge::Cartridge(std::string FileName) {
 			case 0x02:
 			case 0x03:
 				CartridgeMapper = new MBC1(ROMBanks, RAMBanks);
+				break;
 		}
 		
 		File.seekg(0);
@@ -85,7 +90,7 @@ Cartridge::~Cartridge() {
 }
 
 bool Cartridge::ReadWord(uint16_t address, uint8_t& data) {
-	uint16_t NewAddress;
+	uint32_t NewAddress;
 	if (address >= 0x0000 && address < 0x8000) {
 		CartridgeMapper->ROMReadMappedWord(address, NewAddress);
 		data = ROM[NewAddress];
@@ -93,6 +98,8 @@ bool Cartridge::ReadWord(uint16_t address, uint8_t& data) {
 	} else if (address >= 0xA000 && address < 0xC000) {
 		if (CartridgeMapper->RAMReadMappedWord(address, NewAddress)) {
 			data = ExtRAM[NewAddress];
+		} else {
+			data = 0x00;
 		}
 		return true;
 	}
@@ -100,7 +107,7 @@ bool Cartridge::ReadWord(uint16_t address, uint8_t& data) {
 }
 
 bool Cartridge::WriteWord(uint16_t address, uint8_t data) {
-	uint16_t NewAddress;
+	uint32_t NewAddress;
 	if (address >= 0x0000 && address < 0x8000) {
 		CartridgeMapper->ROMWriteMappedWord(address, data);
 		return true;

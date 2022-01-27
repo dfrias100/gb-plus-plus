@@ -6,7 +6,7 @@ MBC1::MBC1(uint16_t NumROMBanks, uint16_t NumRAMBanks) : Mapper(NumROMBanks, Num
 MBC1::~MBC1() {
 }
 
-bool MBC1::ROMReadMappedWord(uint16_t address, uint16_t& newAddress) {
+bool MBC1::ROMReadMappedWord(uint16_t address, uint32_t& newAddress) {
 	uint16_t LargeROMOffset = BankingMode && (ROMBanks > 32) ? 0x4000 * (ROMBankNo & 0x70) : 0;
 	newAddress = LargeROMOffset;
 	if (address <= 0x3FFF) {
@@ -43,10 +43,28 @@ bool MBC1::ROMWriteMappedWord(uint16_t address, uint8_t data) {
 	return true;
 }
 
-bool MBC1::RAMReadMappedWord(uint16_t address, uint16_t& newAddress) {
+bool MBC1::RAMReadMappedWord(uint16_t address, uint32_t& newAddress) {
+	address -= 0xA000;
+	if (RAMEnable && RAMBanks > 0) {
+		if (BankingMode && ROMBanks < 64 && RAMBanks > 1) {
+			newAddress = address + 0x2000 * (RAMBankNo & 0x3);
+		} else {
+			newAddress = address;
+		}
+		return true;
+	}
 	return false;
 }
 
-bool MBC1::RAMWriteMappedWord(uint16_t address, uint16_t& newAddress) {
+bool MBC1::RAMWriteMappedWord(uint16_t address, uint32_t& newAddress) {
+	address -= 0xA000;
+	if (RAMEnable && RAMBanks > 0) {
+		if (BankingMode && ROMBanks < 64 && RAMBanks > 1) {
+			newAddress = address + 0x2000 * (RAMBankNo & 0x3);
+		} else {
+			newAddress = address;
+		}
+		return true;
+	}
 	return false;
 }
