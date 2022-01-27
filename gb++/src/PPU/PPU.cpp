@@ -14,6 +14,7 @@ PPU::PPU(Memory* _MemoryBus) {
 
 	Screen = new uint8_t[160 * 144 * 4];
 	std::fill(Screen, Screen + (160 * 144 * 4), 0xFF);
+	PrevSpriteX.reserve(40);
 }
 
 PPU::~PPU() {
@@ -66,9 +67,9 @@ void PPU::Clock() {
 					MemoryBus->WriteWord(0xFF0F, Byte | 0x01);
 					DrawFrameBuffer();
 					FrameReady = true;
-					std::fill(BGLayer, BGLayer + 256 * 256 * 4, 0x00);
-					std::fill(WindowLayer, WindowLayer + 256 * 256 * 4, 0x00);
-					std::fill(ObjectLayer, ObjectLayer + 256 * 256 * 4, 0x00);
+					std::fill(&BGLayer[0][0][0],& BGLayer[0][0][0] + 256 * 256 * 4, 0x00);
+					std::fill(&WindowLayer[0][0][0], &WindowLayer[0][0][0] + 256 * 256 * 4, 0x00);
+					std::fill(&ObjectLayer[0][0][0], &ObjectLayer[0][0][0] + 256 * 256 * 4, 0x00);
 					WindowLine = 0;
 				}
 			}
@@ -144,23 +145,23 @@ void PPU::UpdateSpritePalette(uint8_t paletteNo, uint8_t newPalette) {
 void PPU::DrawFrameBuffer() {
 	for (int i = 0; i < 144; i++) {
 		for (int j = 0; j < 160; j++) {
-			Screen[(i * 160 * 4) + (j * 4)] = BGLayer[(i * 256 * 4) + (j * 4)];
-			Screen[(i * 160 * 4) + (j * 4) + 1] = BGLayer[(i * 256 * 4) + (j * 4) + 1];
-			Screen[(i * 160 * 4) + (j * 4) + 2] = BGLayer[(i * 256 * 4) + (j * 4) + 2];
-			Screen[(i * 160 * 4) + (j * 4) + 3] = BGLayer[(i * 256 * 4) + (j * 4) + 3];
+			Screen[(i * 160 * 4) + (j * 4)] = BGLayer[i][j][0];
+			Screen[(i * 160 * 4) + (j * 4) + 1] = BGLayer[i][j][1];
+			Screen[(i * 160 * 4) + (j * 4) + 2] = BGLayer[i][j][2];
+			Screen[(i * 160 * 4) + (j * 4) + 3] = BGLayer[i][j][3];
 
-			if (WindowLayer[(i * 256 * 4) + (j * 4) + 3] != 0x00) {
-				Screen[(i * 160 * 4) + (j * 4)] = WindowLayer[(i * 256 * 4) + (j * 4)];
-				Screen[(i * 160 * 4) + (j * 4) + 1] = WindowLayer[(i * 256 * 4) + (j * 4) + 1];
-				Screen[(i * 160 * 4) + (j * 4) + 2] = WindowLayer[(i * 256 * 4) + (j * 4) + 2];
-				Screen[(i * 160 * 4) + (j * 4) + 3] = WindowLayer[(i * 256 * 4) + (j * 4) + 3];
+			if (WindowLayer[i][j][3] != 0x00) {
+				Screen[(i * 160 * 4) + (j * 4)] = WindowLayer[i][j][0];
+				Screen[(i * 160 * 4) + (j * 4) + 1] = WindowLayer[i][j][1];
+				Screen[(i * 160 * 4) + (j * 4) + 2] = WindowLayer[i][j][2];
+				Screen[(i * 160 * 4) + (j * 4) + 3] = WindowLayer[i][j][3];
 			}
 
-			if (ObjectLayer[(i * 256 * 4) + (j * 4) + 3] != 0x00) {
-				Screen[(i * 160 * 4) + (j * 4)] = ObjectLayer[(i * 256 * 4) + (j * 4)];
-				Screen[(i * 160 * 4) + (j * 4) + 1] = ObjectLayer[(i * 256 * 4) + (j * 4) + 1];
-				Screen[(i * 160 * 4) + (j * 4) + 2] = ObjectLayer[(i * 256 * 4) + (j * 4) + 2];
-				Screen[(i * 160 * 4) + (j * 4) + 3] = ObjectLayer[(i * 256 * 4) + (j * 4) + 3];
+			if (ObjectLayer[i][j][3] != 0x00) {
+				Screen[(i * 160 * 4) + (j * 4)] = ObjectLayer[i][j][0];
+				Screen[(i * 160 * 4) + (j * 4) + 1] = ObjectLayer[i][j][1];
+				Screen[(i * 160 * 4) + (j * 4) + 2] = ObjectLayer[i][j][2];
+				Screen[(i * 160 * 4) + (j * 4) + 3] = ObjectLayer[i][j][3];
 			}
 		}
 	}
@@ -179,24 +180,27 @@ void PPU::DrawBackground() {
 
 	uint8_t PixelBitL;
 	uint8_t PixelBitH;
-	for (int i = 0; i < 256; i++) {
-		OffsetX = i + SCX;
-		OffsetY = LY + SCY;
+	if (LCDC & 0x01) {
+		for (int i = 0; i < 256; i++) {
+			OffsetX = i + SCX;
+			OffsetY = LY + SCY;
 
-		TileID = MemoryBus->ReadWord(TileMapAddress + (OffsetX / 8) + 32 * (OffsetY / 8));
+			TileID = MemoryBus->ReadWord(TileMapAddress + (OffsetX / 8) + 32 * (OffsetY / 8));
 
-		TileLine = TileDataBasePointer + (OffsetY % 8 * 0x02);
-		TileLine += SignedAddressingMode ? ((int8_t) TileID * 0x10) : TileID * 0x010;
+			TileLine = TileDataBasePointer + (OffsetY % 8 * 0x02);
+			TileLine += SignedAddressingMode ? ((int8_t) TileID * 0x10) : TileID * 0x010;
 
-		PixelBitL = (MemoryBus->ReadWord(TileLine) >> (7 - (OffsetX % 8))) & 0x01;
-		PixelBitH = ((MemoryBus->ReadWord(TileLine + 1)) >> (7 - (OffsetX % 8))) & 0x01;
-		PixelColor = PixelBitL | PixelBitH << 1;
+			PixelBitL = (MemoryBus->ReadWord(TileLine) >> (7 - (OffsetX % 8))) & 0x01;
+			PixelBitH = ((MemoryBus->ReadWord(TileLine + 1)) >> (7 - (OffsetX % 8))) & 0x01;
+			PixelColor = PixelBitL | PixelBitH << 1;
 
-		RealColor = BGPalette[PixelColor] * 3;
-		BGLayer[LY * 256 * 4 + (i * 4)] = Colors[RealColor];
-		BGLayer[LY * 256 * 4 + (i * 4) + 1] = Colors[RealColor + 1];
-		BGLayer[LY * 256 * 4 + (i * 4) + 2] = Colors[RealColor + 2];
-		BGLayer[LY * 256 * 4 + (i * 4) + 3] = 0xFF;
+			BGColorIndex[LY][i] = BGPalette[PixelColor];
+			RealColor = BGPalette[PixelColor] * 3;
+			BGLayer[LY][i][0] = Colors[RealColor];
+			BGLayer[LY][i][1] = Colors[RealColor + 1];
+			BGLayer[LY][i][2] = Colors[RealColor + 2];
+			BGLayer[LY][i][3] = 0xFF;
+		}
 	}
 }
 
@@ -214,7 +218,7 @@ void PPU::DrawWindow() {
 
 	uint8_t PixelBitL;
 	uint8_t PixelBitH;
-	if (LCDC & 0x20) {
+	if ((LCDC & 0x01) && (LCDC & 0x20)) {
 		for (int i = 0; i < 256; i++) {
 			if ((WX <= i && i < (WX + 160)) && WindowLine < 144 && (WY <= LY && LY < WY + 144)) {
 				WindowLineDrawn = i < 160 ? true : WindowLineDrawn;
@@ -230,11 +234,12 @@ void PPU::DrawWindow() {
 				PixelBitH = ((MemoryBus->ReadWord(TileLine + 1)) >> (7 - (OffsetX % 8))) & 0x01;
 				PixelColor = PixelBitL | PixelBitH << 1;
 
+				WindowColorIndex[LY][i] = BGPalette[PixelColor];
 				RealColor = BGPalette[PixelColor] * 3;
-				WindowLayer[LY * 256 * 4 + (i * 4)] = Colors[RealColor];
-				WindowLayer[LY * 256 * 4 + (i * 4) + 1] = Colors[RealColor + 1];
-				WindowLayer[LY * 256 * 4 + (i * 4) + 2] = Colors[RealColor + 2];
-				WindowLayer[LY * 256 * 4 + (i * 4) + 3] = 0xFF;
+				WindowLayer[LY][i][0] = Colors[RealColor];
+				WindowLayer[LY][i][1] = Colors[RealColor + 1];
+				WindowLayer[LY][i][2] = Colors[RealColor + 2];
+				WindowLayer[LY][i][3] = 0xFF;
 			}
 		}
 
@@ -255,6 +260,7 @@ void PPU::DrawSprites() {
 
 	uint8_t HeightOffset;
 	uint8_t XShift;
+
 	if (LCDC & 0x02) {
 		for (uint16_t OAMAddr = 0xFE00; OAMAddr < 0xFEA0; OAMAddr += 4) {
 			SpriteYPos = MemoryBus->ReadWord(OAMAddr);
@@ -263,6 +269,7 @@ void PPU::DrawSprites() {
 			SpriteFlags = MemoryBus->ReadWord(OAMAddr + 3);
 			SpriteHeight = (LCDC >> 2) & 0x1 ? 16 : 8;
 			uint8_t FlipCase = (SpriteFlags & 0x60) >> 5;
+			uint8_t SameSpriteXCount = std::count(PrevSpriteX.begin(), PrevSpriteX.end(), SpriteXPos);
 
 			TileID &= SpriteHeight == 16 ? 0xFE : 0xFF;
 
@@ -279,14 +286,26 @@ void PPU::DrawSprites() {
 					uint16_t PaletteNum = (SpriteFlags >> 4) & 0x01;
 					
 					RealColor = SpritePalette[PaletteNum][PixelColor] * 3;
+
+					bool BGColorIsNotZero = BGColorIndex[LY][(SpriteXPos + i - 8)] != 0;
+					bool WindowColorIsNotZero = WindowColorIndex[LY][(SpriteXPos + i - 8)] != 0;
+					bool OpaqueWithSameX = ObjectLayer[LY][(SpriteXPos + i - 8)][3] == 0xFF && SameSpriteXCount;
+
+					if (((SpriteFlags & 0x80) && (BGColorIsNotZero || WindowColorIsNotZero)) || OpaqueWithSameX) {
+						continue;
+					}
+
 					if (PixelColor != 0 && (SpriteXPos + i) <= 0xFF) {
-						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4)] = Colors[RealColor];
-						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 1] = Colors[RealColor + 1];
-						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 2] = Colors[RealColor + 2];
-						ObjectLayer[LY * 256 * 4 + ((SpriteXPos + i - 8) * 4) + 3] = 0xFF;
+						ObjectLayer[LY][(SpriteXPos + i - 8)][0] = Colors[RealColor];
+						ObjectLayer[LY][(SpriteXPos + i - 8)][1] = Colors[RealColor + 1];
+						ObjectLayer[LY][(SpriteXPos + i - 8)][2] = Colors[RealColor + 2];
+						ObjectLayer[LY][(SpriteXPos + i - 8)][3] = 0xFF;
 					}
 				}
 			}
+			PrevSpriteX.push_back(SpriteXPos);
 		}
 	}
+
+	PrevSpriteX.clear();
 }

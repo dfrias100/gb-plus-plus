@@ -2,6 +2,7 @@
 #define PPU_HPP
 
 #include <cstdint>
+#include <vector>
 
 class Memory;
 
@@ -30,11 +31,18 @@ class PPU {
 		0x00, 0x2B, 0x59
 	};*/
 
+	std::vector<uint8_t> PrevSpriteX;
+
 	Memory* MemoryBus;
 	uint8_t* Screen;
-	uint8_t BGLayer[256 * 256 * 4];
-	uint8_t WindowLayer[256 * 256 * 4];
-	uint8_t ObjectLayer[256 * 256 * 4];
+
+	uint8_t BGColorIndex[256][256];
+	uint8_t WindowColorIndex[256][256];
+
+	uint8_t BGLayer[256][256][4];
+	uint8_t WindowLayer[256][256][4];
+	uint8_t ObjectLayer[256][256][4];
+
 	uint8_t Byte;
 
 	uint8_t LY;
