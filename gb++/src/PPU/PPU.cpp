@@ -86,7 +86,7 @@ void PPU::Clock() {
 		UpdatingLine = true;
 	}
 
-	if (PPUCycles == 456) {
+	if (PPUCycles > 456) {
 		PPUCycles = 0;
 		LY = MemoryBus->ReadWord(0xFF44) + 1;
 		MemoryBus->WriteWord(0xFF44, LY);
@@ -121,7 +121,7 @@ void PPU::SetState() {
 	} else if (PPUCycles < 456) {
 		State = HBLANK;
 	}
-	
+
 	if (MemoryBus->ReadWord(0xFF44) >= 144) {
 		State = VBLANK;
 	}
