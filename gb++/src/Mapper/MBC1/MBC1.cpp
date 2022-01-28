@@ -1,6 +1,4 @@
 #include "MBC1.hpp"
-#include <iostream>
-#include <iomanip>
 
 MBC1::MBC1(uint16_t NumROMBanks, uint16_t NumRAMBanks) : Mapper(NumROMBanks, NumRAMBanks) {
 }

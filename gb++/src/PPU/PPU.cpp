@@ -207,7 +207,7 @@ void PPU::DrawBackground() {
 void PPU::DrawWindow() {
 	LY = MemoryBus->ReadWord(0xFF44);
 	WY = MemoryBus->ReadWord(0xFF4A);
-	WX = MemoryBus->ReadWord(0xFF4B) - 7;
+	WX = MemoryBus->ReadWord(0xFF4B);
 
 	LCDC = MemoryBus->ReadWord(0xFF40);
 
@@ -216,14 +216,16 @@ void PPU::DrawWindow() {
 	bool SignedAddressingMode = (LCDC & 0x10) ? false : true;
 	bool WindowLineDrawn = false;
 
+	int16_t SignedWX = WX - 7;
+
 	uint8_t PixelBitL;
 	uint8_t PixelBitH;
 	if ((LCDC & 0x01) && (LCDC & 0x20)) {
 		for (int i = 0; i < 256; i++) {
-			if ((WX <= i && i < (WX + 160)) && WindowLine < 144 && (WY <= LY && LY < WY + 144)) {
+			if ((SignedWX <= i && i < (SignedWX + 160)) && WindowLine < 144 && (WY <= LY && LY < WY + 144)) {
 				WindowLineDrawn = i < 160 ? true : WindowLineDrawn;
 
-				OffsetX = i - WX;
+				OffsetX = i - SignedWX;
 				OffsetY = (WindowLine / 8) % 32;
 				TileID = MemoryBus->ReadWord(TileMapAddress + (OffsetX / 8) + 32 * OffsetY);
 
