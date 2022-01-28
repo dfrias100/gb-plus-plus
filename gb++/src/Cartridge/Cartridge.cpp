@@ -15,7 +15,7 @@ Cartridge::Cartridge(std::string FileName) {
 		File.seekg(0x146);
 		File.read(reinterpret_cast<char *>(&Header) + 17, 4);
 
-		uint32_t TrueROMSize = 0x20 << Header.ROMSize;
+		uint64_t TrueROMSize = 0x20llu << Header.ROMSize;
 		uint8_t RAMBanks = 0;
 		uint8_t ROMBanks = 0;
 
@@ -35,8 +35,6 @@ Cartridge::Cartridge(std::string FileName) {
 			std::cout << "The SGB flag is set in this cartridge, however it will NOT run in SGB mode." << std::endl;
 		}
 
-		
-
 		switch (Header.RAMType) {
 			case 0x00:
 				ExtRAM.resize(0);
@@ -45,6 +43,10 @@ Cartridge::Cartridge(std::string FileName) {
 			case 0x02:
 				ExtRAM.resize(1024 * 8);
 				RAMBanks = 1;
+				break;
+			case 0x03:
+				ExtRAM.resize(1024 * 32);
+				RAMBanks = 4;
 				break;
 		}
 
@@ -64,9 +66,24 @@ Cartridge::Cartridge(std::string FileName) {
 			case 0x04:
 				ROMBanks = 32;
 				break;
+			case 0x05:
+				ROMBanks = 64;
+				break;
+			case 0x06:
+				ROMBanks = 128;
+				break;
+			case 0x07:
+				ROMBanks = 256;
+				break;
+			case 0x08:
+				ROMBanks = 512;
+				break;
+			default:
+				std::cout << "ROM bank count not supported. Exiting." << std::endl;
+				break;
 		}
 
-		ROM.resize(TrueROMSize * 1024);
+		ROM.resize(TrueROMSize * 1024llu);
 
 		switch (Header.MapperType) {
 			case 0x00:
@@ -80,7 +97,7 @@ Cartridge::Cartridge(std::string FileName) {
 		}
 		
 		File.seekg(0);
-		File.read(reinterpret_cast<char *>(ROM.data()), TrueROMSize * 1024);
+		File.read((char *) ROM.data(), TrueROMSize * 1024llu);
 		File.close();
 	}
 }
@@ -99,7 +116,7 @@ bool Cartridge::ReadWord(uint16_t address, uint8_t& data) {
 		if (CartridgeMapper->RAMReadMappedWord(address, NewAddress)) {
 			data = ExtRAM[NewAddress];
 		} else {
-			data = 0x00;
+			data = 0xFF;
 		}
 		return true;
 	}
