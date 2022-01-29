@@ -32,14 +32,14 @@ Memory::Memory() {
 	}
 }
 
-Memory::~Memory()
-{
+Memory::~Memory() {
 	delete[] HighRAM;
 	delete[] IO;
 	delete[] SpriteOAM;
 	delete[] WorkingRAM;
 
 	delete CPU;
+	delete GPU;
 }
 
 void Memory::WriteWord(uint16_t address, uint8_t data) {
@@ -69,7 +69,6 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 			GPU->UpdateSpritePalette(1, data);
 		} else if (address == 0xFF50) {
 			BootROMEnable = false;
-			IO[0x44] = 0x8F;
 		} else if (address == 0xFF02 && data == 0x81) {
 			std::cout << ReadWord(0xFF01);
 		} else if (address == 0xFF0F) {
@@ -193,7 +192,7 @@ bool Memory::LoadBootRom() {
 
 void Memory::Clock() {
 	CPU->Clock();
-	GPU->Clock();
 	CPU->InterruptHandler();
+	GPU->Clock();
 	UpdateTimer();
 }

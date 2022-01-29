@@ -10,6 +10,7 @@
 
 #include "../Mapper/MBC0/MBC0.hpp"
 #include "../Mapper/MBC1/MBC1.hpp"
+#include "../Mapper/MBC2/MBC2.hpp"
 
 class Cartridge {
 	struct CartridgeHeader {

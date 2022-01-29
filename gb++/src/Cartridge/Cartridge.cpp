@@ -94,6 +94,11 @@ Cartridge::Cartridge(std::string FileName) {
 			case 0x03:
 				CartridgeMapper = new MBC1(ROMBanks, RAMBanks);
 				break;
+			case 0x05:
+			case 0x06:
+				ExtRAM.resize(512);
+				CartridgeMapper = new MBC2(ROMBanks, RAMBanks);
+				break;
 		}
 		
 		File.seekg(0);
@@ -115,6 +120,9 @@ bool Cartridge::ReadWord(uint16_t address, uint8_t& data) {
 	} else if (address >= 0xA000 && address < 0xC000) {
 		if (CartridgeMapper->RAMReadMappedWord(address, NewAddress)) {
 			data = ExtRAM[NewAddress];
+			if (Header.MapperType == 0x05 || Header.MapperType == 0x06) {
+				data |= 0xF0;
+			}
 		} else {
 			data = 0xFF;
 		}
