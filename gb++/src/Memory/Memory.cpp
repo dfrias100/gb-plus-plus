@@ -175,6 +175,8 @@ void Memory::UpdateTimer() {
 			}
 		}
 	}
+
+	ConnectedCartridge->TickRTC();
 }
 
 void Memory::CartridgeLoader(Cartridge* Cart) {

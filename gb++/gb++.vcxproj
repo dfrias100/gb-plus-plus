@@ -26,6 +26,7 @@
     <ClCompile Include="src\Mapper\MBC0\MBC0.cpp" />
     <ClCompile Include="src\Mapper\MBC1\MBC1.cpp" />
     <ClCompile Include="src\Mapper\MBC2\MBC2.cpp" />
+    <ClCompile Include="src\Mapper\MBC3\MBC3.cpp" />
     <ClCompile Include="src\Memory\Memory.cpp" />
     <ClCompile Include="src\PPU\PPU.cpp" />
     <ClCompile Include="src\Sharp\Sharp.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="src\Mapper\MBC0\MBC0.hpp" />
     <ClInclude Include="src\Mapper\MBC1\MBC1.hpp" />
     <ClInclude Include="src\Mapper\MBC2\MBC2.hpp" />
+    <ClInclude Include="src\Mapper\MBC3\MBC3.hpp" />
     <ClInclude Include="src\Memory\Memory.hpp" />
     <ClInclude Include="src\PPU\PPU.hpp" />
     <ClInclude Include="src\Sharp\Sharp.hpp" />

@@ -67,7 +67,7 @@ public:
 	uint8_t InterruptEnableRegister; // Interrupt Enable Register located at 0xFFFF: 1 byte
 	uint8_t* InterruptFlags;
 
-	bool BootROMEnable = false;
+	bool BootROMEnable = true;
 
 	// Ticks
 	int64_t SystemCycles;

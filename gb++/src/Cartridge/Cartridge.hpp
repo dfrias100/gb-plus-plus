@@ -11,6 +11,7 @@
 #include "../Mapper/MBC0/MBC0.hpp"
 #include "../Mapper/MBC1/MBC1.hpp"
 #include "../Mapper/MBC2/MBC2.hpp"
+#include "../Mapper/MBC3/MBC3.hpp"
 
 class Cartridge {
 	struct CartridgeHeader {
@@ -21,6 +22,16 @@ class Cartridge {
 		uint8_t ROMSize;
 		uint8_t RAMType;
 	};
+
+	uint8_t RTCClock[6] = {
+		0, // Seconds
+		0, // Minutes
+		0, // Hours
+		0, // Days - Low
+		0x40, // Days - High
+	};
+
+	uint64_t ClockTicks = 0;
 
 	std::vector<uint8_t> ROM;
 	std::vector<uint8_t> ExtRAM;
@@ -35,6 +46,7 @@ public:
 
 	bool ReadWord(uint16_t address, uint8_t& data);
 	bool WriteWord(uint16_t address, uint8_t data);
+	void TickRTC();
 };
 
 #endif

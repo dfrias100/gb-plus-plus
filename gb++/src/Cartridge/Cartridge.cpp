@@ -99,6 +99,15 @@ Cartridge::Cartridge(std::string FileName) {
 				ExtRAM.resize(512);
 				CartridgeMapper = new MBC2(ROMBanks, RAMBanks);
 				break;
+			case 0x12:
+			case 0x13:
+				CartridgeMapper = new MBC3(ROMBanks, RAMBanks);
+				break;
+			case 0x0F:
+			case 0x10:
+				RTCClock[4] = 0x00;
+				CartridgeMapper = new MBC3(ROMBanks, RAMBanks);
+				break;
 		}
 		
 		File.seekg(0);
@@ -119,9 +128,13 @@ bool Cartridge::ReadWord(uint16_t address, uint8_t& data) {
 		return true;
 	} else if (address >= 0xA000 && address < 0xC000) {
 		if (CartridgeMapper->RAMReadMappedWord(address, NewAddress)) {
-			data = ExtRAM[NewAddress];
-			if (Header.MapperType == 0x05 || Header.MapperType == 0x06) {
-				data |= 0xF0;
+			if ((NewAddress & 0xFFFFFF) == 0xFFFFFF) {
+				data = RTCClock[(NewAddress >> 24) - 0x08];
+			} else {
+				data = ExtRAM[NewAddress];
+				if (Header.MapperType == 0x05 || Header.MapperType == 0x06) {
+					data |= 0xF0;
+				}
 			}
 		} else {
 			data = 0xFF;
@@ -138,9 +151,51 @@ bool Cartridge::WriteWord(uint16_t address, uint8_t data) {
 		return true;
 	} else if (address >= 0xA000 && address < 0xC000) {
 		if (CartridgeMapper->RAMWriteMappedWord(address, NewAddress)) {
-			ExtRAM[NewAddress] = data;
+			if ((NewAddress & 0xFFFFFF) == 0xFFFFFF) {
+				RTCClock[(NewAddress >> 24) - 0x08] = data;
+			} else {
+				ExtRAM[NewAddress] = data;
+			}
 		}
 		return true;
 	}
 	return false;
+}
+
+void Cartridge::TickRTC() {
+	if (!(RTCClock[4] & 0x40)) {
+
+		ClockTicks++;
+
+		if (ClockTicks % 128 == 0) {
+
+			RTCClock[0] = (RTCClock[0] + 1) % 60;
+
+			if (RTCClock[0] == 0) {
+
+				RTCClock[1] = (RTCClock[1] + 1) % 60;
+
+				if (RTCClock[1] == 0) {
+
+					RTCClock[2] = (RTCClock[2] + 1) % 24;
+
+					if (RTCClock[2] == 0) {
+
+						RTCClock[3]++;
+
+						if (RTCClock[3] == 0) {
+
+							RTCClock[4] ^= 0x1;
+
+							if ((RTCClock[4] & 0x1) == 0) {
+
+								RTCClock[4] |= 0x80;
+
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
