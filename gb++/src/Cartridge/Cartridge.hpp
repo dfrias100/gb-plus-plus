@@ -12,6 +12,7 @@
 #include "../Mapper/MBC1/MBC1.hpp"
 #include "../Mapper/MBC2/MBC2.hpp"
 #include "../Mapper/MBC3/MBC3.hpp"
+#include "../Mapper/MBC5/MBC5.hpp"
 
 class Cartridge {
 	struct CartridgeHeader {

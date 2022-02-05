@@ -17,7 +17,7 @@ Cartridge::Cartridge(std::string FileName) {
 
 		uint64_t TrueROMSize = 0x20llu << Header.ROMSize;
 		uint8_t RAMBanks = 0;
-		uint8_t ROMBanks = 0;
+		uint16_t ROMBanks = 0;
 
 		std::cout << "ROM title: "   << Header.Title             << std::endl;
 		std::cout << "CGB flag: "    << std::hex << std::setw(2) << std::setfill('0') << (uint16_t) Header.CGBFlag    << std::endl;
@@ -107,6 +107,17 @@ Cartridge::Cartridge(std::string FileName) {
 			case 0x10:
 				RTCClock[4] = 0x00;
 				CartridgeMapper = new MBC3(ROMBanks, RAMBanks);
+				break;
+			case 0x19:
+			case 0x1A:
+			case 0x1B:
+				CartridgeMapper = new MBC5(ROMBanks, RAMBanks);
+				break;
+			case 0x1C:
+			case 0x1D:
+			case 0x1E:
+				CartridgeMapper = new MBC5(ROMBanks, RAMBanks);
+				((MBC5*) CartridgeMapper)->Rumble = true;
 				break;
 		}
 		

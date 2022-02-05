@@ -2703,6 +2703,11 @@ void Sharp::InterruptHandler() {
 void Sharp::Clock() {
 	if (!Suspended) {
 		if (CurrCycles == 0) {
+			if (MemoryBus->DummyDMACopyFlag) {
+				MemoryBus->DummyDMACopyFlag = false;
+				MemoryBus->DMACopyFlag = true;
+			}
+
 			switch(HaltBug) {
 				case false:
 					Opcode = MemoryBus->ReadWord(PC++);

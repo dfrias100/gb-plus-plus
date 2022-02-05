@@ -68,6 +68,12 @@ public:
 	uint8_t* InterruptFlags;
 
 	bool BootROMEnable = true;
+	bool DummyDMACopyFlag = false;
+	bool DMACopyFlag = false;
+	bool DMACopyAccess = false;
+
+	uint16_t DMASource;
+	uint8_t DMACycleCount = 0;
 
 	// Ticks
 	int64_t SystemCycles;

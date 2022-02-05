@@ -51,6 +51,9 @@
     <ClCompile Include="src\Mapper\MBC3\MBC3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mapper\MBC5\MBC5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window\Window.hpp">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Mapper\MBC3\MBC3.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mapper\MBC5\MBC5.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
