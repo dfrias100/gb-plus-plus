@@ -1,3 +1,7 @@
+#if defined(__linux__)
+    #include <algorithm>
+#endif
+
 #include "PPU.hpp"
 
 #include "../Memory/Memory.hpp"

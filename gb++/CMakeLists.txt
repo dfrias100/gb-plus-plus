@@ -7,7 +7,12 @@ project(
     LANGUAGES CXX
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -std=c++20")
+IF(CMAKE_BUILD_TYPE MATCHES Debug)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++17")
+ELSE()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -std=c++17")
+ENDIF()
+
 
 INCLUDE(FindPkgConfig)
 

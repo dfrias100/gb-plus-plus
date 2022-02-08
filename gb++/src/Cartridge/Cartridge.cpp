@@ -1,7 +1,8 @@
-#include "Cartridge.hpp"
-#ifdef UNIX
+#if defined(__linux__)
     #include <cstring>
 #endif
+
+#include "Cartridge.hpp"
 
 Cartridge::Cartridge(std::string FileName) {
 	std::ifstream File;
@@ -15,7 +16,7 @@ Cartridge::Cartridge(std::string FileName) {
 		
 		#if defined(_WIN32)
 			strncpy_s(Header.Title, TempBuf, 16);
-		#elif defined(UNIX)
+		#elif defined(__linux__)
 			strncpy(Header.Title, TempBuf, 16);
 		#endif
 		
