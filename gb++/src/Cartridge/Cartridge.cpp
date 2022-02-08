@@ -1,4 +1,7 @@
 #include "Cartridge.hpp"
+#ifdef UNIX
+    #include <cstring>
+#endif
 
 Cartridge::Cartridge(std::string FileName) {
 	std::ifstream File;
@@ -9,7 +12,13 @@ Cartridge::Cartridge(std::string FileName) {
 
 		char TempBuf[16];
 		File.read(TempBuf, 16);
+		
+		#ifdef WIN32
 		strncpy_s(Header.Title, TempBuf, 16);
+		#elif defined(UNIX)
+		strncpy(Header.Title, TempBuf, 16);
+		#endif
+		
 		Header.CGBFlag = TempBuf[15];
 
 		File.seekg(0x146);

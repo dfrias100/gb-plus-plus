@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /gb++/bios
 /gb++/testroms
+/gb++/build
