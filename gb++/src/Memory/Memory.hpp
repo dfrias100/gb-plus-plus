@@ -7,6 +7,7 @@
 #include "../Sharp/Sharp.hpp"
 #include "../Cartridge/Cartridge.hpp"
 #include "../PPU/PPU.hpp"
+#include "../Audio/Audio.hpp"
 
 class Memory {
 	uint8_t* HighRAM;    // High RAM located at	0xFF80: 127 bytes
@@ -52,6 +53,7 @@ class Memory {
 
 public:
 	PPU* GPU;
+	Audio* APU;
 
 	uint8_t Joypad[8] = { 
 		0, // A

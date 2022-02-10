@@ -23,6 +23,7 @@ Memory::Memory() {
 
 	CPU = new Sharp(this);
 	GPU = new PPU(this);
+	APU = new Audio(this);
 
 	if (BootROMEnable) {
 		CPU->SetupBootRom();
@@ -218,5 +219,6 @@ void Memory::Clock() {
 	CPU->Clock();
 	CPU->InterruptHandler();
 	GPU->Clock();
+	APU->Clock();
 	UpdateTimer();
 }

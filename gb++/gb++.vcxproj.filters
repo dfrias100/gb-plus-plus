@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -12,6 +8,19 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Emulator Components">
+      <UniqueIdentifier>{e587e2d0-f7c4-4a61-9f8e-11faa60275fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Emulator Components\Audio">
+      <UniqueIdentifier>{016c8b2a-7865-4f77-9a21-8d0021fb7666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Mappers">
+      <UniqueIdentifier>{2cc9e861-8d00-4cfa-a1b1-9af69180ba41}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -21,76 +30,82 @@
     <ClCompile Include="src\Window\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Memory\Memory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Sharp\Sharp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PPU\PPU.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Input\Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mapper\Mapper.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Mappers</Filter>
     </ClCompile>
     <ClCompile Include="src\Mapper\MBC0\MBC0.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Cartridge\Cartridge.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Mappers</Filter>
     </ClCompile>
     <ClCompile Include="src\Mapper\MBC1\MBC1.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Mappers</Filter>
     </ClCompile>
     <ClCompile Include="src\Mapper\MBC2\MBC2.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Mappers</Filter>
     </ClCompile>
     <ClCompile Include="src\Mapper\MBC3\MBC3.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Mappers</Filter>
     </ClCompile>
     <ClCompile Include="src\Mapper\MBC5\MBC5.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cartridge\Cartridge.cpp">
+      <Filter>Emulator Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\Input.cpp">
+      <Filter>Emulator Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Memory\Memory.cpp">
+      <Filter>Emulator Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PPU\PPU.cpp">
+      <Filter>Emulator Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sharp\Sharp.cpp">
+      <Filter>Emulator Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Audio\Audio.cpp">
+      <Filter>Emulator Components\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window\Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Memory\Memory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Sharp\Sharp.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PPU\PPU.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Input\Input.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\Mapper\MBC5\MBC5.hpp">
+      <Filter>Mappers</Filter>
     </ClInclude>
     <ClInclude Include="src\Mapper\Mapper.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Mappers</Filter>
     </ClInclude>
     <ClInclude Include="src\Mapper\MBC0\MBC0.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Cartridge\Cartridge.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Mappers</Filter>
     </ClInclude>
     <ClInclude Include="src\Mapper\MBC1\MBC1.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Mappers</Filter>
     </ClInclude>
     <ClInclude Include="src\Mapper\MBC2\MBC2.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Mappers</Filter>
     </ClInclude>
     <ClInclude Include="src\Mapper\MBC3\MBC3.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Mappers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mapper\MBC5\MBC5.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\Cartridge\Cartridge.hpp">
+      <Filter>Emulator Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\Input.hpp">
+      <Filter>Emulator Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Memory\Memory.hpp">
+      <Filter>Emulator Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PPU\PPU.hpp">
+      <Filter>Emulator Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sharp\Sharp.hpp">
+      <Filter>Emulator Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\Audio.hpp">
+      <Filter>Emulator Components\Audio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
