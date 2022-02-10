@@ -361,6 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/gb++/bios
-/gb++/testroms
-/gb++/build
+
+# Custom git ignores
+gb++/bios
+gb++/testroms
+gb++/build
+!External/SFML/bin
+!External/SFML/lib/Debug
+!External/SFML/lib/Debug/*.pdb
