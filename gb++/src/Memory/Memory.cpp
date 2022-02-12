@@ -44,14 +44,6 @@ Memory::~Memory() {
 }
 
 void Memory::WriteWord(uint16_t address, uint8_t data) {
-	if (DMACopyFlag) {
-		if (address >= 0xFF80 && address <= 0xFFFE) {
-			HighRAM[address - 0xFF80] = data;
-		}
-
-		return;
-	}
-
 	if (ConnectedCartridge->WriteWord(address, data)) {
 		return;
 	} else if (address <= 0x9FFF) {
@@ -68,10 +60,9 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 		IO[address - 0xFF00] = data;
 		if (address == 0xFF00) {
 			IO[0x00] = UpdateJoypad(data);
-		} else if (address == 0xFF46) { // I have implemented proper DMA access, but this
-			DMASource = IO[0x46] << 8;	// doesn't fix the glitchy graphics
-			DummyDMACopyFlag = true;
-			DMACycleCount = 0;
+		} else if (address == 0xFF46) {
+			DMASource = IO[0x46] << 8;	
+			OAMDMACopy();
 		} else if (address == 0xFF47) {
 			GPU->UpdateBGPalette();
 		} else if (address == 0xFF48) {  // this could maybe be collapsed
@@ -80,6 +71,7 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 			GPU->UpdateSpritePalette(1, data);
 		} else if (address == 0xFF50) {
 			BootROMEnable = false;
+			IO[0x44] = 0x8F; // This is kind of a hotfix, the PPU timings are very off
 		} else if (address == 0xFF02 && data == 0x81) {
 			std::cout << ReadWord(0xFF01);
 		} else if (address == 0xFF0F) {
@@ -94,35 +86,27 @@ void Memory::WriteWord(uint16_t address, uint8_t data) {
 }
 
 uint8_t Memory::ReadWord(uint16_t address) {
-	if (DMACopyAccess || !DMACopyFlag) {
-		uint8_t data;
-		if (((BootROMEnable && address > 0xFF) || !BootROMEnable) && ConnectedCartridge->ReadWord(address, data)) {
-			return data;
-		} else if (address <= 0xFF && BootROMEnable) {
-			return BootROM[address];
-		} else if (address <= 0x9FFF) {
-			return VideoRAM[address - 0x8000];
-		} else if (address <= 0xDFFF) {
-			return WorkingRAM[address - 0xC000];
-		} else if (address <= 0xFDFF) {
-			return WorkingRAM[address - 0xE000];
-		} else if (address <= 0xFE9F) { 
-			return SpriteOAM[address - 0xFE00];
-		} else if (address <= 0xFEFF) { 
-			return 0xFF;
-		} else if (address <= 0xFF7F) {
-			return IO[address - 0xFF00];
-		} else if (address <= 0xFFFE) {
-			return HighRAM[address - 0xFF80];
-		} else if (address == 0xFFFF) {
-			return InterruptEnableRegister;
-		}
-	} else {
-		if (address >= 0xFF80 && address <= 0xFFFE) {
-			return HighRAM[address - 0xFF80];
-		}
-
+	uint8_t data;
+	if (((BootROMEnable && address > 0xFF) || !BootROMEnable) && ConnectedCartridge->ReadWord(address, data)) {
+		return data;
+	} else if (address <= 0xFF && BootROMEnable) {
+		return BootROM[address];
+	} else if (address <= 0x9FFF) {
+		return VideoRAM[address - 0x8000];
+	} else if (address <= 0xDFFF) {
+		return WorkingRAM[address - 0xC000];
+	} else if (address <= 0xFDFF) {
+		return WorkingRAM[address - 0xE000];
+	} else if (address <= 0xFE9F) { 
+		return SpriteOAM[address - 0xFE00];
+	} else if (address <= 0xFEFF) { 
 		return 0xFF;
+	} else if (address <= 0xFF7F) {
+		return IO[address - 0xFF00];
+	} else if (address <= 0xFFFE) {
+		return HighRAM[address - 0xFF80];
+	} else if (address == 0xFFFF) {
+		return InterruptEnableRegister;
 	}
  }
 
@@ -136,9 +120,8 @@ uint16_t Memory::ReadDoubleWord(uint16_t address) {
 }
 
 void Memory::OAMDMACopy() {
-	DMACopyAccess = true;
-	SpriteOAM[(DMASource & 0xFF) + DMACycleCount] = ReadWord(DMASource + DMACycleCount);
-	DMACopyAccess = false;
+	for (size_t i = 0; i < 160; i++)
+		SpriteOAM[(DMASource & 0xFF) + i] = ReadWord(DMASource + i);
 }
 
 uint8_t Memory::UpdateJoypad(uint8_t button_mask) {
@@ -194,12 +177,6 @@ void Memory::UpdateTimer() {
 	}
 
 	ConnectedCartridge->TickRTC();
-
-	if (DMACopyFlag) {
-		OAMDMACopy();
-		DMACycleCount++;
-		DMACopyFlag = DMACycleCount < 160 ? true : false;
-	}
 }
 
 void Memory::CartridgeLoader(Cartridge* Cart) {
